@@ -232,7 +232,12 @@ public class MaterialesForm extends javax.swing.JFrame {
 
     private void btnSiguienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSiguienteActionPerformed
         if (tblMateriales.getRowCount() == 0) {
-            JOptionPane.showMessageDialog(this, "No se han ingresado materiales, ¿seguro que desea continuar?.", "Aviso", JOptionPane.WARNING_MESSAGE);
+            int opcion = JOptionPane.showConfirmDialog(this,
+                    "No se han ingresado materiales, ¿seguro que desea continuar?",
+                    "Confirmar salida", JOptionPane.YES_NO_OPTION);
+            if (opcion != JOptionPane.YES_OPTION) {
+                return;
+            }
         }
         
         this.dispose();
