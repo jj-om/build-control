@@ -9,6 +9,7 @@
         <module>presentacion_buildControl</module>
         <module>dto_negocios</module>
         <module>negocios_admBitacora</module>
+        <module>negocios_admObraSeleccionada</module>
     </modules>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
