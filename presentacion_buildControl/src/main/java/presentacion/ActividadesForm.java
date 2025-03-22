@@ -5,9 +5,11 @@
 package presentacion;
 
 import dto.ActividadDTO;
+import exception.PresentacionException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
+import presentacion.Validaciones;
 
 /**
  *
@@ -16,7 +18,8 @@ import javax.swing.JOptionPane;
 public class ActividadesForm extends javax.swing.JFrame {
     
     private CoordinadorAplicacion coordinador;
-    private List<ActividadDTO> listaActividades;
+    private CoordinadorNegocio coordinadorNegocio;
+    // private List<ActividadDTO> listaActividades;
 
     /**
      * Creates new form ActividadesRealizadasForm
@@ -27,8 +30,9 @@ public class ActividadesForm extends javax.swing.JFrame {
         getContentPane().setBackground(java.awt.Color.WHITE);
         this.setLocationRelativeTo(null);
         this.coordinador = coordinador;
+        this.coordinadorNegocio = new CoordinadorNegocio();
         
-        listaActividades = new ArrayList<>();
+        // listaActividades = new ArrayList<>();
     }
 
     /**
@@ -144,7 +148,7 @@ public class ActividadesForm extends javax.swing.JFrame {
 
     private void btnSiguienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSiguienteActionPerformed
         // Validar que se hayan registrado actividades
-        if (listaActividades.isEmpty()) {
+        if (coordinadorNegocio.obtenerActividades().isEmpty()) {
             JOptionPane.showMessageDialog(this,
                     "Debe registrar al menos una actividad antes de continuar",
                     "Error", JOptionPane.ERROR_MESSAGE);
@@ -164,6 +168,7 @@ public class ActividadesForm extends javax.swing.JFrame {
             return;
         }
         
+        coordinadorNegocio.cancelarActividades();
         // Falta que limpie todas las ventanas, limpie listas y haga null el dto. Lo hace controlador
         this.dispose();
         coordinador.mostrarObraSeleccionada();
@@ -179,12 +184,11 @@ public class ActividadesForm extends javax.swing.JFrame {
             return;
         }
 
-        listaActividades.add(new ActividadDTO(titulo, descripcion));
-
+        coordinadorNegocio.registrarActividad(titulo, descripcion);
         campoActividad.setText("");
         campoDescripcion.setText("");
-
-        JOptionPane.showMessageDialog(this, "Actividad agregada correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+        
+        JOptionPane.showMessageDialog(this, "Actividad agregada correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);        
     }//GEN-LAST:event_btnAgregarActividadActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
