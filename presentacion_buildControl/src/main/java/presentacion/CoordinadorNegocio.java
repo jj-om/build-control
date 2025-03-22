@@ -18,7 +18,7 @@ public class CoordinadorNegocio {
     // Crear lista para guardar las actividades
     private List<ActividadDTO> actividades = new ArrayList<>();
 
-    public CoordinadorNegocio() {
+    private CoordinadorNegocio() {
     }
     
     // Método para obtener la instancia
@@ -29,14 +29,15 @@ public class CoordinadorNegocio {
         return coordinadorNegocio;
     }
     
-    // Método para registrar una actividad
-    public void registrarActividad(String titulo, String descripcion) {
+    // Método para registrar una actividad en la lista
+    public void agregarActividad(String titulo, String descripcion) {
         actividades.add(new ActividadDTO(titulo, descripcion));
     }
     // Devuelve la lista de actividades
     public List<ActividadDTO> obtenerActividades() {
         return actividades;
     }
+    
     // Elimina las actividades dentro de la lista
     public void cancelarActividades() {
         actividades.clear();

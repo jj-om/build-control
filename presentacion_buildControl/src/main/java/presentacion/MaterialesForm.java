@@ -4,9 +4,7 @@
  */
 package presentacion;
 
-import java.awt.Color;
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Arrays;
@@ -17,7 +15,10 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.RowFilter;
+import javax.swing.event.ListSelectionEvent;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableRowSorter;
 
 /**
  *
@@ -26,8 +27,11 @@ import javax.swing.table.DefaultTableModel;
 public class MaterialesForm extends javax.swing.JFrame {
     
     private CoordinadorAplicacion coordinador;
+    
     private DefaultTableModel tableModel;
+    private TableRowSorter<DefaultTableModel> tableSorter; // Filtro para la tabla
     private DefaultListModel<String> listModel; // Modelo para la lista
+    List<String> materiales;
 
     /**
      * Creates new form RegistrarMaterialForm
@@ -41,13 +45,17 @@ public class MaterialesForm extends javax.swing.JFrame {
         
         listModel = new DefaultListModel<>();
         listBuscador.setModel(listModel);
-        
+
         tableModel = new DefaultTableModel(new Object[]{"Material", "-", "Cantidad", "+"}, 0);
         tblMateriales.setModel(tableModel);
+        tableSorter = new TableRowSorter<>(tableModel);
+        tblMateriales.setRowSorter(tableSorter);
         tblMateriales.getColumnModel().getColumn(1).setCellRenderer(new ButtonRenderer()); // Hace que las columnas se vean como botones
         tblMateriales.getColumnModel().getColumn(3).setCellRenderer(new ButtonRenderer());
         tblMateriales.getColumnModel().getColumn(1).setCellEditor(new ButtonEditor(new JCheckBox(), false)); // Botón "-"
         tblMateriales.getColumnModel().getColumn(3).setCellEditor(new ButtonEditor(new JCheckBox(), true));  // Botón "+"
+        
+        materiales = Arrays.asList("Cemento Portland", "Yeso", "Ladrillo", "Madera", "Acero"); // Ejemplo de materiales precargados
     }
 
     /**
@@ -78,10 +86,12 @@ public class MaterialesForm extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
         tblMateriales = new javax.swing.JTable();
-        txtBuscador = new javax.swing.JTextField();
-        jScrollPane5 = new javax.swing.JScrollPane();
+        txtBuscadorLista = new javax.swing.JTextField();
+        jScrollPaneBuscador = new javax.swing.JScrollPane();
         listBuscador = new javax.swing.JList<>();
         jLabel2 = new javax.swing.JLabel();
+        txtFiltroTabla = new javax.swing.JTextField();
+        jLabel3 = new javax.swing.JLabel();
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -144,6 +154,7 @@ public class MaterialesForm extends javax.swing.JFrame {
 
         campoNotas.setColumns(20);
         campoNotas.setRows(5);
+        campoNotas.setPreferredSize(new java.awt.Dimension(212, 64));
         jScrollPane1.setViewportView(campoNotas);
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
@@ -167,36 +178,57 @@ public class MaterialesForm extends javax.swing.JFrame {
         });
         jScrollPane3.setViewportView(tblMateriales);
 
-        txtBuscador.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        txtBuscador.setForeground(new java.awt.Color(153, 153, 153));
-        txtBuscador.setText("Buscar...");
-        txtBuscador.addFocusListener(new java.awt.event.FocusAdapter() {
+        txtBuscadorLista.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        txtBuscadorLista.setForeground(new java.awt.Color(153, 153, 153));
+        txtBuscadorLista.setText("Buscar...");
+        txtBuscadorLista.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
-                txtBuscadorFocusGained(evt);
+                txtBuscadorListaFocusGained(evt);
             }
             public void focusLost(java.awt.event.FocusEvent evt) {
-                txtBuscadorFocusLost(evt);
+                txtBuscadorListaFocusLost(evt);
             }
         });
-        txtBuscador.addKeyListener(new java.awt.event.KeyAdapter() {
+        txtBuscadorLista.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
-                txtBuscadorKeyReleased(evt);
+                txtBuscadorListaKeyReleased(evt);
             }
         });
 
-        jScrollPane5.setPreferredSize(new java.awt.Dimension(258, 82));
+        jScrollPaneBuscador.setPreferredSize(new java.awt.Dimension(258, 82));
 
         listBuscador.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        listBuscador.setMinimumSize(new java.awt.Dimension(13, 20));
         listBuscador.setVisibleRowCount(5);
         listBuscador.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
             public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
                 listBuscadorValueChanged(evt);
             }
         });
-        jScrollPane5.setViewportView(listBuscador);
+        jScrollPaneBuscador.setViewportView(listBuscador);
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel2.setText("Notas adicionales:");
+
+        txtFiltroTabla.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        txtFiltroTabla.setForeground(new java.awt.Color(153, 153, 153));
+        txtFiltroTabla.setText("Buscar...");
+        txtFiltroTabla.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                txtFiltroTablaFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtFiltroTablaFocusLost(evt);
+            }
+        });
+        txtFiltroTabla.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtFiltroTablaKeyReleased(evt);
+            }
+        });
+
+        jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel3.setText("Filtrar por nombre de material:");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -208,18 +240,23 @@ public class MaterialesForm extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(nombreEmpresa, javax.swing.GroupLayout.PREFERRED_SIZE, 271, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(registrarMaterial, javax.swing.GroupLayout.PREFERRED_SIZE, 365, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(registrarMaterial, javax.swing.GroupLayout.PREFERRED_SIZE, 365, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(txtBuscador)
-                            .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 260, Short.MAX_VALUE)
-                            .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel1))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 113, Short.MAX_VALUE)
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 429, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(69, 69, 69))))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(txtBuscadorLista)
+                                .addComponent(jScrollPaneBuscador, javax.swing.GroupLayout.DEFAULT_SIZE, 260, Short.MAX_VALUE)
+                                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jLabel1)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 128, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 429, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(txtFiltroTabla, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 429, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jLabel3))
+                        .addGap(54, 54, 54))))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -239,28 +276,29 @@ public class MaterialesForm extends javax.swing.JFrame {
                 .addComponent(nombreEmpresa)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(registrarMaterial)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(jLabel3))
+                .addGap(3, 3, 3)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txtFiltroTabla, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtBuscadorLista, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(29, 29, 29)
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(137, 137, 137))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabel1)
-                        .addGap(3, 3, 3)
-                        .addComponent(txtBuscador, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                        .addComponent(jScrollPaneBuscador, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
-                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnAtras, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnSiguiente, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnAtras, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnSiguiente, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(41, Short.MAX_VALUE))
         );
 
@@ -268,88 +306,53 @@ public class MaterialesForm extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAtrasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAtrasActionPerformed
-        this.dispose();
-        coordinador.mostrarActividades();
+        atras();
     }//GEN-LAST:event_btnAtrasActionPerformed
 
     private void btnSiguienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSiguienteActionPerformed
-        if (tblMateriales.getRowCount() == 0) {
-            int opcion = JOptionPane.showConfirmDialog(this,
-                    "No se han ingresado materiales, ¿seguro que desea continuar?",
-                    "Confirmar salida", JOptionPane.YES_NO_OPTION);
-            if (opcion != JOptionPane.YES_OPTION) {
-                return;
-            }
-        }
-        
-        this.dispose();
-        coordinador.mostrarHerramientasYMaquinaria();
+        siguiente();
     }//GEN-LAST:event_btnSiguienteActionPerformed
 
-    private void txtBuscadorKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBuscadorKeyReleased
-        String searchText = txtBuscador.getText().trim(); // Obtener el texto y eliminar espacios al inicio y al final
+    private void txtBuscadorListaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBuscadorListaKeyReleased
+        buscadorListaMateriales();
+    }//GEN-LAST:event_txtBuscadorListaKeyReleased
 
-        // Solo actualizar la lista si el texto no está vacío
-        if (!searchText.isEmpty()) {
-            updateMaterialList(searchText); // Actualizar la lista si el campo tiene texto
+    private void txtBuscadorListaFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtBuscadorListaFocusGained
+        Utilities.buscadorGanarFoco(txtBuscadorLista, "Buscar...");
+    }//GEN-LAST:event_txtBuscadorListaFocusGained
 
-            // Hacer visible el JScrollPane si hay resultados
-            if (listModel.getSize() > 0) {
-                jScrollPane5.setVisible(true); // Mostrar la lista solo si hay coincidencias
-            } else {
-                jScrollPane5.setVisible(false); // Ocultar la lista si no hay resultados
-            }
-        } else {
-            listModel.clear(); // Limpiar la lista si el campo está vacío
-            jScrollPane5.setVisible(false); // Ocultar la lista si no hay texto en el campo de búsqueda
-        }
-    }//GEN-LAST:event_txtBuscadorKeyReleased
-
-    private void txtBuscadorFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtBuscadorFocusGained
-        if (txtBuscador.getText().equals("Buscar...")) {
-            txtBuscador.setText(""); // Limpiar el texto cuando el campo recibe el foco
-            txtBuscador.setForeground(Color.BLACK); // Cambiar el color del texto a negro
-        }
-    }//GEN-LAST:event_txtBuscadorFocusGained
-
-    private void txtBuscadorFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtBuscadorFocusLost
-        if (txtBuscador.getText().isEmpty()) {
-            txtBuscador.setText("Buscar..."); // Restaurar el texto del placeholder si el campo está vacío
-            txtBuscador.setForeground(Color.GRAY); // Volver al color de placeholder
-        }
-    }//GEN-LAST:event_txtBuscadorFocusLost
+    private void txtBuscadorListaFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtBuscadorListaFocusLost
+        Utilities.buscadorPerderFoco(txtBuscadorLista, "Buscar...");
+    }//GEN-LAST:event_txtBuscadorListaFocusLost
 
     private void listBuscadorValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_listBuscadorValueChanged
-        if (!evt.getValueIsAdjusting()) {
-            String materialSeleccionado = listBuscador.getSelectedValue();
-            if (materialSeleccionado != null && !materialSeleccionado.isEmpty()) {
-                boolean materialExistente = false;
-                for (int i = 0; i < tableModel.getRowCount(); i++) {
-                    if (tableModel.getValueAt(i, 0).equals(materialSeleccionado)) {
-                        materialExistente = true;
-                        int cantidad = (int) tableModel.getValueAt(i, 2);
-                        tableModel.setValueAt(cantidad + 1, i, 2);
-                        return;
-                    }
-                }
-
-                if (!materialExistente) {
-                    tableModel.addRow(new Object[]{materialSeleccionado, "-", 1, "+"});
-                }
-            }
-        }
+        seleccionarMaterialLista(evt);
     }//GEN-LAST:event_listBuscadorValueChanged
+
+    private void txtFiltroTablaFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtFiltroTablaFocusGained
+        Utilities.buscadorGanarFoco(txtFiltroTabla, "Buscar...");
+    }//GEN-LAST:event_txtFiltroTablaFocusGained
+
+    private void txtFiltroTablaFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtFiltroTablaFocusLost
+        Utilities.buscadorPerderFoco(txtFiltroTabla, "Buscar...");
+    }//GEN-LAST:event_txtFiltroTablaFocusLost
+
+    private void txtFiltroTablaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtFiltroTablaKeyReleased
+        filtrarTabla();
+    }//GEN-LAST:event_txtFiltroTablaKeyReleased
 
     // Renderizador para que pueda haber un boton dentro de la tabla, es solo para la apariencia
     class ButtonRenderer extends JButton implements javax.swing.table.TableCellRenderer {
 
         public ButtonRenderer() {
-            setOpaque(true); // que no sea transparente
+            setOpaque(true); // Que no sea transparente
         }
 
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-            setText((value == null) ? "" : value.toString()); // asignarle el texto del botón
+            // Asigna el texto del botón, si es null asigna un texto vacío
+            setText((value == null) ? "" : value.toString());
+            // Devuelve el botón para mostrarlo en la celda
             return this;
         }
     }
@@ -358,47 +361,38 @@ public class MaterialesForm extends javax.swing.JFrame {
     class ButtonEditor extends DefaultCellEditor {
 
         private JButton button;
-        private boolean isIncrement;
+        private boolean isIncrement; // Determina si el botón es para incrementar o decrementar
         private int row;
 
         public ButtonEditor(JCheckBox checkBox, boolean isIncrement) {
             super(checkBox);
             this.isIncrement = isIncrement;
-
-            button = new JButton(isIncrement ? "+" : "-");
+            
+            // Crear el botón con el texto "+" o "-" dependiendo del tipo
+            this.button = new JButton(isIncrement ? "+" : "-");
             button.setOpaque(true);
-
-            // Acción del botón (cuando se hace clic en el JButton)
-            button.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    int cantidad = (int) tableModel.getValueAt(row, 2);
-                    String material = (String) tableModel.getValueAt(row, 0); // Obtener el nombre del material
-
-                    if (isIncrement) {
-                        tableModel.setValueAt(cantidad + 1, row, 2); // Incrementar
-                    } else {
-                        if (cantidad > 1) {
-                            tableModel.setValueAt(cantidad - 1, row, 2); // Decrementar
-                        } else {
-                            // Eliminar la fila de la tabla
-                            tableModel.removeRow(row);
-
-                            // Realizar la búsqueda de nuevo para actualizar la lista
-                            String searchText = txtBuscador.getText().trim();
-                            if (!searchText.isEmpty()) {
-                                updateMaterialList(searchText); // Actualizar la lista con el mismo criterio de búsqueda
-                            } else {
-                                listModel.clear(); // Limpiar la lista si no hay texto en el campo de búsqueda
-                            }
-                        }
-                    }
+            
+            // Acción al hacer clic en el botón
+            button.addActionListener(e -> {
+                // Obtener la cantidad actual en la tabla
+                int cantidad = (int) tableModel.getValueAt(row, 2);
+                if (isIncrement) {
+                    // Incrementar la cantidad
+                    tableModel.setValueAt(cantidad + 1, row, 2);
+                } else if (cantidad > 1) {
+                    // Decrementar la cantidad
+                    tableModel.setValueAt(cantidad - 1, row, 2);
+                } else {
+                    // Eliminarlo si llega a 0
+                    tableModel.removeRow(row);
+                    actualizarListaMateriales(txtBuscadorLista.getText().trim());
                 }
+                
+                // Detiene la edición después de hacer clic, para evitar que solo funcione con doble click
+                fireEditingStopped();
             });
-
-            // Detener la edición inmediatamente al hacer clic en el botón
-            button.addActionListener(e -> fireEditingStopped());
         }
+
 
         @Override
         public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
@@ -411,19 +405,42 @@ public class MaterialesForm extends javax.swing.JFrame {
             return isIncrement ? "+" : "-"; // Retornar el símbolo correcto
         }
     }
-
-    // Filtrar y actualizar la lista de materiales:
-    private void updateMaterialList(String searchText) {
-        listModel.clear(); // Limpiar la lista
-        List<String> materiales = Arrays.asList("Cemento Portland", "Yeso", "Ladrillo", "Madera", "Acero"); // Ejemplo de materiales precargados
-
-        for (String material : materiales) {
-            if (material.toLowerCase().contains(searchText.toLowerCase())) {
-                listModel.addElement(material);
-            }
-        }
+    
+    private void seleccionarMaterialLista(ListSelectionEvent evt) {
+        Utilities.seleccionarElementoLista(evt, listBuscador, tableModel, false);
     }
     
+    private void buscadorListaMateriales() {
+        Utilities.buscadorLista(txtBuscadorLista, listModel, jScrollPaneBuscador, materiales, listBuscador);
+    }
+
+    // Filtrar y actualizar la lista de materiales
+    private void actualizarListaMateriales(String textoBuscador) {
+        Utilities.actualizarLista(listBuscador, listModel, materiales, textoBuscador);
+    }
+    
+    private void filtrarTabla() {
+        Utilities.filtrarTabla(jTable1, tableSorter, txtFiltroTabla);
+    }
+    
+    private void siguiente() {
+        if (tblMateriales.getRowCount() == 0) {
+            int opcion = JOptionPane.showConfirmDialog(this,
+                    "No se han ingresado materiales, ¿Seguro que desea continuar?",
+                    "Confirmar salida", JOptionPane.YES_NO_OPTION);
+            if (opcion != JOptionPane.YES_OPTION) {
+                return;
+            }
+        }
+        
+        this.dispose();
+        coordinador.mostrarHerramientasYMaquinaria();
+    }
+    
+    private void atras() {
+        this.dispose();
+        coordinador.mostrarActividades();
+    }
 
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -437,18 +454,20 @@ public class MaterialesForm extends javax.swing.JFrame {
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItem3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JList<String> jList1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
-    private javax.swing.JScrollPane jScrollPane5;
+    private javax.swing.JScrollPane jScrollPaneBuscador;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTable jTable1;
     private javax.swing.JList<String> listBuscador;
     private javax.swing.JLabel nombreEmpresa;
     private javax.swing.JLabel registrarMaterial;
     private javax.swing.JTable tblMateriales;
-    private javax.swing.JTextField txtBuscador;
+    private javax.swing.JTextField txtBuscadorLista;
+    private javax.swing.JTextField txtFiltroTabla;
     // End of variables declaration//GEN-END:variables
 }

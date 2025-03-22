@@ -4,12 +4,7 @@
  */
 package presentacion;
 
-import dto.ActividadDTO;
-import exception.PresentacionException;
-import java.util.ArrayList;
-import java.util.List;
 import javax.swing.JOptionPane;
-import presentacion.Validaciones;
 
 /**
  *
@@ -19,7 +14,6 @@ public class ActividadesForm extends javax.swing.JFrame {
     
     private CoordinadorAplicacion coordinador;
     private CoordinadorNegocio coordinadorNegocio;
-    // private List<ActividadDTO> listaActividades;
 
     /**
      * Creates new form ActividadesRealizadasForm
@@ -30,9 +24,7 @@ public class ActividadesForm extends javax.swing.JFrame {
         getContentPane().setBackground(java.awt.Color.WHITE);
         this.setLocationRelativeTo(null);
         this.coordinador = coordinador;
-        this.coordinadorNegocio = new CoordinadorNegocio();
-        
-        // listaActividades = new ArrayList<>();
+        this.coordinadorNegocio = CoordinadorNegocio.getInstance();
     }
 
     /**
@@ -147,6 +139,35 @@ public class ActividadesForm extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnSiguienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSiguienteActionPerformed
+        siguiente();
+    }//GEN-LAST:event_btnSiguienteActionPerformed
+
+    private void btnAtrasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAtrasActionPerformed
+        atras();
+    }//GEN-LAST:event_btnAtrasActionPerformed
+
+    private void btnAgregarActividadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActividadActionPerformed
+        agregarActividad();
+    }//GEN-LAST:event_btnAgregarActividadActionPerformed
+
+    private void agregarActividad() {
+        String titulo = campoActividad.getText().trim();
+        String descripcion = campoDescripcion.getText().trim();
+
+        String mensajeError = Validaciones.validarActividad(titulo, descripcion);
+        if (mensajeError != null) {
+            JOptionPane.showMessageDialog(this, mensajeError, "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        coordinadorNegocio.agregarActividad(titulo, descripcion);
+        campoActividad.setText("");
+        campoDescripcion.setText("");
+        
+        JOptionPane.showMessageDialog(this, "Actividad agregada correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);   
+    }
+    
+    private void siguiente() {
         // Validar que se hayan registrado actividades
         if (coordinadorNegocio.obtenerActividades().isEmpty()) {
             JOptionPane.showMessageDialog(this,
@@ -157,40 +178,28 @@ public class ActividadesForm extends javax.swing.JFrame {
         
         this.dispose();
         coordinador.mostrarMateriales();
-    }//GEN-LAST:event_btnSiguienteActionPerformed
+    }
+    
+    private void atras() {
+        // Si se registró al menos una actividad
+        if (!coordinadorNegocio.obtenerActividades().isEmpty()) {
+            int opcion = JOptionPane.showConfirmDialog(this,
+                    "Si retrocede se perderá todo el proceso, ¿seguro que desea continuar?",
+                    "Confirmar salida", JOptionPane.YES_NO_OPTION);
 
-    private void btnAtrasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAtrasActionPerformed
-        int opcion = JOptionPane.showConfirmDialog(this,
-                "Si retrocede se perderá todo el proceso, ¿seguro que desea continuar?",
-                "Confirmar salida", JOptionPane.YES_NO_OPTION);
-        
-        if (opcion != JOptionPane.YES_OPTION) {
-            return;
+            if (opcion != JOptionPane.YES_OPTION) {
+                return;
+            }
+            
+            // Limpiar la lista de actividades
+            coordinadorNegocio.cancelarActividades();
+            // Falta que limpie todas las ventanas, limpie listas y haga null el dto. Lo hace controlador
         }
-        
-        coordinadorNegocio.cancelarActividades();
-        // Falta que limpie todas las ventanas, limpie listas y haga null el dto. Lo hace controlador
+
         this.dispose();
         coordinador.mostrarObraSeleccionada();
-    }//GEN-LAST:event_btnAtrasActionPerformed
-
-    private void btnAgregarActividadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActividadActionPerformed
-        String titulo = campoActividad.getText().trim();
-        String descripcion = campoDescripcion.getText().trim();
-
-        String mensajeError = Validaciones.validarActividad(titulo, descripcion);
-        if (mensajeError != null) {
-            JOptionPane.showMessageDialog(this, mensajeError, "Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        coordinadorNegocio.registrarActividad(titulo, descripcion);
-        campoActividad.setText("");
-        campoDescripcion.setText("");
-        
-        JOptionPane.showMessageDialog(this, "Actividad agregada correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);        
-    }//GEN-LAST:event_btnAgregarActividadActionPerformed
-
+    }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAgregarActividad;
     private javax.swing.JButton btnAtras;

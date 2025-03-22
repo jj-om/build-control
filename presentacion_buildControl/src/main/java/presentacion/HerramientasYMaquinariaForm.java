@@ -7,12 +7,17 @@ package presentacion;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Arrays;
+import java.util.List;
 import javax.swing.DefaultCellEditor;
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.event.ListSelectionEvent;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableRowSorter;
 
 /**
  *
@@ -21,7 +26,17 @@ import javax.swing.table.DefaultTableModel;
 public class HerramientasYMaquinariaForm extends javax.swing.JFrame {
     
     private CoordinadorAplicacion coordinador;
-    private DefaultTableModel tableModel;
+    
+    private DefaultTableModel tableModelHerramienta;
+    private TableRowSorter<DefaultTableModel> tableSorterHerramienta; // Filtro para la tabla
+    private DefaultListModel<String> listModelHerramienta; // Modelo para la lista
+    
+    private DefaultTableModel tableModelMaquinaria;
+    private TableRowSorter<DefaultTableModel> tableSorterMaquinaria; // Filtro para la tabla
+    private DefaultListModel<String> listModelMaquinaria; // Modelo para la lista
+    
+    private List<String> herramientas;
+    private List<String> maquinarias;
 
     /**
      * Creates new form RegistrarHyMForm
@@ -33,12 +48,30 @@ public class HerramientasYMaquinariaForm extends javax.swing.JFrame {
         this.setLocationRelativeTo(null);
         this.coordinador = coordinador;
         
-        tableModel = new DefaultTableModel(new Object[]{"Material", "-", "Cantidad", "+"}, 0);
-        tblHerramientas.setModel(tableModel);
+        listModelHerramienta = new DefaultListModel<>();
+        listBuscadorH.setModel(listModelHerramienta);
+        
+        tableModelHerramienta = new DefaultTableModel(new Object[]{"Herramienta", "-", "Cantidad", "+"}, 0);
+        tblHerramientas.setModel(tableModelHerramienta);
+        tableSorterHerramienta = new TableRowSorter<>(tableModelHerramienta);
+        tblHerramientas.setRowSorter(tableSorterHerramienta);
         tblHerramientas.getColumnModel().getColumn(1).setCellRenderer(new HerramientasYMaquinariaForm.ButtonRenderer());
         tblHerramientas.getColumnModel().getColumn(3).setCellRenderer(new HerramientasYMaquinariaForm.ButtonRenderer());
-        tblHerramientas.getColumnModel().getColumn(1).setCellEditor(new HerramientasYMaquinariaForm.ButtonEditor(new JCheckBox(), false));
-        tblHerramientas.getColumnModel().getColumn(3).setCellEditor(new HerramientasYMaquinariaForm.ButtonEditor(new JCheckBox(), true));
+        tblHerramientas.getColumnModel().getColumn(1).setCellEditor(new HerramientasYMaquinariaForm.ButtonEditor(new JCheckBox(), false, tableModelHerramienta, true));
+        tblHerramientas.getColumnModel().getColumn(3).setCellEditor(new HerramientasYMaquinariaForm.ButtonEditor(new JCheckBox(), true, tableModelHerramienta, true));
+        
+        listModelMaquinaria = new DefaultListModel<>();
+        listBuscadorM.setModel(listModelMaquinaria);
+        
+        tableModelMaquinaria = new DefaultTableModel(new Object[]{"Maquinaria", "-", "Status"}, 0);
+        tblMaquinaria.setModel(tableModelMaquinaria);
+        tableSorterMaquinaria = new TableRowSorter<>(tableModelMaquinaria);
+        tblMaquinaria.setRowSorter(tableSorterMaquinaria);
+        tblMaquinaria.getColumnModel().getColumn(1).setCellRenderer(new HerramientasYMaquinariaForm.ButtonRenderer());
+        tblMaquinaria.getColumnModel().getColumn(1).setCellEditor(new HerramientasYMaquinariaForm.ButtonEditor(new JCheckBox(), false, tableModelMaquinaria, false));
+        
+        herramientas = Arrays.asList("Destornillador", "Martillo", "Llave inglesa", "Llave fija", "Pala", "Carretilla"); // Ejemplo de herramientas precargados
+        maquinarias = Arrays.asList("Excavadora", "Retroexcavadora", "Grúa", "Perforadora", "Bomba de concreto", "Martillo hidráulico"); // Ejemplo de maquinaria precargados
     }
 
     /**
@@ -55,7 +88,6 @@ public class HerramientasYMaquinariaForm extends javax.swing.JFrame {
         jSeparator1 = new javax.swing.JSeparator();
         btnAtras = new javax.swing.JButton();
         btnSiguiente = new javax.swing.JButton();
-        cbHerramientas = new javax.swing.JComboBox<>();
         jLabel1 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         campoNotas = new javax.swing.JTextArea();
@@ -64,7 +96,18 @@ public class HerramientasYMaquinariaForm extends javax.swing.JFrame {
         jScrollPane4 = new javax.swing.JScrollPane();
         tblHerramientas = new javax.swing.JTable();
         registraHyM1 = new javax.swing.JLabel();
-        cbMaquinaria = new javax.swing.JComboBox<>();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        txtBuscadorListaH = new javax.swing.JTextField();
+        jScrollPaneH = new javax.swing.JScrollPane();
+        listBuscadorH = new javax.swing.JList<>();
+        txtBuscadorListaM = new javax.swing.JTextField();
+        jScrollPaneM = new javax.swing.JScrollPane();
+        listBuscadorM = new javax.swing.JList<>();
+        jLabel4 = new javax.swing.JLabel();
+        txtFiltroTablaH = new javax.swing.JTextField();
+        txtFiltroTablaM = new javax.swing.JTextField();
+        jLabel5 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -93,14 +136,6 @@ public class HerramientasYMaquinariaForm extends javax.swing.JFrame {
         btnSiguiente.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnSiguienteActionPerformed(evt);
-            }
-        });
-
-        cbHerramientas.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        cbHerramientas.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Pala", "Cubetas" }));
-        cbHerramientas.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cbHerramientasActionPerformed(evt);
             }
         });
 
@@ -150,19 +185,110 @@ public class HerramientasYMaquinariaForm extends javax.swing.JFrame {
         registraHyM1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         registraHyM1.setText("Registrar Maquinaria");
 
-        cbMaquinaria.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        cbMaquinaria.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Rotomartillo" }));
-        cbMaquinaria.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cbMaquinariaActionPerformed(evt);
+        jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel2.setText("Ingresa el nombre de la herramienta:");
+
+        jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel3.setText("Ingresa el nombre de la maquinaria:");
+
+        txtBuscadorListaH.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        txtBuscadorListaH.setForeground(new java.awt.Color(153, 153, 153));
+        txtBuscadorListaH.setText("Buscar...");
+        txtBuscadorListaH.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                txtBuscadorListaHFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtBuscadorListaHFocusLost(evt);
             }
         });
+        txtBuscadorListaH.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtBuscadorListaHKeyReleased(evt);
+            }
+        });
+
+        listBuscadorH.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        listBuscadorH.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        listBuscadorH.setVisibleRowCount(5);
+        listBuscadorH.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                listBuscadorHValueChanged(evt);
+            }
+        });
+        jScrollPaneH.setViewportView(listBuscadorH);
+
+        txtBuscadorListaM.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        txtBuscadorListaM.setForeground(new java.awt.Color(153, 153, 153));
+        txtBuscadorListaM.setText("Buscar...");
+        txtBuscadorListaM.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                txtBuscadorListaMFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtBuscadorListaMFocusLost(evt);
+            }
+        });
+        txtBuscadorListaM.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtBuscadorListaMKeyReleased(evt);
+            }
+        });
+
+        listBuscadorM.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        listBuscadorM.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        listBuscadorM.setVisibleRowCount(5);
+        listBuscadorM.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                listBuscadorMValueChanged(evt);
+            }
+        });
+        jScrollPaneM.setViewportView(listBuscadorM);
+
+        jLabel4.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel4.setText("Filtrar por nombre de herramienta:");
+
+        txtFiltroTablaH.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        txtFiltroTablaH.setForeground(new java.awt.Color(153, 153, 153));
+        txtFiltroTablaH.setText("Buscar...");
+        txtFiltroTablaH.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                txtFiltroTablaHFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtFiltroTablaHFocusLost(evt);
+            }
+        });
+        txtFiltroTablaH.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtFiltroTablaHKeyReleased(evt);
+            }
+        });
+
+        txtFiltroTablaM.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        txtFiltroTablaM.setForeground(new java.awt.Color(153, 153, 153));
+        txtFiltroTablaM.setText("Buscar...");
+        txtFiltroTablaM.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                txtFiltroTablaMFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtFiltroTablaMFocusLost(evt);
+            }
+        });
+        txtFiltroTablaM.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtFiltroTablaMKeyReleased(evt);
+            }
+        });
+
+        jLabel5.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel5.setText("Filtrar por nombre de maquinaria:");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jSeparator1)
             .addGroup(layout.createSequentialGroup()
                 .addGap(27, 27, 27)
                 .addComponent(btnAtras, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -170,30 +296,32 @@ public class HerramientasYMaquinariaForm extends javax.swing.JFrame {
                 .addComponent(btnSiguiente, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(30, 30, 30))
             .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jSeparator1)
+                .addContainerGap())
+            .addGroup(layout.createSequentialGroup()
                 .addGap(36, 36, 36)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(cbMaquinaria, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(cbHerramientas, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(nombreEmpresa, javax.swing.GroupLayout.PREFERRED_SIZE, 271, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(registraHyM, javax.swing.GroupLayout.PREFERRED_SIZE, 365, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(registraHyM1, javax.swing.GroupLayout.PREFERRED_SIZE, 365, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 77, Short.MAX_VALUE)
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 429, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(43, 43, 43))))
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                    .addContainerGap(374, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jScrollPaneM, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(nombreEmpresa, javax.swing.GroupLayout.PREFERRED_SIZE, 271, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jScrollPaneH, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(registraHyM)
+                    .addComponent(txtBuscadorListaM, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel3)
+                    .addComponent(registraHyM1)
+                    .addComponent(jLabel2)
+                    .addComponent(txtBuscadorListaH, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 66, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 429, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 429, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(42, 42, 42)))
+                    .addComponent(jLabel4)
+                    .addComponent(txtFiltroTablaH, javax.swing.GroupLayout.PREFERRED_SIZE, 429, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtFiltroTablaM, javax.swing.GroupLayout.PREFERRED_SIZE, 429, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel5))
+                .addGap(43, 43, 43))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -202,79 +330,117 @@ public class HerramientasYMaquinariaForm extends javax.swing.JFrame {
                 .addComponent(nombreEmpresa)
                 .addGap(18, 18, 18)
                 .addComponent(registraHyM)
-                .addGap(18, 18, 18)
-                .addComponent(cbHerramientas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(registraHyM1)
-                .addGap(18, 18, 18)
-                .addComponent(cbMaquinaria, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 38, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(jLabel4))
+                .addGap(2, 2, 2)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtBuscadorListaH, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtFiltroTablaH, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jScrollPaneH, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(registraHyM1)
+                        .addGap(5, 5, 5)
+                        .addComponent(jLabel3))
+                    .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtBuscadorListaM, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPaneM, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(54, 54, 54)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(5, 5, 5)
+                        .addComponent(jLabel5)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(txtFiltroTablaM, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(60, 60, 60)))
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnAtras, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnSiguiente, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(44, 44, 44))
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addGap(145, 145, 145)
-                    .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(315, Short.MAX_VALUE)))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAtrasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAtrasActionPerformed
-        this.dispose();
-        coordinador.mostrarMateriales();
+        atras();
     }//GEN-LAST:event_btnAtrasActionPerformed
 
     private void btnSiguienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSiguienteActionPerformed
-        if (tblHerramientas.getRowCount() == 0 || tblMaquinaria.getRowCount() == 0) {
-            int opcion = JOptionPane.showConfirmDialog(this,
-                    "¿Seguro que desea continuar?",
-                    "Confirmar salida", JOptionPane.YES_NO_OPTION);
-            if (opcion != JOptionPane.YES_OPTION) {
-                return;
-            }
-        }
-        
-        this.dispose();
-        coordinador.mostrarPersonal();
+        siguiente();
     }//GEN-LAST:event_btnSiguienteActionPerformed
 
-    private void cbHerramientasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbHerramientasActionPerformed
-        String herramientaSeleccionada = (String) cbHerramientas.getSelectedItem();
-        if (herramientaSeleccionada == null || herramientaSeleccionada.isEmpty()) {
-            return;
-        }
+    private void txtBuscadorListaHFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtBuscadorListaHFocusGained
+        Utilities.buscadorGanarFoco(txtBuscadorListaH, "Buscar...");
+    }//GEN-LAST:event_txtBuscadorListaHFocusGained
 
-        // Verificar si el material ya está en la tabla
-        for (int i = 0; i < tableModel.getRowCount(); i++) {
-            if (tableModel.getValueAt(i, 0).equals(herramientaSeleccionada)) {
-                int cantidad = (int) tableModel.getValueAt(i, 2);
-                tableModel.setValueAt(cantidad + 1, i, 2);
-                return;
-            }
-        }
+    private void txtBuscadorListaHFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtBuscadorListaHFocusLost
+        Utilities.buscadorPerderFoco(txtBuscadorListaH, "Buscar...");
+    }//GEN-LAST:event_txtBuscadorListaHFocusLost
 
-        // Agregar nueva fila si el material no existe en la tabla
-        tableModel.addRow(new Object[]{herramientaSeleccionada, "-", 1, "+"});
-    }//GEN-LAST:event_cbHerramientasActionPerformed
+    private void txtBuscadorListaHKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBuscadorListaHKeyReleased
+        buscadorListaHerramientas();
+    }//GEN-LAST:event_txtBuscadorListaHKeyReleased
 
-    private void cbMaquinariaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbMaquinariaActionPerformed
-        // aquí faltaría implementar una lógica similar a la de herramientas
-    }//GEN-LAST:event_cbMaquinariaActionPerformed
+    private void listBuscadorHValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_listBuscadorHValueChanged
+        seleccionarHerramientaLista(evt);
+    }//GEN-LAST:event_listBuscadorHValueChanged
 
-    // lo mismo que en materiales
+    private void txtBuscadorListaMFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtBuscadorListaMFocusGained
+        Utilities.buscadorGanarFoco(txtBuscadorListaM, "Buscar...");
+    }//GEN-LAST:event_txtBuscadorListaMFocusGained
+
+    private void txtBuscadorListaMFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtBuscadorListaMFocusLost
+        Utilities.buscadorPerderFoco(txtBuscadorListaM, "Buscar...");
+    }//GEN-LAST:event_txtBuscadorListaMFocusLost
+
+    private void txtBuscadorListaMKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBuscadorListaMKeyReleased
+        buscadorListaMaquinaria();
+    }//GEN-LAST:event_txtBuscadorListaMKeyReleased
+
+    private void listBuscadorMValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_listBuscadorMValueChanged
+        seleccionarMaquinariaLista(evt);
+    }//GEN-LAST:event_listBuscadorMValueChanged
+
+    private void txtFiltroTablaHFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtFiltroTablaHFocusGained
+        Utilities.buscadorGanarFoco(txtFiltroTablaH, "Buscar...");
+    }//GEN-LAST:event_txtFiltroTablaHFocusGained
+
+    private void txtFiltroTablaHFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtFiltroTablaHFocusLost
+        Utilities.buscadorPerderFoco(txtFiltroTablaH, "Buscar...");
+    }//GEN-LAST:event_txtFiltroTablaHFocusLost
+
+    private void txtFiltroTablaHKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtFiltroTablaHKeyReleased
+        filtrarTablaHerramientas();
+    }//GEN-LAST:event_txtFiltroTablaHKeyReleased
+
+    private void txtFiltroTablaMFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtFiltroTablaMFocusGained
+        Utilities.buscadorGanarFoco(txtFiltroTablaM, "Buscar...");
+    }//GEN-LAST:event_txtFiltroTablaMFocusGained
+
+    private void txtFiltroTablaMFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtFiltroTablaMFocusLost
+        Utilities.buscadorPerderFoco(txtFiltroTablaM, "Buscar...");
+    }//GEN-LAST:event_txtFiltroTablaMFocusLost
+
+    private void txtFiltroTablaMKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtFiltroTablaMKeyReleased
+        filtrarTablaMaquinaria();
+    }//GEN-LAST:event_txtFiltroTablaMKeyReleased
+
     class ButtonRenderer extends JButton implements javax.swing.table.TableCellRenderer {
 
         public ButtonRenderer() {
@@ -283,7 +449,9 @@ public class HerramientasYMaquinariaForm extends javax.swing.JFrame {
 
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-            setText((value == null) ? "" : value.toString()); // asignarle el texto del botón
+            // Asigna el texto del botón, si es null asigna un texto vacío
+            setText((value == null) ? "" : value.toString());
+            // Devuelve el botón para mostrarlo en la celda
             return this;
         }
     }
@@ -293,54 +461,135 @@ public class HerramientasYMaquinariaForm extends javax.swing.JFrame {
         private JButton button;
         private boolean isIncrement;
         private int row;
+        private DefaultTableModel tableModel;
+        private boolean esHerramienta;  // Para determinar qué lista actualizar
 
-        public ButtonEditor(JCheckBox checkBox, boolean isIncrement) {
+        public ButtonEditor(JCheckBox checkBox, boolean isIncrement, DefaultTableModel tableModel, boolean esHerramienta) {
             super(checkBox);
             this.isIncrement = isIncrement;
-            button = new JButton();
+            this.tableModel = tableModel;
+            this.esHerramienta = esHerramienta; // Guardamos si es para herramientas o maquinaria
+
+            // Crear el botón con el texto "+" o "-" dependiendo del tipo
+            this.button = new JButton(isIncrement ? "+" : "-");
             button.setOpaque(true);
-            
-            // el action listener del botón
-            button.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
+
+            // Acción al hacer clic en el botón
+            button.addActionListener(e -> {
+                if (esHerramienta) {
+                    // Si es herramienta, manejamos las cantidades
                     int cantidad = (int) tableModel.getValueAt(row, 2);
                     if (isIncrement) {
-                        tableModel.setValueAt(cantidad + 1, row, 2); // incrementar
+                        // Incrementar la cantidad
+                        tableModel.setValueAt(cantidad + 1, row, 2);
+                    } else if (cantidad > 1) {
+                        // Decrementar la cantidad
+                        tableModel.setValueAt(cantidad - 1, row, 2);
                     } else {
-                        if (cantidad > 1) {
-                            tableModel.setValueAt(cantidad - 1, row, 2); // decrementar
-                        } else {
-                            tableModel.removeRow(row); // eliminiarlo si llega a 0
-                        }
+                        // Eliminarlo si llega a 0
+                        tableModel.removeRow(row);
+                        actualizarListaHerramientas(txtBuscadorListaH.getText().trim());
                     }
+                } else {
+                    // Si es maquinaria, solo eliminamos la fila
+                    tableModel.removeRow(row);
+                    actualizarListaMaquinaria(txtBuscadorListaM.getText().trim());
                 }
             });
+
         }
 
         @Override
         public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
-            this.row = row; 
-            button.setText((value == null) ? "" : value.toString()); // asignarle el texto del botón
-            return button;
+            this.row = row;
+            return button; // Mostrar el JButton como el componente de edición
         }
+
+        @Override
+        public Object getCellEditorValue() {
+            return isIncrement ? "+" : "-"; // Retornar el símbolo correcto
+        }
+    }
+    
+    // Comportamiento del buscador de herramientas
+    private void buscadorListaHerramientas() {
+        Utilities.buscadorLista(txtBuscadorListaH, listModelHerramienta, jScrollPaneH, herramientas, listBuscadorH);
+    }
+    
+    // Filtrar y actualizar la lista de materiales
+    private void actualizarListaHerramientas(String textoBuscador) {
+        Utilities.actualizarLista(listBuscadorH, listModelHerramienta, herramientas, textoBuscador);
+    }
+    
+    private void seleccionarHerramientaLista(ListSelectionEvent evt) {
+        Utilities.seleccionarElementoLista(evt, listBuscadorH, tableModelHerramienta, false);
+    }
+    
+    private void filtrarTablaHerramientas() {
+        Utilities.filtrarTabla(tblHerramientas, tableSorterHerramienta, txtFiltroTablaH);
+    }
+    
+    private void buscadorListaMaquinaria() {
+        Utilities.buscadorLista(txtBuscadorListaM, listModelMaquinaria, jScrollPaneM, maquinarias, listBuscadorM);
+    }
+    
+    // Filtrar y actualizar la lista de materiales
+    private void actualizarListaMaquinaria(String textoBuscador) {
+        Utilities.actualizarLista(listBuscadorM, listModelMaquinaria, maquinarias, textoBuscador);
+    }
+    
+    private void seleccionarMaquinariaLista(ListSelectionEvent evt) {
+        Utilities.seleccionarElementoLista(evt, listBuscadorM, tableModelMaquinaria, true);
+    }
+    
+    private void filtrarTablaMaquinaria() {
+        Utilities.filtrarTabla(tblMaquinaria, tableSorterMaquinaria, txtFiltroTablaM);
+    }
+    
+    private void siguiente() {
+        if (tblHerramientas.getRowCount() == 0 || tblMaquinaria.getRowCount() == 0) {
+            int opcion = JOptionPane.showConfirmDialog(this,
+                    "No se han registrado herramientas o maquinaria, ¿Seguro que desea continuar?",
+                    "Confirmar salida", JOptionPane.YES_NO_OPTION);
+            if (opcion != JOptionPane.YES_OPTION) {
+                return;
+            }
+        }
+        
+        this.dispose();
+        coordinador.mostrarPersonal();
+    }
+    
+    private void atras() {
+        this.dispose();
+        coordinador.mostrarMateriales();
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAtras;
     private javax.swing.JButton btnSiguiente;
     private javax.swing.JTextArea campoNotas;
-    private javax.swing.JComboBox<String> cbHerramientas;
-    private javax.swing.JComboBox<String> cbMaquinaria;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JScrollPane jScrollPaneH;
+    private javax.swing.JScrollPane jScrollPaneM;
     private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JList<String> listBuscadorH;
+    private javax.swing.JList<String> listBuscadorM;
     private javax.swing.JLabel nombreEmpresa;
     private javax.swing.JLabel registraHyM;
     private javax.swing.JLabel registraHyM1;
     private javax.swing.JTable tblHerramientas;
     private javax.swing.JTable tblMaquinaria;
+    private javax.swing.JTextField txtBuscadorListaH;
+    private javax.swing.JTextField txtBuscadorListaM;
+    private javax.swing.JTextField txtFiltroTablaH;
+    private javax.swing.JTextField txtFiltroTablaM;
     // End of variables declaration//GEN-END:variables
 }
