@@ -9,5 +9,5 @@ package BOs_negocios;
  */
 
 public class bo_obra {
-
+    
 }
