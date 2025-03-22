@@ -156,32 +156,35 @@ public class ActividadesForm extends javax.swing.JFrame {
     }//GEN-LAST:event_btnSiguienteActionPerformed
 
     private void btnAtrasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAtrasActionPerformed
+        int opcion = JOptionPane.showConfirmDialog(this,
+                "Si retrocede se perderá todo el proceso, ¿seguro que desea continuar?",
+                "Confirmar salida", JOptionPane.YES_NO_OPTION);
+        
+        if (opcion != JOptionPane.YES_OPTION) {
+            return;
+        }
+        
+        // Falta que limpie todas las ventanas, limpie listas y haga null el dto. Lo hace controlador
         this.dispose();
         coordinador.mostrarObraSeleccionada();
     }//GEN-LAST:event_btnAtrasActionPerformed
 
     private void btnAgregarActividadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActividadActionPerformed
-        // Validar que los campos estén llenos antes de agregar otra actividad
         String titulo = campoActividad.getText().trim();
         String descripcion = campoDescripcion.getText().trim();
 
-        if (titulo.isEmpty() || descripcion.isEmpty()) {
-            JOptionPane.showMessageDialog(this,
-                    "Debe llenar ambos campos para agregar una nueva actividad",
-                    "Error", JOptionPane.ERROR_MESSAGE);
+        String mensajeError = Validaciones.validarActividad(titulo, descripcion);
+        if (mensajeError != null) {
+            JOptionPane.showMessageDialog(this, mensajeError, "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        
-        ActividadDTO nuevaActividad = new ActividadDTO(titulo, descripcion);
-        listaActividades.add(nuevaActividad);
-        
+
+        listaActividades.add(new ActividadDTO(titulo, descripcion));
+
         campoActividad.setText("");
         campoDescripcion.setText("");
-        
-        // Mostrar mensaje de éxito
-        JOptionPane.showMessageDialog(this,
-                "Actividad agregada correctamente",
-                "Éxito", JOptionPane.INFORMATION_MESSAGE);
+
+        JOptionPane.showMessageDialog(this, "Actividad agregada correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
     }//GEN-LAST:event_btnAgregarActividadActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
