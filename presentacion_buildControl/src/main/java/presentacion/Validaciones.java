@@ -28,7 +28,7 @@ public class Validaciones {
         if (!descripcion.matches(REGEX_VALIDO)) {
             return "La descripción debe contener al menos una letra.";
         }
-        
+                
         return null; // Retorna null si la validación es correcta
     }
 }

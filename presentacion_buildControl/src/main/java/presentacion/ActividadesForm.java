@@ -4,6 +4,9 @@
  */
 package presentacion;
 
+import exception.PresentacionException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 /**
@@ -147,24 +150,24 @@ public class ActividadesForm extends javax.swing.JFrame {
     }//GEN-LAST:event_btnAtrasActionPerformed
 
     private void btnAgregarActividadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActividadActionPerformed
-        agregarActividad();
+        try {
+            agregarActividad();
+        } catch (PresentacionException ex) {
+            Logger.getLogger(ActividadesForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_btnAgregarActividadActionPerformed
 
-    private void agregarActividad() {
+    private void agregarActividad() throws PresentacionException {
         String titulo = campoActividad.getText().trim();
         String descripcion = campoDescripcion.getText().trim();
-
-        String mensajeError = Validaciones.validarActividad(titulo, descripcion);
-        if (mensajeError != null) {
-            JOptionPane.showMessageDialog(this, mensajeError, "Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        coordinadorNegocio.agregarActividad(titulo, descripcion);
-        campoActividad.setText("");
-        campoDescripcion.setText("");
-        
-        JOptionPane.showMessageDialog(this, "Actividad agregada correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);   
+        try {
+            coordinadorNegocio.agregarActividad(titulo, descripcion);
+            campoActividad.setText("");
+            campoDescripcion.setText("");
+            JOptionPane.showMessageDialog(this, "Actividad agregada correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);   
+        } catch (PresentacionException e) {
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }  
     }
     
     private void siguiente() {
@@ -190,12 +193,10 @@ public class ActividadesForm extends javax.swing.JFrame {
             if (opcion != JOptionPane.YES_OPTION) {
                 return;
             }
-            
             // Limpiar la lista de actividades
             coordinadorNegocio.cancelarActividades();
             // Falta que limpie todas las ventanas, limpie listas y haga null el dto. Lo hace controlador
         }
-
         this.dispose();
         coordinador.mostrarObraSeleccionada();
     }

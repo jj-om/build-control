@@ -26,6 +26,7 @@ import javax.swing.table.TableRowSorter;
 public class HerramientasYMaquinariaForm extends javax.swing.JFrame {
     
     private CoordinadorAplicacion coordinador;
+    private CoordinadorNegocio coordinadorNegocio;
     
     private DefaultTableModel tableModelHerramienta;
     private TableRowSorter<DefaultTableModel> tableSorterHerramienta; // Filtro para la tabla
@@ -482,13 +483,16 @@ public class HerramientasYMaquinariaForm extends javax.swing.JFrame {
                     if (isIncrement) {
                         // Incrementar la cantidad
                         tableModel.setValueAt(cantidad + 1, row, 2);
+                        coordinadorNegocio.actualizarCantidadHerramienta(row, cantidad + 1);
                     } else if (cantidad > 1) {
                         // Decrementar la cantidad
                         tableModel.setValueAt(cantidad - 1, row, 2);
+                        coordinadorNegocio.actualizarCantidadHerramienta(row, cantidad - 1);
                     } else {
                         // Eliminarlo si llega a 0
                         tableModel.removeRow(row);
-                        actualizarListaHerramientas(txtBuscadorListaH.getText().trim());
+                        coordinadorNegocio.eliminarHerramienta(row);
+                        // actualizarListaHerramientas(txtBuscadorListaH.getText().trim());
                     }
                 } else {
                     // Si es maquinaria, solo eliminamos la fila

@@ -27,6 +27,7 @@ import javax.swing.table.TableRowSorter;
 public class MaterialesForm extends javax.swing.JFrame {
     
     private CoordinadorAplicacion coordinador;
+    private CoordinadorNegocio coordinadorNegocio;
     
     private DefaultTableModel tableModel;
     private TableRowSorter<DefaultTableModel> tableSorter; // Filtro para la tabla
@@ -56,6 +57,7 @@ public class MaterialesForm extends javax.swing.JFrame {
         tblMateriales.getColumnModel().getColumn(3).setCellEditor(new ButtonEditor(new JCheckBox(), true));  // Botón "+"
         
         materiales = Arrays.asList("Cemento Portland", "Yeso", "Ladrillo", "Madera", "Acero"); // Ejemplo de materiales precargados
+        coordinadorNegocio = CoordinadorNegocio.getInstance();
     }
 
     /**
@@ -326,7 +328,24 @@ public class MaterialesForm extends javax.swing.JFrame {
     }//GEN-LAST:event_txtBuscadorListaFocusLost
 
     private void listBuscadorValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_listBuscadorValueChanged
-        seleccionarMaterialLista(evt);
+        // seleccionarMaterialLista(evt);
+        if (!evt.getValueIsAdjusting()) {
+            int selectedIndex = listBuscador.getSelectedIndex();
+            if (selectedIndex != -1) {
+                String selectedMaterial = listBuscador.getSelectedValue();
+                boolean materialExists = false;
+                for (int i = 0; i < tableModel.getRowCount(); i++) {
+                    if (tableModel.getValueAt(i, 0).equals(selectedMaterial)) {
+                        materialExists = true;
+                        break;
+                    }
+                }
+                if (!materialExists) {
+                    tableModel.addRow(new Object[]{selectedMaterial, "-", 1, "+"});
+                    coordinadorNegocio.registrarMateriales(selectedMaterial, 1);
+                }
+            }
+        }
     }//GEN-LAST:event_listBuscadorValueChanged
 
     private void txtFiltroTablaFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtFiltroTablaFocusGained
@@ -379,13 +398,16 @@ public class MaterialesForm extends javax.swing.JFrame {
                 if (isIncrement) {
                     // Incrementar la cantidad
                     tableModel.setValueAt(cantidad + 1, row, 2);
+                    coordinadorNegocio.actualizarCantidadMaterial(row, cantidad + 1);
                 } else if (cantidad > 1) {
                     // Decrementar la cantidad
                     tableModel.setValueAt(cantidad - 1, row, 2);
+                    coordinadorNegocio.actualizarCantidadMaterial(row, cantidad - 1);
                 } else {
                     // Eliminarlo si llega a 0
                     tableModel.removeRow(row);
-                    actualizarListaMateriales(txtBuscadorLista.getText().trim());
+                    coordinadorNegocio.eliminarMaterial(row);
+                    // actualizarListaMateriales(txtBuscadorLista.getText().trim());
                 }
                 
                 // Detiene la edición después de hacer clic, para evitar que solo funcione con doble click
@@ -442,7 +464,6 @@ public class MaterialesForm extends javax.swing.JFrame {
         coordinador.mostrarActividades();
     }
 
-    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAtras;
     private javax.swing.JButton btnSiguiente;
