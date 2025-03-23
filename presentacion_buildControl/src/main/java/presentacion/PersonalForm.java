@@ -17,6 +17,7 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Panel;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -330,9 +331,8 @@ public class PersonalForm extends JFrame {
         return checkboxes;
     }
 
-    private List<AsistenciaPersonalDTO> registrarAsistenciaEmpleado() {
+    private void registrarAsistenciaEmpleado() {
         List<Component> panelesEmpleadosSeleccionados = buscarEmpleadosSeleccionados();
-        List<AsistenciaPersonalDTO> listaAsistenciaPersonal = new ArrayList<>();
    
         for (Component comp : panelesEmpleadosSeleccionados) {
             AsistenciaPersonalDTO asistenciaPersonal = new AsistenciaPersonalDTO();
@@ -367,18 +367,12 @@ public class PersonalForm extends JFrame {
             }
             
             // Agregar la asistencia del personal a la lista
-            listaAsistenciaPersonal.add(asistenciaPersonal);
+            coordinadorNegocio.registrarAsistencia(asistenciaPersonal);
         }
-        
-        return listaAsistenciaPersonal;
     }
     
     private void registrarAsistencia() {
-        List<AsistenciaPersonalDTO> asistencias = registrarAsistenciaEmpleado();
-
-        ListaAsistenciaDTO listaAsistenciaDTO = new ListaAsistenciaDTO(LocalDate.now(), asistencias);
-        
-        //coordinadorNegocio.registrarAsistencia(listaAsistenciaDTO);
+        boolean asistenciaRegistrada = coordinadorNegocio.guardarListaAsistencia();
     }
     
     private void siguiente() {
@@ -391,6 +385,7 @@ public class PersonalForm extends JFrame {
         
         // Intentar registrar la bitacora
         try {
+            registrarAsistencia();
             coordinadorNegocio.registrarBitacora();
             
             JOptionPane.showMessageDialog(this, "Bitácora registrada exitosamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
@@ -400,6 +395,7 @@ public class PersonalForm extends JFrame {
             coordinador.mostrarObraSeleccionada();
         } catch (Exception e) { // Cambiar por excepcion personalizada
             JOptionPane.showMessageDialog(this, "No fue posible registrar la bitácora.", "Error", JOptionPane.ERROR_MESSAGE);
+            System.out.println(e.getMessage());
         }   
     }
 

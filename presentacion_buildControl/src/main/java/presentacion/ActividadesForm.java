@@ -5,6 +5,7 @@
 package presentacion;
 
 import exception.PresentacionException;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -161,6 +162,7 @@ public class ActividadesForm extends javax.swing.JFrame {
         String titulo = campoActividad.getText().trim();
         String descripcion = campoDescripcion.getText().trim();
         try {
+            
             coordinadorNegocio.agregarActividad(titulo, descripcion);
             campoActividad.setText("");
             campoDescripcion.setText("");
@@ -177,6 +179,9 @@ public class ActividadesForm extends javax.swing.JFrame {
                     "Debe registrar al menos una actividad antes de continuar",
                     "Error", JOptionPane.ERROR_MESSAGE);
             return;
+        } else {
+            boolean actividadesGuardadas = coordinadorNegocio.guardarActividades();
+            
         }
         
         this.dispose();

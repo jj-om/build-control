@@ -4,72 +4,37 @@
  */
 package dto;
 
-import java.util.List;
+import java.time.LocalDate;
 
 /**
  *
- * @author dario
+ * @author rocha
  */
 public class BitacoraDTO {
-    private String titulo;
-    private List<ListaAsistenciaDTO> listaAsistencias;
-    private List<MaterialIngresadoDTO> materialesIngresados;
-    private List<HerramientaIngresadaDTO> herramientasIngresadas;
-    private List<ActividadDTO> actividades;
+    LocalDate fecha;
+    Integer idObra;
 
     public BitacoraDTO() {
     }
-
-    public BitacoraDTO(String titulo, List<ListaAsistenciaDTO> listaAsistencias, List<MaterialIngresadoDTO> materialesIngresados, List<HerramientaIngresadaDTO> herramientasIngresadas, List<ActividadDTO> actividades) {
-        this.titulo = titulo;
-        this.listaAsistencias = listaAsistencias;
-        this.materialesIngresados = materialesIngresados;
-        this.herramientasIngresadas = herramientasIngresadas;
-        this.actividades = actividades;
-    }
-
-    public String getTitulo() {
-        return titulo;
-    }
-
-    public void setTitulo(String titulo) {
-        this.titulo = titulo;
-    }
-
-    public List<ListaAsistenciaDTO> getListaAsistencias() {
-        return listaAsistencias;
-    }
-
-    public void setListaAsistencias(List<ListaAsistenciaDTO> listaAsistencias) {
-        this.listaAsistencias = listaAsistencias;
-    }
-
-    public List<MaterialIngresadoDTO> getMaterialesIngresados() {
-        return materialesIngresados;
-    }
-
-    public void setMaterialesIngresados(List<MaterialIngresadoDTO> materialesIngresados) {
-        this.materialesIngresados = materialesIngresados;
-    }
-
-    public List<HerramientaIngresadaDTO> getHerramientasIngresadas() {
-        return herramientasIngresadas;
-    }
-
-    public void setHerramientasIngresadas(List<HerramientaIngresadaDTO> herramientasIngresadas) {
-        this.herramientasIngresadas = herramientasIngresadas;
-    }
-
-    public List<ActividadDTO> getActividades() {
-        return actividades;
-    }
-
-    public void setActividades(List<ActividadDTO> actividades) {
-        this.actividades = actividades;
-    }
     
-    
-    
-            
-            
+    public BitacoraDTO(LocalDate fecha, Integer idObra) {
+        this.fecha = fecha;
+        this.idObra = idObra;
+    }
+
+    public LocalDate getFecha() {
+        return fecha;
+    }
+
+    public void setFecha(LocalDate fecha) {
+        this.fecha = fecha;
+    }
+
+    public Integer getIdObra() {
+        return idObra;
+    }
+
+    public void setIdObra(Integer idObra) {
+        this.idObra = idObra;
+    }
 }

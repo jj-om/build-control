@@ -4,9 +4,12 @@
  */
 package presentacion;
 
+import dto.MaterialIngresadoDTO;
+import dto.RecursoDTO;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import javax.swing.DefaultCellEditor;
@@ -32,7 +35,8 @@ public class MaterialesForm extends javax.swing.JFrame {
     private DefaultTableModel tableModel;
     private TableRowSorter<DefaultTableModel> tableSorter; // Filtro para la tabla
     private DefaultListModel<String> listModel; // Modelo para la lista
-    List<String> materiales;
+    List<RecursoDTO> recursos;
+    List<String> nombresMateriales;
 
     /**
      * Creates new form RegistrarMaterialForm
@@ -56,9 +60,9 @@ public class MaterialesForm extends javax.swing.JFrame {
         tblMateriales.getColumnModel().getColumn(1).setCellEditor(new ButtonEditor(new JCheckBox(), false)); // Botón "-"
         tblMateriales.getColumnModel().getColumn(3).setCellEditor(new ButtonEditor(new JCheckBox(), true));  // Botón "+"
         
-        materiales = Arrays.asList("Cemento Portland", "Yeso", "Ladrillo", "Madera", "Acero"); // Ejemplo de materiales precargados
-
         coordinadorNegocio = CoordinadorNegocio.getInstance();
+        recursos = coordinadorNegocio.obtenerMateriales();
+        obtenerNombresMateriales();
 
         buscadorListaMateriales();
     }
@@ -329,24 +333,8 @@ public class MaterialesForm extends javax.swing.JFrame {
     }//GEN-LAST:event_txtBuscadorListaFocusLost
 
     private void listBuscadorValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_listBuscadorValueChanged
-        // seleccionarMaterialLista(evt);
-        if (!evt.getValueIsAdjusting()) {
-            int selectedIndex = listBuscador.getSelectedIndex();
-            if (selectedIndex != -1) {
-                String selectedMaterial = listBuscador.getSelectedValue();
-                boolean materialExists = false;
-                for (int i = 0; i < tableModel.getRowCount(); i++) {
-                    if (tableModel.getValueAt(i, 0).equals(selectedMaterial)) {
-                        materialExists = true;
-                        break;
-                    }
-                }
-                if (!materialExists) {
-                    tableModel.addRow(new Object[]{selectedMaterial, "-", 1, "+"});
-                    coordinadorNegocio.registrarMateriales(selectedMaterial, 1);
-                }
-            }
-        }
+        seleccionarMaterialLista(evt);
+        
     }//GEN-LAST:event_listBuscadorValueChanged
 
     private void txtFiltroTablaFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtFiltroTablaFocusGained
@@ -377,7 +365,6 @@ public class MaterialesForm extends javax.swing.JFrame {
         }
     }
 
-    // Editor de los botones de la tabla, aquí ya se ejecutan acciones cuando le picas
     class ButtonEditor extends DefaultCellEditor {
 
         private JButton button;
@@ -387,11 +374,11 @@ public class MaterialesForm extends javax.swing.JFrame {
         public ButtonEditor(JCheckBox checkBox, boolean isIncrement) {
             super(checkBox);
             this.isIncrement = isIncrement;
-            
+
             // Crear el botón con el texto "+" o "-" dependiendo del tipo
             this.button = new JButton(isIncrement ? "+" : "-");
             button.setOpaque(true);
-            
+
             // Acción al hacer clic en el botón
             button.addActionListener(e -> {
                 // Obtener la cantidad actual en la tabla
@@ -399,23 +386,19 @@ public class MaterialesForm extends javax.swing.JFrame {
                 if (isIncrement) {
                     // Incrementar la cantidad
                     tableModel.setValueAt(cantidad + 1, row, 2);
-                    coordinadorNegocio.actualizarCantidadMaterial(row, cantidad + 1);
                 } else if (cantidad > 1) {
                     // Decrementar la cantidad
                     tableModel.setValueAt(cantidad - 1, row, 2);
-                    coordinadorNegocio.actualizarCantidadMaterial(row, cantidad - 1);
                 } else {
                     // Eliminarlo si llega a 0
                     tableModel.removeRow(row);
-                    coordinadorNegocio.eliminarMaterial(row);
-                    // actualizarListaMateriales(txtBuscadorLista.getText().trim());
+                    actualizarListaMateriales(txtBuscadorLista.getText().trim());
                 }
-                
+
                 // Detiene la edición después de hacer clic, para evitar que solo funcione con doble click
                 fireEditingStopped();
             });
         }
-
 
         @Override
         public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
@@ -428,23 +411,36 @@ public class MaterialesForm extends javax.swing.JFrame {
             return isIncrement ? "+" : "-"; // Retornar el símbolo correcto
         }
     }
-    
+
     private void seleccionarMaterialLista(ListSelectionEvent evt) {
         Utilities.seleccionarElementoLista(evt, listBuscador, tableModel, false);
     }
     
     private void buscadorListaMateriales() {
-        Utilities.buscadorLista(txtBuscadorLista, listModel, jScrollPaneBuscador, materiales, listBuscador);
+        Utilities.buscadorLista(txtBuscadorLista, listModel, jScrollPaneBuscador, nombresMateriales, listBuscador);
     }
 
     // Filtrar y actualizar la lista de materiales
     private void actualizarListaMateriales(String textoBuscador) {
-        Utilities.actualizarLista(listBuscador, listModel, materiales, textoBuscador);
+        Utilities.actualizarLista(listBuscador, listModel, nombresMateriales, textoBuscador);
     }
     
     private void filtrarTabla() {
         Utilities.filtrarTabla(jTable1, tableSorter, txtFiltroTabla);
     }
+    
+    private void obtenerNombresMateriales() {
+        nombresMateriales = new ArrayList<>();
+        
+        for(RecursoDTO recurso : recursos) {
+            nombresMateriales.add(recurso.getMaterial().getNombre());
+        }
+    }
+    
+    private List<MaterialIngresadoDTO> crearDTOs() {
+        List<MaterialIngresadoDTO> materialesIngresados = new ArrayList<>();
+        return materialesIngresados;
+    } 
     
     private void siguiente() {
         if (tblMateriales.getRowCount() == 0) {
@@ -452,6 +448,14 @@ public class MaterialesForm extends javax.swing.JFrame {
                     "No se han ingresado materiales, ¿Seguro que desea continuar?",
                     "Confirmar salida", JOptionPane.YES_NO_OPTION);
             if (opcion != JOptionPane.YES_OPTION) {
+                return;
+            }
+        } else {
+            List<MaterialIngresadoDTO> materialesIngresados = crearDTOs();
+            boolean materialesGuardados = coordinadorNegocio.guardarMateriales(materialesIngresados);
+            
+            if (!materialesGuardados) {
+                JOptionPane.showMessageDialog(this, "No fue posible registrar los materiales.", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
         }

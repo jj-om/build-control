@@ -479,16 +479,13 @@ public class HerramientasYMaquinariaForm extends javax.swing.JFrame {
                     if (isIncrement) {
                         // Incrementar la cantidad
                         tableModel.setValueAt(cantidad + 1, row, 2);
-                        coordinadorNegocio.actualizarCantidadHerramienta(row, cantidad + 1);
                     } else if (cantidad > 1) {
                         // Decrementar la cantidad
                         tableModel.setValueAt(cantidad - 1, row, 2);
-                        coordinadorNegocio.actualizarCantidadHerramienta(row, cantidad - 1);
                     } else {
                         // Eliminarlo si llega a 0
                         tableModel.removeRow(row);
-                        coordinadorNegocio.eliminarHerramienta(row);
-                        // actualizarListaHerramientas(txtBuscadorListaH.getText().trim());
+                        actualizarListaHerramientas(txtBuscadorListaH.getText().trim());
                     }
                 } else {
                     // Si es maquinaria, solo eliminamos la fila

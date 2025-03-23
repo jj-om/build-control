@@ -6,26 +6,26 @@ package dto;
 
 /**
  *
- * @author dario
+ * @author rocha
  */
-public class MaterialIngresadoDTO {
-    private RecursoDTO recurso;
+public class RecursoDTO {
+    private MaterialDTO material;
     private Integer cantidad;
 
-    public MaterialIngresadoDTO() {
+    public RecursoDTO() {
     }
 
-    public MaterialIngresadoDTO(RecursoDTO recurso, Integer cantidad) {
-        this.recurso = recurso;
+    public RecursoDTO(MaterialDTO material, Integer cantidad) {
+        this.material = material;
         this.cantidad = cantidad;
     }
 
-    public RecursoDTO getRecurso() {
-        return recurso;
+    public MaterialDTO getMaterial() {
+        return material;
     }
 
-    public void setRecurso(RecursoDTO recurso) {
-        this.recurso = recurso;
+    public void setMaterial(MaterialDTO material) {
+        this.material = material;
     }
 
     public Integer getCantidad() {
@@ -35,6 +35,5 @@ public class MaterialIngresadoDTO {
     public void setCantidad(Integer cantidad) {
         this.cantidad = cantidad;
     }
-    
-    
+
 }
