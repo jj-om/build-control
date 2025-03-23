@@ -1,7 +1,9 @@
 package admActividades;
 
+import dto.ActividadDTO;
 import excepciones.AdmActividadesException;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Interfaz que define la funcionalidad para administrar actividades.
@@ -30,5 +32,5 @@ public interface IAdmActividades {
      * @return 
      * @throws AdmActividadesException Si ocurre un error durante el registro de las actividades.
      */
-    public boolean registrarActividades(HashMap<String, String> actividades) throws AdmActividadesException;
+    public boolean registrarActividades(List<ActividadDTO> actividades) throws AdmActividadesException;
 }

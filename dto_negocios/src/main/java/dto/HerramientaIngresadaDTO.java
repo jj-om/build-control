@@ -9,32 +9,31 @@ package dto;
  * @author dario
  */
 public class HerramientaIngresadaDTO {
-    private String nombreHerramienta;
-    private int cantidad;
+    private HerramientaDTO herramienta;
+    private Integer cantidad;
 
     public HerramientaIngresadaDTO() {
     }
 
-    public HerramientaIngresadaDTO(String nombreHerramienta, int cantidad) {
-        this.nombreHerramienta = nombreHerramienta;
+    public HerramientaIngresadaDTO(HerramientaDTO herramienta, Integer cantidad) {
+        this.herramienta = herramienta;
         this.cantidad = cantidad;
     }
 
-    public String getNombreHerramienta() {
-        return nombreHerramienta;
+    public HerramientaDTO getHerramienta() {
+        return herramienta;
     }
 
-    public void setNombreHerramienta(String nombreHerramienta) {
-        this.nombreHerramienta = nombreHerramienta;
+    public void setHerramienta(HerramientaDTO herramienta) {
+        this.herramienta = herramienta;
     }
 
-    public int getCantidad() {
+    public Integer getCantidad() {
         return cantidad;
     }
 
-    public void setCantidad(int cantidad) {
+    public void setCantidad(Integer cantidad) {
         this.cantidad = cantidad;
     }
-    
-    
+
 }

@@ -12,12 +12,12 @@ import java.time.LocalDate;
  */
 public class BitacoraDTO {
     LocalDate fecha;
-    Integer idObra;
+    Long idObra;
 
     public BitacoraDTO() {
     }
     
-    public BitacoraDTO(LocalDate fecha, Integer idObra) {
+    public BitacoraDTO(LocalDate fecha, Long idObra) {
         this.fecha = fecha;
         this.idObra = idObra;
     }
@@ -30,11 +30,11 @@ public class BitacoraDTO {
         this.fecha = fecha;
     }
 
-    public Integer getIdObra() {
+    public Long getIdObra() {
         return idObra;
     }
 
-    public void setIdObra(Integer idObra) {
+    public void setIdObra(Long idObra) {
         this.idObra = idObra;
     }
 }

@@ -1,7 +1,9 @@
 package admActividades;
 
+import dto.ActividadDTO;
 import excepciones.AdmActividadesException;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Fachada para la gestión de actividades.
@@ -30,13 +32,12 @@ public class FAdmActividades implements IAdmActividades {
     /**
      * Registra un conjunto de actividades en el sistema.
      * 
-     * @param actividades Un {@code HashMap} que contiene las actividades a registrar,
-     * donde la clave es el identificador de la actividad y el valor es la descripción.
+     * @param actividades Una lista que contiene las actividades a registrar.
      * @return 
      * @throws AdmActividadesException Si ocurre un error durante el registro de actividades.
      */
     @Override
-    public boolean registrarActividades(HashMap<String, String> actividades) throws AdmActividadesException {
+    public boolean registrarActividades(List<ActividadDTO> actividades) throws AdmActividadesException {
         return true;
     }
 }

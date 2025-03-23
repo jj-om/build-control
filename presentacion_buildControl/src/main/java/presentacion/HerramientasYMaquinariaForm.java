@@ -4,7 +4,10 @@
  */
 package presentacion;
 
+import dto.HerramientaIngresadaDTO;
+import dto.MaquinariaDTO;
 import java.awt.Component;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import javax.swing.DefaultCellEditor;
@@ -34,8 +37,10 @@ public class HerramientasYMaquinariaForm extends javax.swing.JFrame {
     private TableRowSorter<DefaultTableModel> tableSorterMaquinaria; // Filtro para la tabla
     private DefaultListModel<String> listModelMaquinaria; // Modelo para la lista
     
-    private List<String> herramientas;
-    private List<String> maquinarias;
+    List<HerramientaIngresadaDTO> herramientas;
+    List<String> nombresHerramientas; // Obtiene el nombre de las herramientas
+    List<MaquinariaDTO> maquinarias;
+    List<String> nombresMaquinarias; //  Se puede obtener directamente el nombre desde el DTO
 
     /**
      * Creates new form RegistrarHyMForm
@@ -46,6 +51,7 @@ public class HerramientasYMaquinariaForm extends javax.swing.JFrame {
         getContentPane().setBackground(java.awt.Color.WHITE);
         this.setLocationRelativeTo(null);
         this.coordinador = coordinador;
+        this.coordinadorNegocio = new CoordinadorNegocio();
         
         listModelHerramienta = new DefaultListModel<>();
         listBuscadorH.setModel(listModelHerramienta);
@@ -69,8 +75,11 @@ public class HerramientasYMaquinariaForm extends javax.swing.JFrame {
         tblMaquinaria.getColumnModel().getColumn(1).setCellRenderer(new HerramientasYMaquinariaForm.ButtonRenderer());
         tblMaquinaria.getColumnModel().getColumn(1).setCellEditor(new HerramientasYMaquinariaForm.ButtonEditor(new JCheckBox(), false, tableModelMaquinaria, false));
         
-        herramientas = Arrays.asList("Destornillador", "Martillo", "Llave inglesa", "Llave fija", "Pala", "Carretilla"); // Ejemplo de herramientas precargados
-        maquinarias = Arrays.asList("Excavadora", "Retroexcavadora", "Grúa", "Perforadora", "Bomba de concreto", "Martillo hidráulico"); // Ejemplo de maquinaria precargados
+        herramientas = coordinadorNegocio.obtenerHerramientas();
+        maquinarias = coordinadorNegocio.obtenerMaquinaria();
+        obtenerNombreHerramientas();
+        obtenerNombreMaquinarias();
+        
         buscadorListaHerramientas();
         buscadorListaMaquinaria();
     }
@@ -510,12 +519,12 @@ public class HerramientasYMaquinariaForm extends javax.swing.JFrame {
     
     // Comportamiento del buscador de herramientas
     private void buscadorListaHerramientas() {
-        Utilities.buscadorLista(txtBuscadorListaH, listModelHerramienta, jScrollPaneH, herramientas, listBuscadorH);
+        Utilities.buscadorLista(txtBuscadorListaH, listModelHerramienta, jScrollPaneH, nombresHerramientas, listBuscadorH);
     }
     
     // Filtrar y actualizar la lista de materiales
     private void actualizarListaHerramientas(String textoBuscador) {
-        Utilities.actualizarLista(listBuscadorH, listModelHerramienta, herramientas, textoBuscador);
+        Utilities.actualizarLista(listBuscadorH, listModelHerramienta, nombresHerramientas, textoBuscador);
     }
     
     private void seleccionarHerramientaLista(ListSelectionEvent evt) {
@@ -527,12 +536,12 @@ public class HerramientasYMaquinariaForm extends javax.swing.JFrame {
     }
     
     private void buscadorListaMaquinaria() {
-        Utilities.buscadorLista(txtBuscadorListaM, listModelMaquinaria, jScrollPaneM, maquinarias, listBuscadorM);
+        Utilities.buscadorLista(txtBuscadorListaM, listModelMaquinaria, jScrollPaneM, nombresMaquinarias, listBuscadorM);
     }
     
     // Filtrar y actualizar la lista de materiales
     private void actualizarListaMaquinaria(String textoBuscador) {
-        Utilities.actualizarLista(listBuscadorM, listModelMaquinaria, maquinarias, textoBuscador);
+        Utilities.actualizarLista(listBuscadorM, listModelMaquinaria, nombresMaquinarias, textoBuscador);
     }
     
     private void seleccionarMaquinariaLista(ListSelectionEvent evt) {
@@ -543,6 +552,31 @@ public class HerramientasYMaquinariaForm extends javax.swing.JFrame {
         Utilities.filtrarTabla(tblMaquinaria, tableSorterMaquinaria, txtFiltroTablaM);
     }
     
+    // Obtiene el nombre de las herramientas
+    private void obtenerNombreHerramientas() {
+        nombresHerramientas = new ArrayList<>();
+        for (HerramientaIngresadaDTO herramientaIngresada : herramientas) {
+            nombresHerramientas.add(herramientaIngresada.getHerramienta().getNombre());
+        }
+    }
+    // Obtiene el nombre de la maquinaria
+    private void obtenerNombreMaquinarias() {
+        nombresMaquinarias = new ArrayList<>();
+        for (MaquinariaDTO maquinaria : maquinarias) {
+            nombresMaquinarias.add(maquinaria.getNombre());
+        }
+    }
+    
+    private List<HerramientaIngresadaDTO> crearDTOHerramienta() {
+        List<HerramientaIngresadaDTO> herramientaIngresada = new ArrayList<>();
+        return herramientaIngresada;
+    }
+    
+    private List<MaquinariaDTO> crearDTOMaquinaria() {
+        List<MaquinariaDTO> maquinariaIngresada = new ArrayList<>();
+        return maquinariaIngresada;
+    }
+    
     private void siguiente() {
         if (tblHerramientas.getRowCount() == 0 || tblMaquinaria.getRowCount() == 0) {
             int opcion = JOptionPane.showConfirmDialog(this,
@@ -550,6 +584,17 @@ public class HerramientasYMaquinariaForm extends javax.swing.JFrame {
                     "Confirmar salida", JOptionPane.YES_NO_OPTION);
             if (opcion != JOptionPane.YES_OPTION) {
                 return;
+            } else {
+                List<HerramientaIngresadaDTO> herramientaIngresada = crearDTOHerramienta();
+                List<MaquinariaDTO> maquinariaIngresada = crearDTOMaquinaria();
+                
+                boolean herramientasGuardadas = coordinadorNegocio.registrarHerramientas(herramientaIngresada);
+                boolean maquinariasGuardadas = coordinadorNegocio.guardarMaquinaria(maquinariaIngresada);
+                
+                if (!herramientasGuardadas || !maquinariasGuardadas) {
+                    JOptionPane.showMessageDialog(this, "No fue posible registrar las herramientas/maquinarias.", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
             }
         }
         

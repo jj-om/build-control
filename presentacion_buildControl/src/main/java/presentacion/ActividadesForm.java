@@ -4,6 +4,8 @@
  */
 package presentacion;
 
+import admActividades.FAdmActividades;
+import admActividades.IAdmActividades;
 import exception.PresentacionException;
 import java.util.List;
 import java.util.logging.Level;
@@ -18,6 +20,7 @@ public class ActividadesForm extends javax.swing.JFrame {
     
     private CoordinadorAplicacion coordinador;
     private CoordinadorNegocio coordinadorNegocio;
+    private IAdmActividades admActividades;
 
     /**
      * Creates new form ActividadesRealizadasForm
@@ -28,6 +31,7 @@ public class ActividadesForm extends javax.swing.JFrame {
         getContentPane().setBackground(java.awt.Color.WHITE);
         this.setLocationRelativeTo(null);
         this.coordinador = coordinador;
+        this.admActividades = new FAdmActividades(); // Inicializar antes de crear la instancia de CoordinadorNegocio
         this.coordinadorNegocio = CoordinadorNegocio.getInstance();
     }
 
@@ -143,7 +147,11 @@ public class ActividadesForm extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnSiguienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSiguienteActionPerformed
-        siguiente();
+        try {
+            siguiente();
+        } catch (PresentacionException ex) {
+            Logger.getLogger(ActividadesForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_btnSiguienteActionPerformed
 
     private void btnAtrasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAtrasActionPerformed
@@ -172,7 +180,7 @@ public class ActividadesForm extends javax.swing.JFrame {
         }  
     }
     
-    private void siguiente() {
+    private void siguiente() throws PresentacionException {
         // Validar que se hayan registrado actividades
         if (coordinadorNegocio.obtenerActividades().isEmpty()) {
             JOptionPane.showMessageDialog(this,
@@ -181,9 +189,11 @@ public class ActividadesForm extends javax.swing.JFrame {
             return;
         } else {
             boolean actividadesGuardadas = coordinadorNegocio.guardarActividades();
-            
+            if (!actividadesGuardadas) {
+                JOptionPane.showMessageDialog(this, "No fue posible registrar la actividad.", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+            }
         }
-        
         this.dispose();
         coordinador.mostrarMateriales();
     }
