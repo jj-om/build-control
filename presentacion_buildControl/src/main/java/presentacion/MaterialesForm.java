@@ -57,7 +57,10 @@ public class MaterialesForm extends javax.swing.JFrame {
         tblMateriales.getColumnModel().getColumn(3).setCellEditor(new ButtonEditor(new JCheckBox(), true));  // Botón "+"
         
         materiales = Arrays.asList("Cemento Portland", "Yeso", "Ladrillo", "Madera", "Acero"); // Ejemplo de materiales precargados
+
         coordinadorNegocio = CoordinadorNegocio.getInstance();
+
+        buscadorListaMateriales();
     }
 
     /**
@@ -178,11 +181,11 @@ public class MaterialesForm extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
+        tblMateriales.getTableHeader().setResizingAllowed(false);
+        tblMateriales.getTableHeader().setReorderingAllowed(false);
         jScrollPane3.setViewportView(tblMateriales);
 
         txtBuscadorLista.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        txtBuscadorLista.setForeground(new java.awt.Color(153, 153, 153));
-        txtBuscadorLista.setText("Buscar...");
         txtBuscadorLista.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 txtBuscadorListaFocusGained(evt);
@@ -213,8 +216,6 @@ public class MaterialesForm extends javax.swing.JFrame {
         jLabel2.setText("Notas adicionales:");
 
         txtFiltroTabla.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        txtFiltroTabla.setForeground(new java.awt.Color(153, 153, 153));
-        txtFiltroTabla.setText("Buscar...");
         txtFiltroTabla.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 txtFiltroTablaFocusGained(evt);
@@ -320,11 +321,11 @@ public class MaterialesForm extends javax.swing.JFrame {
     }//GEN-LAST:event_txtBuscadorListaKeyReleased
 
     private void txtBuscadorListaFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtBuscadorListaFocusGained
-        Utilities.buscadorGanarFoco(txtBuscadorLista, "Buscar...");
+        Utilities.buscadorGanarFoco(txtBuscadorLista, "");
     }//GEN-LAST:event_txtBuscadorListaFocusGained
 
     private void txtBuscadorListaFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtBuscadorListaFocusLost
-        Utilities.buscadorPerderFoco(txtBuscadorLista, "Buscar...");
+        Utilities.buscadorPerderFoco(txtBuscadorLista, "");
     }//GEN-LAST:event_txtBuscadorListaFocusLost
 
     private void listBuscadorValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_listBuscadorValueChanged
@@ -349,11 +350,11 @@ public class MaterialesForm extends javax.swing.JFrame {
     }//GEN-LAST:event_listBuscadorValueChanged
 
     private void txtFiltroTablaFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtFiltroTablaFocusGained
-        Utilities.buscadorGanarFoco(txtFiltroTabla, "Buscar...");
+        Utilities.buscadorGanarFoco(txtFiltroTabla, "");
     }//GEN-LAST:event_txtFiltroTablaFocusGained
 
     private void txtFiltroTablaFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtFiltroTablaFocusLost
-        Utilities.buscadorPerderFoco(txtFiltroTabla, "Buscar...");
+        Utilities.buscadorPerderFoco(txtFiltroTabla, "");
     }//GEN-LAST:event_txtFiltroTablaFocusLost
 
     private void txtFiltroTablaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtFiltroTablaKeyReleased

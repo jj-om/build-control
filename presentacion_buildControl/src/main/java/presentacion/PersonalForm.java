@@ -4,15 +4,45 @@
  */
 package presentacion;
 
+import com.github.lgooddatepicker.components.TimePicker;
+import dto.AsistenciaPersonalDTO;
+import dto.ListaAsistenciaDTO;
+import java.awt.BorderLayout;
+import java.awt.Checkbox;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.Panel;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JCheckBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextPane;
 
 /**
  *
  * @author alega
  */
-public class PersonalForm extends javax.swing.JFrame {
+public class PersonalForm extends JFrame {
+    private JPanel panelContenedor;  // Panel donde se agregarán los trabajadores
+    private JScrollPane scrollPanel; // Panel con barra de desplazamiento
+    private List<String> trabajadores; // Lista de trabajadores
     
     private CoordinadorAplicacion coordinador;
+    private CoordinadorNegocio coordinadorNegocio;
 
     /**
      * Creates new form AsistenciaForm
@@ -20,9 +50,15 @@ public class PersonalForm extends javax.swing.JFrame {
      */
     public PersonalForm(CoordinadorAplicacion coordinador) {
         initComponents();
-        getContentPane().setBackground(java.awt.Color.WHITE);
+        getContentPane().setBackground(Color.WHITE);
         this.setLocationRelativeTo(null);
         this.coordinador = coordinador;
+        this.coordinadorNegocio = CoordinadorNegocio.getInstance();
+        
+        // Inicializar lista de trabajadores
+        trabajadores = Arrays.asList("Juan Pérez", "Ana Gómez", "Carlos López", "Marta Ruiz", "Pepe Lopez");
+        
+        crearPanelAsistencia();
     }
 
     /**
@@ -44,51 +80,13 @@ public class PersonalForm extends javax.swing.JFrame {
         jSeparator1 = new javax.swing.JSeparator();
         btnAtras = new javax.swing.JButton();
         btnSiguiente = new javax.swing.JButton();
-        registrarAsistencia = new javax.swing.JLabel();
+        panelPrincipal = new javax.swing.JPanel();
+        jPanel2 = new javax.swing.JPanel();
         nombreEmpresa = new javax.swing.JLabel();
-        jCheckBox1 = new javax.swing.JCheckBox();
-        jCheckBox2 = new javax.swing.JCheckBox();
-        jCheckBox3 = new javax.swing.JCheckBox();
-        jCheckBox4 = new javax.swing.JCheckBox();
-        jCheckBox5 = new javax.swing.JCheckBox();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        timePicker2 = new com.github.lgooddatepicker.components.TimePicker();
-        timePicker3 = new com.github.lgooddatepicker.components.TimePicker();
-        jLabel3 = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTextPane1 = new javax.swing.JTextPane();
-        jLabel7 = new javax.swing.JLabel();
-        timePicker6 = new com.github.lgooddatepicker.components.TimePicker();
-        jLabel8 = new javax.swing.JLabel();
-        timePicker7 = new com.github.lgooddatepicker.components.TimePicker();
-        timePicker8 = new com.github.lgooddatepicker.components.TimePicker();
-        jLabel9 = new javax.swing.JLabel();
-        timePicker9 = new com.github.lgooddatepicker.components.TimePicker();
-        jLabel10 = new javax.swing.JLabel();
-        jLabel11 = new javax.swing.JLabel();
-        timePicker10 = new com.github.lgooddatepicker.components.TimePicker();
-        jLabel12 = new javax.swing.JLabel();
-        timePicker11 = new com.github.lgooddatepicker.components.TimePicker();
-        jLabel13 = new javax.swing.JLabel();
-        timePicker12 = new com.github.lgooddatepicker.components.TimePicker();
-        jLabel14 = new javax.swing.JLabel();
-        timePicker13 = new com.github.lgooddatepicker.components.TimePicker();
-        jLabel15 = new javax.swing.JLabel();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        jTextPane2 = new javax.swing.JTextPane();
-        jLabel16 = new javax.swing.JLabel();
-        jScrollPane4 = new javax.swing.JScrollPane();
-        jTextPane3 = new javax.swing.JTextPane();
-        jLabel17 = new javax.swing.JLabel();
-        jScrollPane5 = new javax.swing.JScrollPane();
-        jTextPane4 = new javax.swing.JTextPane();
-        jLabel18 = new javax.swing.JLabel();
-        jScrollPane6 = new javax.swing.JScrollPane();
-        jTextPane5 = new javax.swing.JTextPane();
+        registrarAsistencia = new javax.swing.JLabel();
 
-        jLabel4.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel4.setText("Entrada");
+        jLabel4.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
         jLabel5.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel5.setText("Salida");
@@ -102,103 +100,61 @@ public class PersonalForm extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        btnAtras.setText("Atrás");
         btnAtras.setBackground(new java.awt.Color(95, 168, 211));
+        btnAtras.setBorderPainted(false);
         btnAtras.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         btnAtras.setForeground(new java.awt.Color(255, 255, 255));
-        btnAtras.setText("Atrás");
-        btnAtras.setBorderPainted(false);
         btnAtras.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnAtrasActionPerformed(evt);
             }
         });
 
+        btnSiguiente.setText("Registrar bitácora");
         btnSiguiente.setBackground(new java.awt.Color(95, 168, 211));
+        btnSiguiente.setBorderPainted(false);
         btnSiguiente.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         btnSiguiente.setForeground(new java.awt.Color(255, 255, 255));
-        btnSiguiente.setText("Siguiente");
-        btnSiguiente.setBorderPainted(false);
         btnSiguiente.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnSiguienteActionPerformed(evt);
             }
         });
 
-        registrarAsistencia.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        registrarAsistencia.setText("Registrar asistencia");
+        panelPrincipal.setBackground(new java.awt.Color(255, 255, 255));
+        panelPrincipal.setLayout(new java.awt.BorderLayout());
 
-        nombreEmpresa.setFont(new java.awt.Font("Segoe UI", 0, 32)); // NOI18N
+        jPanel2.setBackground(new java.awt.Color(255, 255, 255));
+
         nombreEmpresa.setText("BuildControl");
+        nombreEmpresa.setFont(new java.awt.Font("Segoe UI", 0, 32)); // NOI18N
 
-        jCheckBox1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jCheckBox1.setText("Empleado 1");
+        registrarAsistencia.setText("Registrar asistencia");
+        registrarAsistencia.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
 
-        jCheckBox2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jCheckBox2.setText("Empleado 2");
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(registrarAsistencia, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(nombreEmpresa))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(nombreEmpresa)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(registrarAsistencia)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
 
-        jCheckBox3.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jCheckBox3.setText("Empleado 3");
-
-        jCheckBox4.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jCheckBox4.setText("Empleado 4");
-
-        jCheckBox5.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jCheckBox5.setText("Empleado 5");
-
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel1.setText("Entrada");
-
-        jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel2.setText("Salida");
-
-        jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel3.setText("Notas");
-
-        jScrollPane1.setViewportView(jTextPane1);
-
-        jLabel7.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel7.setText("Entrada");
-
-        jLabel8.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel8.setText("Entrada");
-
-        jLabel9.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel9.setText("Entrada");
-
-        jLabel10.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel10.setText("Entrada");
-
-        jLabel11.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel11.setText("Salida");
-
-        jLabel12.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel12.setText("Salida");
-
-        jLabel13.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel13.setText("Salida");
-
-        jLabel14.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel14.setText("Salida");
-
-        jLabel15.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel15.setText("Notas");
-
-        jScrollPane3.setViewportView(jTextPane2);
-
-        jLabel16.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel16.setText("Notas");
-
-        jScrollPane4.setViewportView(jTextPane3);
-
-        jLabel17.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel17.setText("Notas");
-
-        jScrollPane5.setViewportView(jTextPane4);
-
-        jLabel18.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel18.setText("Notas");
-
-        jScrollPane6.setViewportView(jTextPane5);
+        panelPrincipal.add(jPanel2, java.awt.BorderLayout.PAGE_START);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -207,158 +163,21 @@ public class PersonalForm extends javax.swing.JFrame {
             .addComponent(jSeparator1)
             .addGroup(layout.createSequentialGroup()
                 .addGap(36, 36, 36)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(nombreEmpresa, javax.swing.GroupLayout.PREFERRED_SIZE, 271, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(registrarAsistencia, javax.swing.GroupLayout.PREFERRED_SIZE, 365, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addContainerGap(379, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(btnAtras, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnSiguiente, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(31, 31, 31))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jCheckBox5)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jCheckBox1)
-                                    .addComponent(jCheckBox2)
-                                    .addComponent(jCheckBox3)
-                                    .addComponent(jCheckBox4))
-                                .addGap(117, 117, 117)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel1)
-                                    .addComponent(timePicker3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel7)
-                                    .addComponent(timePicker6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel8)
-                                    .addComponent(timePicker7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(timePicker8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel9)
-                                    .addComponent(timePicker9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel10))
-                                .addGap(57, 57, 57)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel14)
-                                    .addComponent(timePicker13, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel13)
-                                    .addComponent(timePicker12, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel12)
-                                    .addComponent(timePicker11, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel11)
-                                    .addComponent(timePicker10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel2)
-                                    .addComponent(timePicker2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel3)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel15)
-                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel16)
-                            .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel17)
-                            .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel18)
-                            .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(77, 77, 77))))
+                .addComponent(btnAtras, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnSiguiente)
+                .addGap(31, 31, 31))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(29, Short.MAX_VALUE)
+                .addComponent(panelPrincipal, javax.swing.GroupLayout.PREFERRED_SIZE, 744, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(30, 30, 30))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(31, 31, 31)
-                .addComponent(nombreEmpresa)
-                .addGap(18, 18, 18)
-                .addComponent(registrarAsistencia)
-                .addGap(8, 8, 8)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(26, 26, 26)
-                        .addComponent(jCheckBox1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jCheckBox3)
-                        .addGap(146, 146, 146))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                            .addComponent(jLabel1)
-                                            .addComponent(jLabel2))
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                            .addComponent(timePicker2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(timePicker3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jLabel3)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addGap(18, 18, 18)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jLabel7)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                            .addComponent(timePicker6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(jCheckBox2)))
-                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                        .addComponent(jLabel15)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel11)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(timePicker10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel8)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(timePicker7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel12)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(timePicker11, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel16)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel9)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(timePicker8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jCheckBox4)))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel13)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(timePicker12, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel17)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel10)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(timePicker9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jCheckBox5)))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel14)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(timePicker13, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel18)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)))
+                .addContainerGap(28, Short.MAX_VALUE)
+                .addComponent(panelPrincipal, javax.swing.GroupLayout.PREFERRED_SIZE, 433, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -371,68 +190,238 @@ public class PersonalForm extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAtrasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAtrasActionPerformed
-        this.dispose();
-        coordinador.mostrarHerramientasYMaquinaria();
+        atras();
     }//GEN-LAST:event_btnAtrasActionPerformed
 
     private void btnSiguienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSiguienteActionPerformed
-        JOptionPane.showMessageDialog(this, "Bitácora registrada exitosamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-        this.dispose();
-        coordinador.mostrarObraSeleccionada();
+        siguiente();
     }//GEN-LAST:event_btnSiguienteActionPerformed
 
+    private void crearPanelAsistencia() {
+        // Crear el panel contenedor con BoxLayout (apilado vertical)
+        panelContenedor = new JPanel();
+        panelContenedor.setLayout(new BoxLayout(panelContenedor, BoxLayout.Y_AXIS));
+        panelContenedor.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); // Margen
+        panelContenedor.setPreferredSize(new Dimension(750, trabajadores.size() * 60)); // Tamaño para el scroll
+        panelContenedor.setBackground(Color.WHITE);
+
+        // Llenar el panel con los trabajadores
+        agregarPanelesTrabajadores();
+
+        // Agregar el panel a un JScrollPane
+        scrollPanel = new JScrollPane(panelContenedor);
+        scrollPanel.setBackground(Color.WHITE);
+        scrollPanel.setBorder(null);
+        scrollPanel.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED); // Solo mostrar cuando sea necesario
+        scrollPanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER); // Deshabilitar scroll horizontal
+        scrollPanel.getVerticalScrollBar().setUnitIncrement(16); // Suavizar el scroll
+
+        // Agregar el JScrollPane al JFrame
+        setLayout(new BorderLayout());
+        panelPrincipal.add(scrollPanel, BorderLayout.CENTER);
+
+        setVisible(true);
+    }
+    
+    private void agregarPanelesTrabajadores() {
+        Font fuentePanelTrabajador = new Font("Segoe UI", Font.PLAIN, 14);
+        
+        for (String trabajador : trabajadores) {
+            JPanel panelTrabajador = crearPanelEmpleado(trabajador);
+            cambiarFuente(panelTrabajador, fuentePanelTrabajador);
+            panelContenedor.add(panelTrabajador);
+            panelContenedor.add(Box.createVerticalStrut(10)); // Espacio entre paneles
+        }
+
+        // Asegurar que la interfaz se actualice después de agregar componentes
+        panelContenedor.revalidate();
+        panelContenedor.repaint();
+    }
+
+    private JPanel crearPanelEmpleado(String trabajador) {
+        JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT, 20, 20));  // Distribuye los elementos en línea horizontal
+        panel.setBackground(Color.WHITE);
+        panel.setPreferredSize(new Dimension(750, 30)); // Mantener tamaño uniforme
+
+        // Crear los componentes
+        JCheckBox checkbox = new JCheckBox(trabajador);
+        checkbox.setBackground(Color.WHITE);
+        TimePicker timePickerEntrada = new TimePicker();
+        TimePicker timePickerSalida = new TimePicker();
+        JTextPane textPaneNotas = new JTextPane();
+        textPaneNotas.setPreferredSize(new Dimension(150, 25)); // Definir tamaño de notas
+        textPaneNotas.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        
+        JLabel lbEntrada = new JLabel("Entrada:");
+        JLabel lbSalida = new JLabel ("Salida:");
+        JLabel lbNotas = new JLabel ("Notas:");
+
+        // Agregar los componentes en una línea horizontal
+        panel.add(checkbox);
+        panel.add(lbEntrada);
+        panel.add(timePickerEntrada);
+        panel.add(lbSalida);
+        panel.add(timePickerSalida);
+        panel.add(lbNotas);
+        panel.add(textPaneNotas);
+
+        // Ocultar los componentes al inicio (menos el checkbox)
+        lbEntrada.setVisible(false);
+        lbSalida.setVisible(false);
+        lbNotas.setVisible(false);
+        timePickerEntrada.setVisible(false);
+        timePickerSalida.setVisible(false);
+        textPaneNotas.setVisible(false);
+
+        // Mostrar los campos solo cuando se selecciona el checkbox
+        checkbox.addActionListener(e -> {
+            boolean seleccionado = checkbox.isSelected();
+            lbEntrada.setVisible(seleccionado);
+            lbSalida.setVisible(seleccionado);
+            lbNotas.setVisible(seleccionado);
+            timePickerEntrada.setVisible(seleccionado);
+            timePickerSalida.setVisible(seleccionado);
+            textPaneNotas.setVisible(seleccionado);
+            panel.revalidate();
+            panel.repaint();
+        });
+
+        return panel;
+    }
+
+    private void cambiarFuente(JPanel panel, Font fuente) {
+        for (Component componente : panel.getComponents()) {
+            componente.setFont(fuente);
+            if (componente instanceof JPanel) {
+                cambiarFuente((JPanel) componente, fuente); // Aplicar recursivamente a subpaneles
+            }
+        }
+    }
+
+    private List<Component> buscarEmpleadosSeleccionados() {
+        List<Component> panelesEmpleados = new ArrayList<>();
+
+        for (Component comp : panelContenedor.getComponents()) {
+            if (comp instanceof JPanel) {
+                // Buscar JCheckBox seleccionados dentro del subpanel
+                List<Component> checkboxSeleccionados = buscarCheckBoxSeleccionados((JPanel) comp);
+
+                // Si el subpanel tiene al menos un JCheckBox seleccionado, lo agregamos
+                if (!checkboxSeleccionados.isEmpty()) {
+                    panelesEmpleados.add(comp);
+                }
+            }
+        }
+        return panelesEmpleados;
+    }
+
+    // Método auxiliar que busca JCheckBox seleccionados dentro de un panel
+    private List<Component> buscarCheckBoxSeleccionados(Container container) {
+        List<Component> checkboxes = new ArrayList<>();
+
+        for (Component comp : container.getComponents()) {
+            if (comp instanceof JCheckBox && ((JCheckBox) comp).isSelected()) {
+                checkboxes.add(comp);
+            } else if (comp instanceof JPanel) {
+                // Buscar recursivamente en subpaneles
+                checkboxes.addAll(buscarCheckBoxSeleccionados((JPanel) comp));
+            }
+        }
+        return checkboxes;
+    }
+
+    private List<AsistenciaPersonalDTO> registrarAsistenciaEmpleado() {
+        List<Component> panelesEmpleadosSeleccionados = buscarEmpleadosSeleccionados();
+        List<AsistenciaPersonalDTO> listaAsistenciaPersonal = new ArrayList<>();
+   
+        for (Component comp : panelesEmpleadosSeleccionados) {
+            AsistenciaPersonalDTO asistenciaPersonal = new AsistenciaPersonalDTO();
+            
+            // Verifica que el componente tenga un nombre definido
+            String nombreComponente = comp.getName();
+            if (nombreComponente == null) {
+                continue; // Si el componente no tiene nombre, lo ignoramos
+            }
+
+            switch (nombreComponente) {
+                case "checkbox" -> {
+                    Checkbox checkbox = (Checkbox) comp;
+                    asistenciaPersonal.setNombre(checkbox.getLabel());
+                }
+                case "timePickerEntrada" -> {
+                    TimePicker timePickerEntrada = (TimePicker) comp;
+                    asistenciaPersonal.setHoraEntrada(timePickerEntrada.getTime());
+                }
+                case "timePickerSalida" -> {
+                    TimePicker timePickerSalida = (TimePicker) comp;
+                    asistenciaPersonal.setHoraSalida(timePickerSalida.getTime());
+                }
+                case "textPaneNotas" -> {
+                    JTextPane textPaneNotas = (JTextPane) comp;
+                    asistenciaPersonal.setNotas(textPaneNotas.getText());
+                }
+
+                default -> {
+                    break; // Si el componente no es relevante, se ignora
+                }
+            }
+            
+            // Agregar la asistencia del personal a la lista
+            listaAsistenciaPersonal.add(asistenciaPersonal);
+        }
+        
+        return listaAsistenciaPersonal;
+    }
+    
+    private void registrarAsistencia() {
+        List<AsistenciaPersonalDTO> asistencias = registrarAsistenciaEmpleado();
+
+        ListaAsistenciaDTO listaAsistenciaDTO = new ListaAsistenciaDTO(LocalDate.now(), asistencias);
+        
+        //coordinadorNegocio.registrarAsistencia(listaAsistenciaDTO);
+    }
+    
+    private void siguiente() {
+        int opcion = JOptionPane.showConfirmDialog(this,
+                "¿Seguro que desea registrar la bitácora? No podrá editarse después.",
+                "Confirmar registro", JOptionPane.YES_NO_OPTION);
+        if (opcion != JOptionPane.YES_OPTION) {
+            return;
+        }
+        
+        // Intentar registrar la bitacora
+        try {
+            coordinadorNegocio.registrarBitacora();
+            
+            JOptionPane.showMessageDialog(this, "Bitácora registrada exitosamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+            
+            // Regresar a ventana ObraSeleccionada
+            this.dispose();
+            coordinador.mostrarObraSeleccionada();
+        } catch (Exception e) { // Cambiar por excepcion personalizada
+            JOptionPane.showMessageDialog(this, "No fue posible registrar la bitácora.", "Error", JOptionPane.ERROR_MESSAGE);
+        }   
+    }
+
+    private void atras() {
+        this.dispose();
+        coordinador.mostrarHerramientasYMaquinaria();
+    }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAtras;
     private javax.swing.JButton btnSiguiente;
-    private javax.swing.JCheckBox jCheckBox1;
-    private javax.swing.JCheckBox jCheckBox2;
-    private javax.swing.JCheckBox jCheckBox3;
-    private javax.swing.JCheckBox jCheckBox4;
-    private javax.swing.JCheckBox jCheckBox5;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel10;
-    private javax.swing.JLabel jLabel11;
-    private javax.swing.JLabel jLabel12;
-    private javax.swing.JLabel jLabel13;
-    private javax.swing.JLabel jLabel14;
-    private javax.swing.JLabel jLabel15;
-    private javax.swing.JLabel jLabel16;
-    private javax.swing.JLabel jLabel17;
-    private javax.swing.JLabel jLabel18;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
-    private javax.swing.JLabel jLabel9;
-    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JScrollPane jScrollPane4;
-    private javax.swing.JScrollPane jScrollPane5;
-    private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTextArea jTextArea2;
-    private javax.swing.JTextPane jTextPane1;
-    private javax.swing.JTextPane jTextPane2;
-    private javax.swing.JTextPane jTextPane3;
-    private javax.swing.JTextPane jTextPane4;
-    private javax.swing.JTextPane jTextPane5;
     private javax.swing.JLabel nombreEmpresa;
+    private javax.swing.JPanel panelPrincipal;
     private javax.swing.JLabel registrarAsistencia;
-    private com.github.lgooddatepicker.components.TimePicker timePicker10;
-    private com.github.lgooddatepicker.components.TimePicker timePicker11;
-    private com.github.lgooddatepicker.components.TimePicker timePicker12;
-    private com.github.lgooddatepicker.components.TimePicker timePicker13;
-    private com.github.lgooddatepicker.components.TimePicker timePicker2;
-    private com.github.lgooddatepicker.components.TimePicker timePicker3;
     private com.github.lgooddatepicker.components.TimePicker timePicker4;
     private com.github.lgooddatepicker.components.TimePicker timePicker5;
-    private com.github.lgooddatepicker.components.TimePicker timePicker6;
-    private com.github.lgooddatepicker.components.TimePicker timePicker7;
-    private com.github.lgooddatepicker.components.TimePicker timePicker8;
-    private com.github.lgooddatepicker.components.TimePicker timePicker9;
     // End of variables declaration//GEN-END:variables
 }

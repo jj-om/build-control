@@ -4,6 +4,8 @@
  */
 package dto;
 
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -11,22 +13,22 @@ import java.util.List;
  * @author dario
  */
 public class ListaAsistenciaDTO {
-    private String fecha;
+    private LocalDate fecha;
     private List<AsistenciaPersonalDTO> asistencias;
 
     public ListaAsistenciaDTO() {
     }
 
-    public ListaAsistenciaDTO(String fecha, List<AsistenciaPersonalDTO> asistencias) {
+    public ListaAsistenciaDTO(LocalDate fecha, List<AsistenciaPersonalDTO> asistencias) {
         this.fecha = fecha;
         this.asistencias = asistencias;
     }
 
-    public String getFecha() {
+    public LocalDate getFecha() {
         return fecha;
     }
 
-    public void setFecha(String fecha) {
+    public void setFecha(LocalDate fecha) {
         this.fecha = fecha;
     }
 

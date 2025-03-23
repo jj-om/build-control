@@ -34,36 +34,37 @@ public class Utilities {
             textField.setForeground(Color.GRAY);
         }
     }
-    
-    
+
     public static void buscadorLista(JTextField txtBuscador, DefaultListModel<String> listModel, JScrollPane scrollPane, List<String> elementosLista, JList<String> list) {
-        String textoBuscador = txtBuscador.getText().trim(); // Obtener el texto y eliminar espacios al inicio y al final
+        String textoBuscador = txtBuscador.getText().trim(); // Obtener el texto sin espacios al inicio y al final
 
-        // Solo actualizar la lista si el texto no está vacío
-        if (!textoBuscador.isEmpty()) {
-            actualizarLista(list, listModel, elementosLista, textoBuscador); // Actualizar la lista si el campo tiene texto
+        // Siempre actualizar la lista, mostrando todos los elementos si el campo está vacío
+        actualizarLista(list, listModel, elementosLista, textoBuscador);
 
-            // Hacer visible el JScrollPane si hay resultados
-            if (listModel.getSize() > 0) {
-                scrollPane.setVisible(true); // Mostrar la lista solo si hay coincidencias
-            } else {
-                scrollPane.setVisible(false); // Ocultar la lista si no hay resultados
-            }
-        } else {
-            listModel.clear(); // Limpiar la lista si el campo está vacío
-            scrollPane.setVisible(false); // Ocultar la lista si no hay texto en el campo de búsqueda
-        }
     }
-    
+
     // Método generalizado para actualizar la lista de cualquier tipo de elemento (herramientas, maquinaria, materiales)
     public static void actualizarLista(JList<String> list, DefaultListModel<String> listModel, List<String> elementos, String textoBuscador) {
         listModel.clear(); // Limpiar la lista
-        elementos.stream()
-                .filter(elemento -> elemento.toLowerCase().contains(textoBuscador.toLowerCase())) // Filtrar por el texto de búsqueda
-                .forEach(listModel::addElement); // Agregar los elementos que coinciden con el filtro
+
+        // Variable estática para controlar si es la primera vez
+        if (listModel.getSize() > 0) { // Comprobar si la lista está vacía
+            // Solo agregar los elementos una vez
+            elementos.forEach(listModel::addElement);
+        }
+        if (textoBuscador.isBlank()) {
+            // Si el texto está vacío, mostrar todos los elementos
+            elementos.forEach(listModel::addElement);
+        } else {
+            // Filtrar y agregar solo los que coinciden con el texto de búsqueda
+            elementos.stream()
+                    .filter(elemento -> elemento.toLowerCase().contains(textoBuscador.toLowerCase()))
+                    .forEach(listModel::addElement);
+        }
+
         list.setModel(listModel); // Actualizar el modelo de la lista
     }
-    
+
     public static void seleccionarElementoLista(ListSelectionEvent evt, JList<String> lista, DefaultTableModel tableModel, boolean esMaquinaria) {
         if (evt.getValueIsAdjusting()) {
             return;

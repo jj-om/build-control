@@ -5,8 +5,6 @@
 package presentacion;
 
 import java.awt.Component;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.Arrays;
 import java.util.List;
 import javax.swing.DefaultCellEditor;
@@ -73,6 +71,8 @@ public class HerramientasYMaquinariaForm extends javax.swing.JFrame {
         
         herramientas = Arrays.asList("Destornillador", "Martillo", "Llave inglesa", "Llave fija", "Pala", "Carretilla"); // Ejemplo de herramientas precargados
         maquinarias = Arrays.asList("Excavadora", "Retroexcavadora", "Grúa", "Perforadora", "Bomba de concreto", "Martillo hidráulico"); // Ejemplo de maquinaria precargados
+        buscadorListaHerramientas();
+        buscadorListaMaquinaria();
     }
 
     /**
@@ -163,6 +163,8 @@ public class HerramientasYMaquinariaForm extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
+        tblMaquinaria.getTableHeader().setResizingAllowed(false);
+        tblMaquinaria.getTableHeader().setReorderingAllowed(false);
         jScrollPane3.setViewportView(tblMaquinaria);
 
         tblHerramientas.setModel(new javax.swing.table.DefaultTableModel(
@@ -181,6 +183,8 @@ public class HerramientasYMaquinariaForm extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
+        tblHerramientas.getTableHeader().setResizingAllowed(false);
+        tblHerramientas.getTableHeader().setReorderingAllowed(false);
         jScrollPane4.setViewportView(tblHerramientas);
 
         registraHyM1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
@@ -193,8 +197,6 @@ public class HerramientasYMaquinariaForm extends javax.swing.JFrame {
         jLabel3.setText("Ingresa el nombre de la maquinaria:");
 
         txtBuscadorListaH.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        txtBuscadorListaH.setForeground(new java.awt.Color(153, 153, 153));
-        txtBuscadorListaH.setText("Buscar...");
         txtBuscadorListaH.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 txtBuscadorListaHFocusGained(evt);
@@ -220,8 +222,6 @@ public class HerramientasYMaquinariaForm extends javax.swing.JFrame {
         jScrollPaneH.setViewportView(listBuscadorH);
 
         txtBuscadorListaM.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        txtBuscadorListaM.setForeground(new java.awt.Color(153, 153, 153));
-        txtBuscadorListaM.setText("Buscar...");
         txtBuscadorListaM.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 txtBuscadorListaMFocusGained(evt);
@@ -250,8 +250,6 @@ public class HerramientasYMaquinariaForm extends javax.swing.JFrame {
         jLabel4.setText("Filtrar por nombre de herramienta:");
 
         txtFiltroTablaH.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        txtFiltroTablaH.setForeground(new java.awt.Color(153, 153, 153));
-        txtFiltroTablaH.setText("Buscar...");
         txtFiltroTablaH.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 txtFiltroTablaHFocusGained(evt);
@@ -267,8 +265,6 @@ public class HerramientasYMaquinariaForm extends javax.swing.JFrame {
         });
 
         txtFiltroTablaM.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        txtFiltroTablaM.setForeground(new java.awt.Color(153, 153, 153));
-        txtFiltroTablaM.setText("Buscar...");
         txtFiltroTablaM.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 txtFiltroTablaMFocusGained(evt);
@@ -305,9 +301,9 @@ public class HerramientasYMaquinariaForm extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jScrollPaneM, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jScrollPaneM, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(nombreEmpresa, javax.swing.GroupLayout.PREFERRED_SIZE, 271, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jScrollPaneH, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jScrollPaneH, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(registraHyM)
                     .addComponent(txtBuscadorListaM, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel3)
@@ -403,11 +399,11 @@ public class HerramientasYMaquinariaForm extends javax.swing.JFrame {
     }//GEN-LAST:event_listBuscadorHValueChanged
 
     private void txtBuscadorListaMFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtBuscadorListaMFocusGained
-        Utilities.buscadorGanarFoco(txtBuscadorListaM, "Buscar...");
+        Utilities.buscadorGanarFoco(txtBuscadorListaM, "");
     }//GEN-LAST:event_txtBuscadorListaMFocusGained
 
     private void txtBuscadorListaMFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtBuscadorListaMFocusLost
-        Utilities.buscadorPerderFoco(txtBuscadorListaM, "Buscar...");
+        Utilities.buscadorPerderFoco(txtBuscadorListaM, "");
     }//GEN-LAST:event_txtBuscadorListaMFocusLost
 
     private void txtBuscadorListaMKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBuscadorListaMKeyReleased
@@ -419,11 +415,11 @@ public class HerramientasYMaquinariaForm extends javax.swing.JFrame {
     }//GEN-LAST:event_listBuscadorMValueChanged
 
     private void txtFiltroTablaHFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtFiltroTablaHFocusGained
-        Utilities.buscadorGanarFoco(txtFiltroTablaH, "Buscar...");
+        Utilities.buscadorGanarFoco(txtFiltroTablaH, "");
     }//GEN-LAST:event_txtFiltroTablaHFocusGained
 
     private void txtFiltroTablaHFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtFiltroTablaHFocusLost
-        Utilities.buscadorPerderFoco(txtFiltroTablaH, "Buscar...");
+        Utilities.buscadorPerderFoco(txtFiltroTablaH, "");
     }//GEN-LAST:event_txtFiltroTablaHFocusLost
 
     private void txtFiltroTablaHKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtFiltroTablaHKeyReleased
@@ -431,11 +427,11 @@ public class HerramientasYMaquinariaForm extends javax.swing.JFrame {
     }//GEN-LAST:event_txtFiltroTablaHKeyReleased
 
     private void txtFiltroTablaMFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtFiltroTablaMFocusGained
-        Utilities.buscadorGanarFoco(txtFiltroTablaM, "Buscar...");
+        Utilities.buscadorGanarFoco(txtFiltroTablaM, "");
     }//GEN-LAST:event_txtFiltroTablaMFocusGained
 
     private void txtFiltroTablaMFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtFiltroTablaMFocusLost
-        Utilities.buscadorPerderFoco(txtFiltroTablaM, "Buscar...");
+        Utilities.buscadorPerderFoco(txtFiltroTablaM, "");
     }//GEN-LAST:event_txtFiltroTablaMFocusLost
 
     private void txtFiltroTablaMKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtFiltroTablaMKeyReleased
