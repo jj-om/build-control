@@ -9,6 +9,7 @@ import utilities.Utilities;
 import dto.HerramientaIngresadaDTO;
 import dto.MaquinariaDTO;
 import dto.ObraDTO;
+import exception.PresentacionException;
 import java.awt.Component;
 import java.util.ArrayList;
 import java.util.List;
@@ -586,19 +587,23 @@ public class HerramientasYMaquinariaForm extends javax.swing.JFrame {
                 return;
             }
         } else {
-            List<HerramientaIngresadaDTO> herramientaIngresada = obtenerHerramientasIngresadas();
-            List<MaquinariaDTO> maquinariaIngresada = obtenerMaquinariaSeleccionada();
-
-            boolean herramientasGuardadas = coordinadorNegocio.registrarHerramientas(herramientaIngresada);
-            boolean maquinariasGuardadas = coordinadorNegocio.registrarMaquinaria(maquinariaIngresada);
-
-            if (!herramientasGuardadas || !maquinariasGuardadas) {
-                JOptionPane.showMessageDialog(this, "No fue posible registrar las herramientas/maquinarias.", "Error", JOptionPane.ERROR_MESSAGE);
+            try {
+                List<HerramientaIngresadaDTO> herramientaIngresada = obtenerHerramientasIngresadas();
+                List<MaquinariaDTO> maquinariaIngresada = obtenerMaquinariaSeleccionada();
+                coordinadorNegocio.registrarHerramientas(herramientaIngresada);
+                coordinadorNegocio.registrarMaquinaria(maquinariaIngresada);
+            } catch (PresentacionException e) {
+                // Mensaje para probar la excepción forzada
+                // JOptionPane.showMessageDialog(this, "Error al registrar: Herramientas y maquinaria nulas.", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                this.dispose();
+                coordinadorNegocio.reset();
+                coordinador.mostrarObraSeleccionada();
+                coordinador.reset();
                 return;
-            }
-
+            }     
         }
-
+        
         this.dispose();
         coordinador.mostrarPersonal();
     }

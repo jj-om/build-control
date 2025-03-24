@@ -143,7 +143,6 @@ public class CoordinadorNegocio {
             
 //            // Prueba para forzar a que lance la excepción.
 //            this.materialesIngresados = null;
-//            // Registrar los materiales
 //            throw new AdmMaterialesException("Error de al registrar materiales en bitácora.");
             
             // Asignarlo a la lista
@@ -182,12 +181,17 @@ public class CoordinadorNegocio {
                 new HerramientaDTO("Compresor de Aire", "Kobalt", "XC802000")
         ));
     }
+    
     // Guardar herramientas dentro de la lista del coordinador
-    public boolean registrarHerramientas(List<HerramientaIngresadaDTO> herramientasIngresadas) {
+    public boolean registrarHerramientas(List<HerramientaIngresadaDTO> herramientasIngresadas) throws PresentacionException {
         if (herramientasIngresadas != null) {
             this.herramientasIngresadas = herramientasIngresadas;
         }
         return true;
+        // Pruebas para mostrar una excepción forzada
+//        this.herramientasIngresadas = null;
+//        herramientasIngresadas.isEmpty();
+//        return true;
     }
     
     public List<MaquinariaDTO> obtenerMaquinaria() {
@@ -218,12 +222,15 @@ public class CoordinadorNegocio {
     }
     
     // Guardar la maquinaria ingresada
-    public boolean registrarMaquinaria(List<MaquinariaDTO> maquinarias) {
+    public boolean registrarMaquinaria(List<MaquinariaDTO> maquinarias) throws PresentacionException {
         if (maquinarias != null) {
             this.maquinariaIngresada = maquinarias;
         }
-        
         return true;
+        // Prueba para excepción forzada
+//        this.maquinariaIngresada = null;
+//        maquinariaIngresada.isEmpty();
+//        return true;
     }
    
     // MÉTODOS PARA LA ASISTENCIA DEL PERSONAL. Aún no se manejan porque aún no se ha registrado personal
