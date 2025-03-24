@@ -13,6 +13,8 @@
         <module>negocios_admActividades</module>
         <module>negocios_admMateriales</module>
         <module>bo_negocios</module>
+        <module>negocios_admPersonal</module>
+        <module>negocios_admHerramientasYMaquinaria</module>
     </modules>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

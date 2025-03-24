@@ -586,7 +586,6 @@ public class HerramientasYMaquinariaForm extends javax.swing.JFrame {
                 return;
             }
         } else {
-
             List<HerramientaIngresadaDTO> herramientaIngresada = obtenerHerramientasIngresadas();
             List<MaquinariaDTO> maquinariaIngresada = obtenerMaquinariaSeleccionada();
 

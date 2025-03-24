@@ -9,10 +9,13 @@ import utilities.Utilities;
 import dto.MaterialIngresadoDTO;
 import dto.ObraDTO;
 import dto.RecursoDTO;
+import excepciones.AdmMaterialesException;
 import exception.PresentacionException;
 import java.awt.Component;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultCellEditor;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -298,7 +301,11 @@ public class MaterialesForm extends javax.swing.JFrame {
     }//GEN-LAST:event_btnAtrasActionPerformed
 
     private void btnSiguienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSiguienteActionPerformed
-        siguiente();
+        try {
+            siguiente();
+        } catch (AdmMaterialesException ex) {
+            Logger.getLogger(MaterialesForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_btnSiguienteActionPerformed
 
     private void txtBuscadorListaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBuscadorListaKeyReleased
@@ -444,7 +451,7 @@ public class MaterialesForm extends javax.swing.JFrame {
     }
 
     // Confirmación y procesamiento de los datos para continuar
-    private void siguiente() {
+    private void siguiente() throws AdmMaterialesException {
         if (tblMateriales.getRowCount() == 0) {
             int opcion = JOptionPane.showConfirmDialog(this,
                     "No se han ingresado materiales, ¿Seguro que desea continuar?",
@@ -456,7 +463,7 @@ public class MaterialesForm extends javax.swing.JFrame {
             try {
                 List<MaterialIngresadoDTO> materialesIngresados = obtenerMaterialesIngresados();
                 coordinadorNegocio.registrarMateriales(materialesIngresados);
-            } catch (PresentacionException e) {
+            } catch (PresentacionException | AdmMaterialesException e) {
                 JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 this.dispose();
                 coordinadorNegocio.reset();

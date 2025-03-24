@@ -6,7 +6,9 @@ package presentacion;
 
 import validadores.Validaciones;
 import admActividades.FAdmActividades;
+import admActividades.FAdmMateriales;
 import admActividades.IAdmActividades;
+import admActividades.IAdmMateriales;
 import admObraSeleccionada.FAdmObraSeleccionada;
 import admObraSeleccionada.IAdmObraSeleccionada;
 import dto.ActividadDTO;
@@ -22,6 +24,7 @@ import dto.MaterialIngresadoDTO;
 import dto.ObraDTO;
 import dto.RecursoDTO;
 import excepciones.AdmActividadesException;
+import excepciones.AdmMaterialesException;
 import excepciones.AdmObraSeleccionadaException;
 import exception.PresentacionException;
 import java.time.LocalDate;
@@ -63,11 +66,14 @@ public class CoordinadorNegocio {
     private IAdmObraSeleccionada admObraSeleccionada;
     // Instancia del subsistema de actividades
     private IAdmActividades admActividades;
+    // Instancia del subsistema de materiales
+    private IAdmMateriales admMateriales;
 
     private CoordinadorNegocio() {
         // Inicializar fachada desde el coordinador
         this.admActividades = new FAdmActividades();
         this.admObraSeleccionada = new FAdmObraSeleccionada();
+        this.admMateriales = new FAdmMateriales();
         
         // Iniciar listas
         this.actividades = new ArrayList<>();
@@ -126,43 +132,24 @@ public class CoordinadorNegocio {
     // MÉTODOS PARA EL FORMULARIO DE MATERIALES
     // Regresa la lista de materiales
     public List<RecursoDTO> obtenerMateriales() {
-        // Crear lista para guardar los materiales
-        List<RecursoDTO> listaRecursos = new ArrayList<>();
-        
-        MaterialDTO material1 = new MaterialDTO("Cemento", 50.0f, "Holcim", "kg");
-        MaterialDTO material2 = new MaterialDTO("Arena", 100.0f, "Cemex", "kg");
-        MaterialDTO material3 = new MaterialDTO("Varilla", 20.5f, "Ternium", "kg");
-        MaterialDTO material4 = new MaterialDTO("Pintura Blanca", 4.0f, "Comex", "litros");
-        MaterialDTO material5 = new MaterialDTO("Yeso", 25.0f, "Knauf", "kg");
-        MaterialDTO material6 = new MaterialDTO("Clavos", 2.0f, "Truper", "kg");
-        MaterialDTO material7 = new MaterialDTO("Madera", 30.0f, "Finsa", "kg");
-        MaterialDTO material8 = new MaterialDTO("Adhesivo", 1.5f, "Resistol", "litros");
-        
-        // Instancias de RecursoDTO y añadiéndolas a la lista
-        listaRecursos.add(new RecursoDTO(material1, 1));  // 100 unidades de cemento
-        listaRecursos.add(new RecursoDTO(material2, 50));   // 50 unidades de arena
-        listaRecursos.add(new RecursoDTO(material3, 200));  // 200 unidades de varilla
-        listaRecursos.add(new RecursoDTO(material4, 10));   // 10 unidades de pintura blanca
-        listaRecursos.add(new RecursoDTO(material5, 75));   // 75 unidades de yeso
-        listaRecursos.add(new RecursoDTO(material6, 500));  // 500 unidades de clavos
-        listaRecursos.add(new RecursoDTO(material7, 150));  // 150 unidades de madera
-        listaRecursos.add(new RecursoDTO(material8, 25));   // 25 unidades de adhesivo
-        
-        return listaRecursos;
+        return admMateriales.obtenerRecursosObra();
     }
     
     // Registrar los materiales mediante el subsistema
-    public boolean registrarMateriales(List<MaterialIngresadoDTO> materialIngresado) throws PresentacionException {
+    public boolean registrarMateriales(List<MaterialIngresadoDTO> materialIngresado) throws PresentacionException, AdmMaterialesException {
         try {
             // Validar que el recurso sea suficiente
             validarRecursos(materialIngresado);
             
-            // Registrar los materiales
-            //admMateriales.registrarMateriales(materialIngresado);
+//            // Prueba para forzar a que lance la excepción.
+//            this.materialesIngresados = null;
+//            // Registrar los materiales
+//            throw new AdmMaterialesException("Error de al registrar materiales en bitácora.");
             
             // Asignarlo a la lista
             this.materialesIngresados = materialIngresado;
-            return true;
+            // Registrar los materiales
+            return admMateriales.registrarMateriales(materialIngresado);
         } catch (PresentacionException e) {
             throw new PresentacionException("Error al registrar materiales en la bitácora.", e);
         }
@@ -171,14 +158,7 @@ public class CoordinadorNegocio {
     // Valida que los recursos asignados a la obra y las cantidades ingresadas sean coherentes (no se haya excedido de material)
     private void validarRecursos(List<MaterialIngresadoDTO> materialIngresado) throws PresentacionException {
         try {
-            // Valida cada material elegido. Estará en subsistema
-            for (MaterialIngresadoDTO material : materialIngresado) {
-//                boolean recursoValido = admMateriales.validarRecurso(material.getRecurso(), material.getCantidad());
-                boolean recursoValido = true; // Cambiar a false para validar que no hay suficientes recursos en la obra
-                if (!recursoValido) {
-                    throw new PresentacionException("Cantidad de material en la obra insuficiente. Favor de registrar manualmente.");
-                }
-            }
+            admMateriales.validarRecurso(materialIngresado);
         } catch (Exception e) { // Cambiar a AdmMaterialesException
             // Si al menos un material no fue válido
             throw new PresentacionException(e.getMessage(), e);
@@ -207,7 +187,6 @@ public class CoordinadorNegocio {
         if (herramientasIngresadas != null) {
             this.herramientasIngresadas = herramientasIngresadas;
         }
-        
         return true;
     }
     
