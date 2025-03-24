@@ -33,28 +33,44 @@ public class CoordinadorAplicacion {
     
     // Métodos para mostrar las pantallas
     public void mostrarObraSeleccionada() {
-        obraSeleccionadaForm = new ObraSeleccionadaForm(this);
+        if (obraSeleccionadaForm == null) {
+            obraSeleccionadaForm = new ObraSeleccionadaForm(this);
+        }
         obraSeleccionadaForm.setVisible(true);
     }
 
     public void mostrarActividades() {
-        actividadesForm = new ActividadesForm(this);
+        if (actividadesForm == null) {
+            actividadesForm = new ActividadesForm(this);
+        }
         actividadesForm.setVisible(true);
     }
 
     public void mostrarMateriales() {
-        materialesForm = new MaterialesForm(this);
+        if (materialesForm == null) {
+            materialesForm = new MaterialesForm(this);
+        }
         materialesForm.setVisible(true);
     }
 
     public void mostrarHerramientasYMaquinaria() {
-        hymForm = new HerramientasYMaquinariaForm(this);
+        if (hymForm == null) {
+            hymForm = new HerramientasYMaquinariaForm(this);
+        }
         hymForm.setVisible(true);
     }
 
     public void mostrarPersonal() {
-        personalForm = new PersonalForm(this);
+        if (personalForm == null) {
+            personalForm = new PersonalForm(this);
+        }
         personalForm.setVisible(true);
     }
     
+    public void reset() {
+        if (actividadesForm != null) actividadesForm = null;
+        if (materialesForm != null) materialesForm = null;
+        if (hymForm != null) hymForm = null;
+        if (personalForm != null) personalForm = null;
+    }
 }

@@ -5,6 +5,7 @@
 package presentacion;
 
 import dto.ObraDTO;
+import exception.PresentacionException;
 import javax.swing.JOptionPane;
 
 /**
@@ -159,7 +160,13 @@ public class ObraSeleccionadaForm extends javax.swing.JFrame {
     }//GEN-LAST:event_btnRegistrarBitacoraActionPerformed
 
     private void atras() {
-        //falta cerrar sesion de la obra
+        // Cerrar sesión de la obra
+        try {
+            coordinadorNegocio.cerrarSesion();
+            System.out.println(coordinadorNegocio.obtenerIdObra());
+        } catch (PresentacionException e) {
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
         this.dispose();
     }
     

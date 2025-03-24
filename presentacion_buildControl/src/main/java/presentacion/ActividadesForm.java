@@ -190,10 +190,8 @@ public class ActividadesForm extends javax.swing.JFrame {
 
     private void registrarActividades() {
         try {
-            boolean exito = coordinadorNegocio.registrarActividades();
-            if (!exito) {
-                JOptionPane.showMessageDialog(this, "No fue posible registrar las actividades.", "Error", JOptionPane.ERROR_MESSAGE);
-            }
+            coordinadorNegocio.registrarActividades();
+            JOptionPane.showMessageDialog(this, "Actividades registradas exitosamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
         } catch (PresentacionException e) {
             JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -222,13 +220,16 @@ public class ActividadesForm extends javax.swing.JFrame {
 
             if (opcion != JOptionPane.YES_OPTION) {
                 return;
+            } else {
+                JOptionPane.showMessageDialog(this, "Proceso cancelado exitosamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);   
             }
             
             // Limpiar la lista de actividades
             coordinadorNegocio.cancelarActividades();
-            // Falta que limpie todas las ventanas, limpie listas y haga null el dto. Lo hace controlador
+            coordinadorNegocio.reset();
         }
         this.dispose();
+        coordinador.reset();
         coordinador.mostrarObraSeleccionada();
     }
     

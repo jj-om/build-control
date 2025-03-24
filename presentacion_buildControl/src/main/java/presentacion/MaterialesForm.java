@@ -459,7 +459,9 @@ public class MaterialesForm extends javax.swing.JFrame {
             } catch (PresentacionException e) {
                 JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 this.dispose();
+                coordinadorNegocio.reset();
                 coordinador.mostrarObraSeleccionada();
+                coordinador.reset();
                 return;
             }
         }

@@ -175,8 +175,8 @@ public class PersonalForm extends JFrame {
             }
         });
 
-        jLabel7.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel7.setText("Filtrar por nombre de personal:");
+        jLabel7.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
         campoNombreObra.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         campoNombreObra.setDisabledTextColor(new java.awt.Color(0, 0, 0));
@@ -235,13 +235,13 @@ public class PersonalForm extends JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(29, 29, 29)
                 .addComponent(btnAtras, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 514, Short.MAX_VALUE)
                 .addComponent(btnSiguiente)
                 .addGap(27, 27, 27))
             .addGroup(layout.createSequentialGroup()
                 .addGap(38, 38, 38)
-                .addComponent(panelPrincipal, javax.swing.GroupLayout.PREFERRED_SIZE, 776, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(26, Short.MAX_VALUE))
+                .addComponent(panelPrincipal, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -519,8 +519,9 @@ public class PersonalForm extends JFrame {
             JOptionPane.showMessageDialog(this, "Bitácora registrada exitosamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
 
             // Regresar a ventana ObraSeleccionada
-            coordinadorNegocio.cancelarActividades();
+            coordinadorNegocio.reset();
             this.dispose();
+            coordinador.reset();
             coordinador.mostrarObraSeleccionada();
         } catch (PresentacionException e) {
             JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);

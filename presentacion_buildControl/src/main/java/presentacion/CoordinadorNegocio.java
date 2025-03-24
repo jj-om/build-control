@@ -28,6 +28,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -163,7 +164,7 @@ public class CoordinadorNegocio {
             this.materialesIngresados = materialIngresado;
             return true;
         } catch (PresentacionException e) {
-            throw new PresentacionException(e.getMessage(), e);
+            throw new PresentacionException("Error al registrar materiales en la bitácora.", e);
         }
     }
     
@@ -173,7 +174,7 @@ public class CoordinadorNegocio {
             // Valida cada material elegido. Estará en subsistema
             for (MaterialIngresadoDTO material : materialIngresado) {
 //                boolean recursoValido = admMateriales.validarRecurso(material.getRecurso(), material.getCantidad());
-                boolean recursoValido = true; // 
+                boolean recursoValido = true; // Cambiar a false para validar que no hay suficientes recursos en la obra
                 if (!recursoValido) {
                     throw new PresentacionException("Cantidad de material en la obra insuficiente. Favor de registrar manualmente.");
                 }
@@ -309,17 +310,16 @@ public class CoordinadorNegocio {
         }
     }
     
-    private void limpiarListas() {
-        this.actividades.clear();
-        this.recursos.clear();
-        this.herramientas.clear();
-        this.maquinaria.clear();
-        this.asistencia.setAsistencias(null);
-        this.asistencia.setFecha(null);
-        
-        this.materialesIngresados.clear();
-        this.herramientasIngresadas.clear();
-        this.maquinariaIngresada.clear();
+    public void reset() {
+        if (actividades != null) actividades.clear();
+        if (recursos != null) recursos.clear();
+        if (herramientas != null) herramientas.clear();
+        if (maquinaria != null) maquinaria.clear();
+        if (asistencia != null) asistencia.setAsistencias(null);
+        if (asistencia != null) asistencia.setFecha(null);
+        if (materialesIngresados != null) materialesIngresados.clear();
+        if (herramientasIngresadas != null) herramientasIngresadas.clear();
+        if (maquinariaIngresada != null) maquinariaIngresada.clear();
     } 
     
     public boolean iniciarSesion(Long idObra){
@@ -340,6 +340,14 @@ public class CoordinadorNegocio {
         return true;
     }
     
+    public Long obtenerIdObra() throws PresentacionException {
+        try {
+            return admObraSeleccionada.obtenerIdObra();
+        } catch (AdmObraSeleccionadaException ex) {
+            throw new PresentacionException(ex.getMessage());
+        }
+    }
+    
     public ObraDTO obtenerObraSeleccionada(){
         try {
             return obtenerObraPorId(admObraSeleccionada.obtenerIdObra());
@@ -350,9 +358,9 @@ public class CoordinadorNegocio {
     
     //SIMULACION DE BASE DE DATOS
     public ObraDTO obtenerObraPorId(Long idObra){
-        for (ObraDTO obras : obras) {
-            if (obras.getIdObra() == idObra) {
-                return obras;
+        for (ObraDTO obra : obras) {
+            if (Objects.equals(obra.getIdObra(), idObra)) {
+                return obra;
             }
         }
         return null;
