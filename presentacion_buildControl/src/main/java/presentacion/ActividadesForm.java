@@ -4,6 +4,7 @@
  */
 package presentacion;
 
+import dto.ObraDTO;
 import exception.PresentacionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -29,6 +30,8 @@ public class ActividadesForm extends javax.swing.JFrame {
         this.setLocationRelativeTo(null);
         this.coordinador = coordinador;
         this.coordinadorNegocio = CoordinadorNegocio.getInstance();
+        ObraDTO obra = this.coordinadorNegocio.obtenerObraSeleccionada();
+        campoNombreObra.setText(obra.getDireccion());
     }
 
     /**
@@ -48,44 +51,45 @@ public class ActividadesForm extends javax.swing.JFrame {
         campoActividad = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         campoDescripcion = new javax.swing.JTextArea();
+        campoNombreObra = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(255, 0, 204));
         setResizable(false);
 
-        nombreEmpresa.setFont(new java.awt.Font("Segoe UI", 0, 32)); // NOI18N
         nombreEmpresa.setText("BuildControl");
+        nombreEmpresa.setFont(new java.awt.Font("Segoe UI", 0, 32)); // NOI18N
 
+        btnSiguiente.setText("Siguiente");
         btnSiguiente.setBackground(new java.awt.Color(95, 168, 211));
+        btnSiguiente.setBorderPainted(false);
         btnSiguiente.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         btnSiguiente.setForeground(new java.awt.Color(255, 255, 255));
-        btnSiguiente.setText("Siguiente");
-        btnSiguiente.setBorderPainted(false);
         btnSiguiente.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnSiguienteActionPerformed(evt);
             }
         });
 
+        btnAtras.setText("Atrás");
         btnAtras.setBackground(new java.awt.Color(95, 168, 211));
+        btnAtras.setBorderPainted(false);
         btnAtras.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         btnAtras.setForeground(new java.awt.Color(255, 255, 255));
-        btnAtras.setText("Atrás");
-        btnAtras.setBorderPainted(false);
         btnAtras.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnAtrasActionPerformed(evt);
             }
         });
 
-        registrarAct.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         registrarAct.setText("Registrar actividades");
+        registrarAct.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
 
+        btnAgregarActividad.setText("Agregar actividad");
         btnAgregarActividad.setBackground(new java.awt.Color(95, 168, 211));
+        btnAgregarActividad.setBorderPainted(false);
         btnAgregarActividad.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btnAgregarActividad.setForeground(new java.awt.Color(255, 255, 255));
-        btnAgregarActividad.setText("Agregar actividad");
-        btnAgregarActividad.setBorderPainted(false);
         btnAgregarActividad.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnAgregarActividadActionPerformed(evt);
@@ -95,6 +99,10 @@ public class ActividadesForm extends javax.swing.JFrame {
         campoDescripcion.setColumns(20);
         campoDescripcion.setRows(5);
         jScrollPane1.setViewportView(campoDescripcion);
+
+        campoNombreObra.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        campoNombreObra.setDisabledTextColor(new java.awt.Color(0, 0, 0));
+        campoNombreObra.setEnabled(false);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -109,29 +117,34 @@ public class ActividadesForm extends javax.swing.JFrame {
                         .addComponent(btnSiguiente, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(57, 57, 57))
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(nombreEmpresa, javax.swing.GroupLayout.PREFERRED_SIZE, 271, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(registrarAct, javax.swing.GroupLayout.PREFERRED_SIZE, 365, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(registrarAct, javax.swing.GroupLayout.PREFERRED_SIZE, 365, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(btnAgregarActividad)
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 529, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(campoActividad, javax.swing.GroupLayout.PREFERRED_SIZE, 312, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 188, Short.MAX_VALUE))))
+                        .addGap(0, 188, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(nombreEmpresa, javax.swing.GroupLayout.PREFERRED_SIZE, 271, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(campoNombreObra, javax.swing.GroupLayout.PREFERRED_SIZE, 306, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(33, 33, 33))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(32, 32, 32)
-                .addComponent(nombreEmpresa)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(nombreEmpresa)
+                    .addComponent(campoNombreObra, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(registrarAct)
                 .addGap(34, 34, 34)
                 .addComponent(campoActividad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 32, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
                 .addComponent(btnAgregarActividad, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(39, 39, 39)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -225,6 +238,7 @@ public class ActividadesForm extends javax.swing.JFrame {
     private javax.swing.JButton btnSiguiente;
     private javax.swing.JTextField campoActividad;
     private javax.swing.JTextArea campoDescripcion;
+    private javax.swing.JTextField campoNombreObra;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel nombreEmpresa;
     private javax.swing.JLabel registrarAct;

@@ -8,6 +8,7 @@ import dto.HerramientaDTO;
 import utilities.Utilities;
 import dto.HerramientaIngresadaDTO;
 import dto.MaquinariaDTO;
+import dto.ObraDTO;
 import java.awt.Component;
 import java.util.ArrayList;
 import java.util.List;
@@ -77,6 +78,8 @@ public class HerramientasYMaquinariaForm extends javax.swing.JFrame {
         tblMaquinaria.setRowSorter(tableSorterMaquinaria);
         tblMaquinaria.getColumnModel().getColumn(1).setCellRenderer(new HerramientasYMaquinariaForm.ButtonRenderer());
         tblMaquinaria.getColumnModel().getColumn(1).setCellEditor(new HerramientasYMaquinariaForm.ButtonEditor(new JCheckBox(), false, tableModelMaquinaria, false));
+        ObraDTO obra = this.coordinadorNegocio.obtenerObraSeleccionada();
+        campoNombreObra.setText(obra.getDireccion());
         
         cargarListas();
         buscadorListaHerramientas();
@@ -114,6 +117,7 @@ public class HerramientasYMaquinariaForm extends javax.swing.JFrame {
         txtFiltroTablaH = new javax.swing.JTextField();
         txtFiltroTablaM = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
+        campoNombreObra = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -256,6 +260,10 @@ public class HerramientasYMaquinariaForm extends javax.swing.JFrame {
         jLabel5.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel5.setText("Filtrar por nombre de maquinaria:");
 
+        campoNombreObra.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        campoNombreObra.setDisabledTextColor(new java.awt.Color(0, 0, 0));
+        campoNombreObra.setEnabled(false);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -284,19 +292,26 @@ public class HerramientasYMaquinariaForm extends javax.swing.JFrame {
                     .addComponent(txtBuscadorListaH, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 66, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 429, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 429, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel4)
-                    .addComponent(txtFiltroTablaH, javax.swing.GroupLayout.PREFERRED_SIZE, 429, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtFiltroTablaM, javax.swing.GroupLayout.PREFERRED_SIZE, 429, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel5))
-                .addGap(43, 43, 43))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 429, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 429, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel4)
+                            .addComponent(txtFiltroTablaH, javax.swing.GroupLayout.PREFERRED_SIZE, 429, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtFiltroTablaM, javax.swing.GroupLayout.PREFERRED_SIZE, 429, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel5))
+                        .addGap(43, 43, 43))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(campoNombreObra, javax.swing.GroupLayout.PREFERRED_SIZE, 306, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(83, 83, 83))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(31, 31, 31)
-                .addComponent(nombreEmpresa)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(nombreEmpresa)
+                    .addComponent(campoNombreObra, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(registraHyM)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -597,6 +612,7 @@ public class HerramientasYMaquinariaForm extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAtras;
     private javax.swing.JButton btnSiguiente;
+    private javax.swing.JTextField campoNombreObra;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;

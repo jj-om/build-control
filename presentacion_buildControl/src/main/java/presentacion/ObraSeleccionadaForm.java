@@ -4,6 +4,7 @@
  */
 package presentacion;
 
+import dto.ObraDTO;
 import javax.swing.JOptionPane;
 
 /**
@@ -26,6 +27,12 @@ public class ObraSeleccionadaForm extends javax.swing.JFrame {
         this.setLocationRelativeTo(null);
         this.coordinador = coordinador;
         this.coordinadorNegocio = CoordinadorNegocio.getInstance();
+        this.coordinadorNegocio.obtenerObra();
+        
+        //ESTO ES MOMENTANEO, VA EN LA PANTALLA ANTERIOR DONDE SE SELECCIONAN LAS OBRAS
+        this.coordinadorNegocio.iniciarSesion(1L);
+        ObraDTO obra = this.coordinadorNegocio.obtenerObraSeleccionada();
+        campoNombreObra.setText(obra.getDireccion());
         
         //Falta iniciar la sesion de la obra
     }
@@ -75,9 +82,7 @@ public class ObraSeleccionadaForm extends javax.swing.JFrame {
         jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         jPanel1.setForeground(new java.awt.Color(204, 204, 204));
 
-        campoNombreObra.setBackground(new java.awt.Color(255, 255, 255));
         campoNombreObra.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        campoNombreObra.setText("Camino de los Mayos #716");
         campoNombreObra.setDisabledTextColor(new java.awt.Color(0, 0, 0));
         campoNombreObra.setEnabled(false);
 

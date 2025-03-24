@@ -6,6 +6,7 @@ package presentacion;
 
 import com.github.lgooddatepicker.components.TimePicker;
 import dto.AsistenciaPersonalDTO;
+import dto.ObraDTO;
 import exception.PresentacionException;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -56,6 +57,8 @@ public class PersonalForm extends JFrame {
         this.setLocationRelativeTo(null);
         this.coordinador = coordinador;
         this.coordinadorNegocio = CoordinadorNegocio.getInstance();
+        ObraDTO obra = this.coordinadorNegocio.obtenerObraSeleccionada();
+        campoNombreObra.setText(obra.getDireccion());
         
         // Inicializar lista de trabajadores
         trabajadores = coordinadorNegocio.obtenerPersonal();
@@ -89,6 +92,7 @@ public class PersonalForm extends JFrame {
         jPanel3 = new javax.swing.JPanel();
         txtFiltroPersonal = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
+        campoNombreObra = new javax.swing.JTextField();
 
         jLabel4.setText("Entrada");
         jLabel4.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
@@ -174,20 +178,26 @@ public class PersonalForm extends JFrame {
         jLabel7.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel7.setText("Filtrar por nombre de personal:");
 
+        campoNombreObra.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        campoNombreObra.setDisabledTextColor(new java.awt.Color(0, 0, 0));
+        campoNombreObra.setEnabled(false);
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(campoNombreObra, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel7)
                     .addComponent(txtFiltroPersonal, javax.swing.GroupLayout.PREFERRED_SIZE, 379, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                .addContainerGap(38, Short.MAX_VALUE)
+                .addComponent(campoNombreObra, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 9, Short.MAX_VALUE)
                 .addComponent(jLabel7)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(txtFiltroPersonal, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -212,7 +222,7 @@ public class PersonalForm extends JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(8, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         panelPrincipal.add(jPanel1, java.awt.BorderLayout.PAGE_START);
@@ -509,6 +519,7 @@ public class PersonalForm extends JFrame {
             JOptionPane.showMessageDialog(this, "Bitácora registrada exitosamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
 
             // Regresar a ventana ObraSeleccionada
+            coordinadorNegocio.cancelarActividades();
             this.dispose();
             coordinador.mostrarObraSeleccionada();
         } catch (PresentacionException e) {
@@ -525,6 +536,7 @@ public class PersonalForm extends JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAtras;
     private javax.swing.JButton btnSiguiente;
+    private javax.swing.JTextField campoNombreObra;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;

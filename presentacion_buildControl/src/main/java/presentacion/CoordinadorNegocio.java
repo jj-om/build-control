@@ -19,13 +19,17 @@ import dto.ListaAsistenciaDTO;
 import dto.MaquinariaDTO;
 import dto.MaterialDTO;
 import dto.MaterialIngresadoDTO;
+import dto.ObraDTO;
 import dto.RecursoDTO;
 import excepciones.AdmActividadesException;
+import excepciones.AdmObraSeleccionadaException;
 import exception.PresentacionException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -52,6 +56,8 @@ public class CoordinadorNegocio {
     private ListaAsistenciaDTO asistencia;
     // private DetallesBitacoraDTO detallesBitacora;
     
+    //TEMPORAL LISTA DE OBRAS
+    private List<ObraDTO> obras;
     // Instancia del subsistema de obra seleccionada
     private IAdmObraSeleccionada admObraSeleccionada;
     // Instancia del subsistema de actividades
@@ -70,6 +76,7 @@ public class CoordinadorNegocio {
         this.herramientasIngresadas = new ArrayList<>();
         this.maquinaria = new ArrayList<>();
         this.maquinariaIngresada = new ArrayList<>();
+        this.obras = new ArrayList<>();
         
         this.asistencia = new ListaAsistenciaDTO();
     }
@@ -314,4 +321,45 @@ public class CoordinadorNegocio {
         this.herramientasIngresadas.clear();
         this.maquinariaIngresada.clear();
     } 
+    
+    public boolean iniciarSesion(Long idObra){
+        try {
+            admObraSeleccionada.activarSesionObra(idObra);
+        } catch (AdmObraSeleccionadaException ex) {
+            return false;
+        }
+        return true;
+    }
+    
+    public boolean cerrarSesion(){
+        try {
+            admObraSeleccionada.cerrarSesionObra();
+        } catch (AdmObraSeleccionadaException ex) {
+            return false;
+        }
+        return true;
+    }
+    
+    public ObraDTO obtenerObraSeleccionada(){
+        try {
+            return obtenerObraPorId(admObraSeleccionada.obtenerIdObra());
+        } catch (AdmObraSeleccionadaException ex) {
+            return null;
+        }
+    }
+    
+    //SIMULACION DE BASE DE DATOS
+    public ObraDTO obtenerObraPorId(Long idObra){
+        for (ObraDTO obras : obras) {
+            if (obras.getIdObra() == idObra) {
+                return obras;
+            }
+        }
+        return null;
+    }
+    
+    public void obtenerObra(){
+        ObraDTO obra = new ObraDTO(1L, "Camino de los Mayos #716 ", 20L);
+        this.obras.add(obra);
+    }    
 }

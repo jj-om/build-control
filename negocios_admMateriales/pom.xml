@@ -9,8 +9,8 @@
     <artifactId>negocios_admMateriales</artifactId>
     <packaging>jar</packaging>
     <properties>
-        <maven.compiler.source>21</maven.compiler.source>
-        <maven.compiler.target>21</maven.compiler.target>
+        <maven.compiler.source>20</maven.compiler.source>
+        <maven.compiler.target>20</maven.compiler.target>
         <exec.mainClass>com.mycompany.negocios_admmateriales.Negocios_admMateriales</exec.mainClass>
     </properties>
 </project>
