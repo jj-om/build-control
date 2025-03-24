@@ -45,6 +45,9 @@ public class HerramientaDTO {
     public void setModelo(String modelo) {
         this.modelo = modelo;
     }
-    
-    
+
+    @Override
+    public String toString() {
+        return "HerramientaDTO{" + "nombre=" + nombre + ", marca=" + marca + ", modelo=" + modelo + '}';
+    }
 }

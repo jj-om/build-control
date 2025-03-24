@@ -36,4 +36,8 @@ public class RecursoDTO {
         this.cantidad = cantidad;
     }
 
+    @Override
+    public String toString() {
+        return "RecursoDTO{" + "material=" + material + ", cantidad=" + cantidad + '}';
+    }
 }

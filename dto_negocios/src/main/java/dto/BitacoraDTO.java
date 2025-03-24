@@ -37,4 +37,10 @@ public class BitacoraDTO {
     public void setIdObra(Long idObra) {
         this.idObra = idObra;
     }
+
+    @Override
+    public String toString() {
+        return "BitacoraDTO{" + "fecha=" + fecha + ", idObra=" + idObra + '}';
+    }
+
 }

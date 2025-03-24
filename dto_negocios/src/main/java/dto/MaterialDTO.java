@@ -55,5 +55,9 @@ public class MaterialDTO {
     public void setUnidadPeso(String unidadPeso) {
         this.unidadPeso = unidadPeso;
     }
-    
+
+    @Override
+    public String toString() {
+        return "MaterialDTO{" + "nombre=" + nombre + ", peso=" + peso + ", marca=" + marca + ", unidadPeso=" + unidadPeso + '}';
+    }
 }

@@ -4,8 +4,10 @@
  */
 package presentacion;
 
+import validadores.Validaciones;
 import admActividades.FAdmActividades;
 import admActividades.IAdmActividades;
+import admObraSeleccionada.FAdmObraSeleccionada;
 import admObraSeleccionada.IAdmObraSeleccionada;
 import dto.ActividadDTO;
 import dto.AsistenciaPersonalDTO;
@@ -19,9 +21,9 @@ import dto.MaterialDTO;
 import dto.MaterialIngresadoDTO;
 import dto.RecursoDTO;
 import excepciones.AdmActividadesException;
-import excepciones.AdmObraSeleccionadaException;
 import exception.PresentacionException;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,21 +35,21 @@ public class CoordinadorNegocio {
     private static CoordinadorNegocio coordinadorNegocio;
     
     // Crear lista para guardar las actividades
-    private List<ActividadDTO> actividades = new ArrayList<>();
+    private List<ActividadDTO> actividades;
     // Crear lista para guardar los recursos con los que cuenta la obra
-    private List<RecursoDTO> recursos = new ArrayList<>();
+    private List<RecursoDTO> recursos;
     // Crear lista de los materiales dentro del coordinador
-    private List<MaterialIngresadoDTO> materialesIngresados = new ArrayList<>();
+    private List<MaterialIngresadoDTO> materialesIngresados;
     // Crear lista para guardar las herramientas dentro de la obra
-    private List<HerramientaDTO> herramientas = new ArrayList<>();
+    private List<HerramientaDTO> herramientas;
     // Crear lista para guardar las herramientas
-    private List<HerramientaIngresadaDTO> herramientasIngresadas = new ArrayList<>();
+    private List<HerramientaIngresadaDTO> herramientasIngresadas;
     // Crear lista para guardar la maquinaria
-    private List<MaquinariaDTO> maquinaria = new ArrayList<>();
-    // Crear lista para guardar la asistencia de los empleados
-    private List<AsistenciaPersonalDTO> asistenciaPersonal = new ArrayList<>();
+    private List<MaquinariaDTO> maquinaria;
+    // Crear lista para guardar la maquinaria que se ingresó
+    private List<MaquinariaDTO> maquinariaIngresada;
     // Objeto para guardar la lista de asistencia
-    private ListaAsistenciaDTO asistencias;
+    private ListaAsistenciaDTO asistencia;
     // private DetallesBitacoraDTO detallesBitacora;
     
     // Instancia del subsistema de obra seleccionada
@@ -55,9 +57,21 @@ public class CoordinadorNegocio {
     // Instancia del subsistema de actividades
     private IAdmActividades admActividades;
 
-    CoordinadorNegocio() {
+    private CoordinadorNegocio() {
         // Inicializar fachada desde el coordinador
         this.admActividades = new FAdmActividades();
+        this.admObraSeleccionada = new FAdmObraSeleccionada();
+        
+        // Iniciar listas
+        this.actividades = new ArrayList<>();
+        this.recursos = new ArrayList<>();
+        this.materialesIngresados = new ArrayList<>();
+        this.herramientas = new ArrayList<>();
+        this.herramientasIngresadas = new ArrayList<>();
+        this.maquinaria = new ArrayList<>();
+        this.maquinariaIngresada = new ArrayList<>();
+        
+        this.asistencia = new ListaAsistenciaDTO();
     }
     
     // Método para obtener la instancia
@@ -70,34 +84,35 @@ public class CoordinadorNegocio {
     
     // MÉTODOS PARA EL FORMULARIO DE ACTIVIDADES
     // Método para registrar una actividad en la lista
-    public void agregarActividad(String titulo, String descripcion) throws PresentacionException {
+    public void registrarActividad(String titulo, String descripcion) throws PresentacionException {
         // Validar antes de agregar la actividad
         String mensajeError = Validaciones.validarActividad(titulo, descripcion);
+        
         if (mensajeError != null) {
             throw new PresentacionException(mensajeError);
         }
+        
         // Agregar actividad después de validar
         actividades.add(new ActividadDTO(titulo, descripcion));
     }
+    
     // Devuelve la lista de actividades
     public List<ActividadDTO> obtenerActividades() {
         return actividades;
     }
+    
     // Elimina las actividades dentro de la lista
     public void cancelarActividades() {
         actividades.clear();
     }
+    
     // Guarda la lista de actividades, enviando la lista a la fachada admActividades en la capa de negocio
-    public boolean guardarActividades() throws PresentacionException {
+    public boolean registrarActividades() throws PresentacionException {
         try {
-            boolean actividadRegistrada = admActividades.registrarActividades(actividades);
-            if (!actividadRegistrada) {
-                throw new PresentacionException("No se pudo registrar la actividad");
-            }
+            return admActividades.registrarActividades(actividades);
         } catch (AdmActividadesException e) {
             throw new PresentacionException("Error al registrar actividad: " + e.getMessage());
         }
-        return true;
     }
     
     // MÉTODOS PARA EL FORMULARIO DE MATERIALES
@@ -116,7 +131,7 @@ public class CoordinadorNegocio {
         MaterialDTO material8 = new MaterialDTO("Adhesivo", 1.5f, "Resistol", "litros");
         
         // Instancias de RecursoDTO y añadiéndolas a la lista
-        listaRecursos.add(new RecursoDTO(material1, 100));  // 100 unidades de cemento
+        listaRecursos.add(new RecursoDTO(material1, 1));  // 100 unidades de cemento
         listaRecursos.add(new RecursoDTO(material2, 50));   // 50 unidades de arena
         listaRecursos.add(new RecursoDTO(material3, 200));  // 200 unidades de varilla
         listaRecursos.add(new RecursoDTO(material4, 10));   // 10 unidades de pintura blanca
@@ -127,44 +142,64 @@ public class CoordinadorNegocio {
         
         return listaRecursos;
     }
-    // Guarda los materiales dentro de la lista del coordinador
-    public boolean guardarMateriales(List<MaterialIngresadoDTO> materialIngresado) {
-        return true;
+    
+    // Registrar los materiales mediante el subsistema
+    public boolean registrarMateriales(List<MaterialIngresadoDTO> materialIngresado) throws PresentacionException {
+        try {
+            // Validar que el recurso sea suficiente
+            validarRecursos(materialIngresado);
+            
+            // Registrar los materiales
+            //admMateriales.registrarMateriales(materialIngresado);
+            
+            // Asignarlo a la lista
+            this.materialesIngresados = materialIngresado;
+            return true;
+        } catch (PresentacionException e) {
+            throw new PresentacionException(e.getMessage(), e);
+        }
+    }
+    
+    // Valida que los recursos asignados a la obra y las cantidades ingresadas sean coherentes (no se haya excedido de material)
+    private void validarRecursos(List<MaterialIngresadoDTO> materialIngresado) throws PresentacionException {
+        try {
+            // Valida cada material elegido. Estará en subsistema
+            for (MaterialIngresadoDTO material : materialIngresado) {
+//                boolean recursoValido = admMateriales.validarRecurso(material.getRecurso(), material.getCantidad());
+                boolean recursoValido = true; // 
+                if (!recursoValido) {
+                    throw new PresentacionException("Cantidad de material en la obra insuficiente. Favor de registrar manualmente.");
+                }
+            }
+        } catch (Exception e) { // Cambiar a AdmMaterialesException
+            // Si al menos un material no fue válido
+            throw new PresentacionException(e.getMessage(), e);
+        }
     }
     
     // MÉTODOS PARA EL FORMULARIO DE HERRAMIENTAS Y MAQUINARIA
     // Regresar lista de las herramientas
-    public List<HerramientaIngresadaDTO> obtenerHerramientas() {
-        // Crear lista para guardar las herramientas
-        List<HerramientaIngresadaDTO> listaHerramientas = new ArrayList<>();
-        
-        HerramientaDTO herramienta1 = new HerramientaDTO("Llave Inglesa", "Stanley", "87-367");
-        HerramientaDTO herramienta2 = new HerramientaDTO("Sierra Circular", "Makita", "HS7601");
-        HerramientaDTO herramienta3 = new HerramientaDTO("Taladro Percutor", "DeWalt", "DWD024");
-        HerramientaDTO herramienta4 = new HerramientaDTO("Llave de Impacto", "Milwaukee", "M18 FUEL");
-        HerramientaDTO herramienta5 = new HerramientaDTO("Esmeril Angular", "Bosch", "GWS 750-115");
-        HerramientaDTO herramienta6 = new HerramientaDTO("Lijadora Orbital", "Black+Decker", "BDEQS300");
-        HerramientaDTO herramienta7 = new HerramientaDTO("Destornillador Eléctrico", "Einhell", "TC-SD 3.6 Li");
-        HerramientaDTO herramienta8 = new HerramientaDTO("Clavadora Neumática", "Stanley", "TRE650");
-        HerramientaDTO herramienta9 = new HerramientaDTO("Pistola de Calor", "Wagner", "FURNO 500");
-        HerramientaDTO herramienta10 = new HerramientaDTO("Compresor de Aire", "Kobalt", "XC802000");
-        
-        // Añadir herramientas a la lista
-        listaHerramientas.add(new HerramientaIngresadaDTO(herramienta1, 5));
-        listaHerramientas.add(new HerramientaIngresadaDTO(herramienta2, 3));
-        listaHerramientas.add(new HerramientaIngresadaDTO(herramienta3, 7));
-        listaHerramientas.add(new HerramientaIngresadaDTO(herramienta4, 2));
-        listaHerramientas.add(new HerramientaIngresadaDTO(herramienta5, 4));
-        listaHerramientas.add(new HerramientaIngresadaDTO(herramienta6, 6));
-        listaHerramientas.add(new HerramientaIngresadaDTO(herramienta7, 8));
-        listaHerramientas.add(new HerramientaIngresadaDTO(herramienta8, 1));
-        listaHerramientas.add(new HerramientaIngresadaDTO(herramienta9, 9));
-        listaHerramientas.add(new HerramientaIngresadaDTO(herramienta10, 10));
-        
-        return listaHerramientas;
+    public List<HerramientaDTO> obtenerHerramientas() {
+        // Crear lista y agregar herramientas directamente en la inicialización
+        return new ArrayList<>(List.of(
+                new HerramientaDTO("Llave Inglesa", "Stanley", "87-367"),
+                new HerramientaDTO("Sierra Circular", "Makita", "HS7601"),
+                new HerramientaDTO("Taladro Percutor", "DeWalt", "DWD024"),
+                new HerramientaDTO("Llave de Impacto", "Milwaukee", "M18 FUEL"),
+                new HerramientaDTO("Esmeril Angular", "Bosch", "GWS 750-115"),
+                new HerramientaDTO("Lijadora Orbital", "Black+Decker", "BDEQS300"),
+                new HerramientaDTO("Destornillador Eléctrico", "Einhell", "TC-SD 3.6 Li"),
+                new HerramientaDTO("Clavadora Neumática", "Stanley", "TRE650"),
+                new HerramientaDTO("Pistola de Calor", "Wagner", "FURNO 500"),
+                new HerramientaDTO("Compresor de Aire", "Kobalt", "XC802000")
+        ));
     }
     // Guardar herramientas dentro de la lista del coordinador
-    public boolean registrarHerramientas(List<HerramientaIngresadaDTO> herramientaIngresada) {
+    public boolean registrarHerramientas(List<HerramientaIngresadaDTO> herramientasIngresadas) {
+        if (herramientasIngresadas != null) {
+            this.herramientasIngresadas = herramientasIngresadas;
+        }
+        
         return true;
     }
     
@@ -194,40 +229,89 @@ public class CoordinadorNegocio {
         
         return maquinaria;
     }
+    
     // Guardar la maquinaria ingresada
-    public boolean guardarMaquinaria(List<MaquinariaDTO> maquinaria) {
+    public boolean registrarMaquinaria(List<MaquinariaDTO> maquinarias) {
+        if (maquinarias != null) {
+            this.maquinariaIngresada = maquinarias;
+        }
+        
         return true;
     }
    
     // MÉTODOS PARA LA ASISTENCIA DEL PERSONAL. Aún no se manejan porque aún no se ha registrado personal
-    // Método para agregar una nueva asistencia en la lista de asistencia
-    public void registrarAsistencia(AsistenciaPersonalDTO asistencia) {
-       asistenciaPersonal.add(asistencia);
-    }
-    // Guarda la lista de asistencia
-    public boolean guardarListaAsistencia() {
+    
+    // Método para guardar la lista de asistencias personal a asistencia
+    public boolean registrarAsistencia(List<AsistenciaPersonalDTO> asistenciaPersonal) {
+        if (asistenciaPersonal != null) {
+            this.asistencia.setFecha(LocalDate.now());
+            this.asistencia.setAsistencias(asistenciaPersonal);
+        }
+        
         return true;
     }
     
     // Método para obtener la lista de asistencia del personal
     public List<String> obtenerPersonal() {
         List<String> personal = new ArrayList<>();
+
+        // Agregar nombres a la lista
+        personal.add("Juan Pérez");
+        personal.add("Ana Gómez");
+        personal.add("Carlos Rodríguez");
+        personal.add("María Fernández");
+        personal.add("Luis Martínez");
+
+        // Retornar la lista de nombres
+        return personal;
+    }
+
+    public void validarHoras(LocalTime horaEntrada, LocalTime horaSalida, String nombre) throws PresentacionException {
+        // Validar antes de agregar la asistencia
+        String mensajeError = Validaciones.validarHorasPersonal(horaEntrada, horaSalida, nombre);
         
-        return null; // Cambiar por strings
+        if (mensajeError != null) {
+            throw new PresentacionException("Error: " + mensajeError);
+        }
+    }
+    
+    // Para saber si la obra ya tiene una bitácora
+    public boolean validarBitacoraRegistrada() {
+        return false; // Cambiar para pruebas
     }
     
     // Método para agregar la bitácora. Da error porque no la estoy guardando en ningún lado, debe de tener el subsistema de bitácora
-    public boolean registrarBitacora() throws AdmObraSeleccionadaException {
-        DetallesBitacoraDTO detallesBitacora = new DetallesBitacoraDTO();
-        //Crear una bitacora, hablarle al subsistema obraSeleccionada y obtener el id
-        BitacoraDTO bitacora = new BitacoraDTO(LocalDate.now(), admObraSeleccionada.obtenerIdObra());
-        
-        detallesBitacora.setActividades(actividades);
-        detallesBitacora.setMaterialesIngresados(materialesIngresados);
-        detallesBitacora.setHerramientasIngresadas(herramientasIngresadas);
-        detallesBitacora.setListaAsistencia(asistencias); 
-        detallesBitacora.setBitacora(bitacora);
-        
-        return true;
+    public boolean registrarBitacora() throws PresentacionException {
+        try {
+            DetallesBitacoraDTO detallesBitacora = new DetallesBitacoraDTO();
+            //Crear una bitacora, hablarle al subsistema obraSeleccionada y obtener el id
+            BitacoraDTO bitacora = new BitacoraDTO(LocalDate.now(), admObraSeleccionada.obtenerIdObra());
+
+            detallesBitacora.setActividades(actividades);
+            detallesBitacora.setMaterialesIngresados(materialesIngresados);
+            detallesBitacora.setHerramientasIngresadas(herramientasIngresadas);
+            detallesBitacora.setMaquinarias(maquinariaIngresada);
+            detallesBitacora.setListaAsistencia(asistencia);
+            detallesBitacora.setBitacora(bitacora);
+
+            System.out.println(bitacora);
+            System.out.println(detallesBitacora);
+            return true;
+        } catch (Exception e) { //Cambiar por personalizadas
+            throw new PresentacionException(e.getMessage(), e);
+        }
     }
+    
+    private void limpiarListas() {
+        this.actividades.clear();
+        this.recursos.clear();
+        this.herramientas.clear();
+        this.maquinaria.clear();
+        this.asistencia.setAsistencias(null);
+        this.asistencia.setFecha(null);
+        
+        this.materialesIngresados.clear();
+        this.herramientasIngresadas.clear();
+        this.maquinariaIngresada.clear();
+    } 
 }

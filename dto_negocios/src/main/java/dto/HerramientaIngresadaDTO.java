@@ -36,4 +36,8 @@ public class HerramientaIngresadaDTO {
         this.cantidad = cantidad;
     }
 
+    @Override
+    public String toString() {
+        return "HerramientaIngresadaDTO{" + "herramienta=" + herramienta + ", cantidad=" + cantidad + '}';
+    }
 }

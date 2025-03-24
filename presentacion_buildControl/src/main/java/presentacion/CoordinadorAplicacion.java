@@ -20,7 +20,7 @@ public class CoordinadorAplicacion {
     private HerramientasYMaquinariaForm hymForm;
     private PersonalForm personalForm;
 
-    public CoordinadorAplicacion() {
+    private CoordinadorAplicacion() {
     }
     
     // Método para obtener una única instancia

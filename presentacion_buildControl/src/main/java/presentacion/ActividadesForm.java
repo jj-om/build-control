@@ -4,10 +4,7 @@
  */
 package presentacion;
 
-import admActividades.FAdmActividades;
-import admActividades.IAdmActividades;
 import exception.PresentacionException;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -20,7 +17,7 @@ public class ActividadesForm extends javax.swing.JFrame {
     
     private CoordinadorAplicacion coordinador;
     private CoordinadorNegocio coordinadorNegocio;
-    private IAdmActividades admActividades;
+
 
     /**
      * Creates new form ActividadesRealizadasForm
@@ -31,7 +28,6 @@ public class ActividadesForm extends javax.swing.JFrame {
         getContentPane().setBackground(java.awt.Color.WHITE);
         this.setLocationRelativeTo(null);
         this.coordinador = coordinador;
-        this.admActividades = new FAdmActividades(); // Inicializar antes de crear la instancia de CoordinadorNegocio
         this.coordinadorNegocio = CoordinadorNegocio.getInstance();
     }
 
@@ -55,6 +51,7 @@ public class ActividadesForm extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(255, 0, 204));
+        setResizable(false);
 
         nombreEmpresa.setFont(new java.awt.Font("Segoe UI", 0, 32)); // NOI18N
         nombreEmpresa.setText("BuildControl");
@@ -159,27 +156,36 @@ public class ActividadesForm extends javax.swing.JFrame {
     }//GEN-LAST:event_btnAtrasActionPerformed
 
     private void btnAgregarActividadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActividadActionPerformed
-        try {
-            agregarActividad();
-        } catch (PresentacionException ex) {
-            Logger.getLogger(ActividadesForm.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        agregarActividad();
     }//GEN-LAST:event_btnAgregarActividadActionPerformed
 
-    private void agregarActividad() throws PresentacionException {
+    private void agregarActividad() {
         String titulo = campoActividad.getText().trim();
         String descripcion = campoDescripcion.getText().trim();
+        
         try {
+            coordinadorNegocio.registrarActividad(titulo, descripcion);
             
-            coordinadorNegocio.agregarActividad(titulo, descripcion);
             campoActividad.setText("");
             campoDescripcion.setText("");
+            
             JOptionPane.showMessageDialog(this, "Actividad agregada correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);   
         } catch (PresentacionException e) {
             JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }  
     }
-    
+
+    private void registrarActividades() {
+        try {
+            boolean exito = coordinadorNegocio.registrarActividades();
+            if (!exito) {
+                JOptionPane.showMessageDialog(this, "No fue posible registrar las actividades.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (PresentacionException e) {
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
     private void siguiente() throws PresentacionException {
         // Validar que se hayan registrado actividades
         if (coordinadorNegocio.obtenerActividades().isEmpty()) {
@@ -188,11 +194,7 @@ public class ActividadesForm extends javax.swing.JFrame {
                     "Error", JOptionPane.ERROR_MESSAGE);
             return;
         } else {
-            boolean actividadesGuardadas = coordinadorNegocio.guardarActividades();
-            if (!actividadesGuardadas) {
-                JOptionPane.showMessageDialog(this, "No fue posible registrar la actividad.", "Error", JOptionPane.ERROR_MESSAGE);
-                    return;
-            }
+            registrarActividades();
         }
         this.dispose();
         coordinador.mostrarMateriales();
@@ -208,6 +210,7 @@ public class ActividadesForm extends javax.swing.JFrame {
             if (opcion != JOptionPane.YES_OPTION) {
                 return;
             }
+            
             // Limpiar la lista de actividades
             coordinadorNegocio.cancelarActividades();
             // Falta que limpie todas las ventanas, limpie listas y haga null el dto. Lo hace controlador

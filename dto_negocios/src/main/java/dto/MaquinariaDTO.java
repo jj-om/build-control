@@ -45,6 +45,9 @@ public class MaquinariaDTO {
     public void setMatricula(String matricula) {
         this.matricula = matricula;
     }
-    
-    
+
+    @Override
+    public String toString() {
+        return "MaquinariaDTO{" + "nombre=" + nombre + ", marca=" + marca + ", matricula=" + matricula + '}';
+    }
 }

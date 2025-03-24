@@ -4,6 +4,8 @@
  */
 package presentacion;
 
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author alega
@@ -11,6 +13,7 @@ package presentacion;
 public class ObraSeleccionadaForm extends javax.swing.JFrame {
     
     private CoordinadorAplicacion coordinador;
+    private CoordinadorNegocio coordinadorNegocio;
 
     /**
      * Creates new form ObraSeleccionadaForm
@@ -22,6 +25,9 @@ public class ObraSeleccionadaForm extends javax.swing.JFrame {
         // aquí se debe obtener el nombre de la obra para mostrarlo en su campo
         this.setLocationRelativeTo(null);
         this.coordinador = coordinador;
+        this.coordinadorNegocio = CoordinadorNegocio.getInstance();
+        
+        //Falta iniciar la sesion de la obra
     }
 
     /**
@@ -140,14 +146,28 @@ public class ObraSeleccionadaForm extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAtrasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAtrasActionPerformed
-        this.dispose();
+        atras();
     }//GEN-LAST:event_btnAtrasActionPerformed
 
     private void btnRegistrarBitacoraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarBitacoraActionPerformed
-        this.dispose();
-        coordinador.mostrarActividades();
+        registrarBitacora();
     }//GEN-LAST:event_btnRegistrarBitacoraActionPerformed
 
+    private void atras() {
+        //falta cerrar sesion de la obra
+        this.dispose();
+    }
+    
+    private void registrarBitacora() {
+        if (coordinadorNegocio.validarBitacoraRegistrada()) {
+            JOptionPane.showMessageDialog(this, "La obra ya cuenta con una bitácora registrada el día de hoy.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        this.dispose();
+        coordinador.mostrarActividades();
+    }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAtras;
     private javax.swing.JButton btnRegistroManual;

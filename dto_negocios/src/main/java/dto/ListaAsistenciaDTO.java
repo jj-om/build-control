@@ -5,7 +5,6 @@
 package dto;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -39,6 +38,9 @@ public class ListaAsistenciaDTO {
     public void setAsistencias(List<AsistenciaPersonalDTO> asistencias) {
         this.asistencias = asistencias;
     }
-    
-    
+
+    @Override
+    public String toString() {
+        return "ListaAsistenciaDTO{" + "fecha=" + fecha + ", asistencias=" + asistencias + '}';
+    }
 }

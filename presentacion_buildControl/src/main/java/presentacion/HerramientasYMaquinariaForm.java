@@ -4,11 +4,12 @@
  */
 package presentacion;
 
+import dto.HerramientaDTO;
+import utilities.Utilities;
 import dto.HerramientaIngresadaDTO;
 import dto.MaquinariaDTO;
 import java.awt.Component;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import javax.swing.DefaultCellEditor;
 import javax.swing.DefaultListModel;
@@ -37,10 +38,10 @@ public class HerramientasYMaquinariaForm extends javax.swing.JFrame {
     private TableRowSorter<DefaultTableModel> tableSorterMaquinaria; // Filtro para la tabla
     private DefaultListModel<String> listModelMaquinaria; // Modelo para la lista
     
-    List<HerramientaIngresadaDTO> herramientas;
+    List<HerramientaDTO> herramientas;
     List<String> nombresHerramientas; // Obtiene el nombre de las herramientas
     List<MaquinariaDTO> maquinarias;
-    List<String> nombresMaquinarias; //  Se puede obtener directamente el nombre desde el DTO
+    List<String> nombresMaquinarias; 
 
     /**
      * Creates new form RegistrarHyMForm
@@ -51,13 +52,14 @@ public class HerramientasYMaquinariaForm extends javax.swing.JFrame {
         getContentPane().setBackground(java.awt.Color.WHITE);
         this.setLocationRelativeTo(null);
         this.coordinador = coordinador;
-        this.coordinadorNegocio = new CoordinadorNegocio();
+        this.coordinadorNegocio = CoordinadorNegocio.getInstance();
         
         listModelHerramienta = new DefaultListModel<>();
         listBuscadorH.setModel(listModelHerramienta);
         
         tableModelHerramienta = new DefaultTableModel(new Object[]{"Herramienta", "-", "Cantidad", "+"}, 0);
         tblHerramientas.setModel(tableModelHerramienta);
+        tblHerramientas.setDefaultEditor(Object.class, null);
         tableSorterHerramienta = new TableRowSorter<>(tableModelHerramienta);
         tblHerramientas.setRowSorter(tableSorterHerramienta);
         tblHerramientas.getColumnModel().getColumn(1).setCellRenderer(new HerramientasYMaquinariaForm.ButtonRenderer());
@@ -70,16 +72,13 @@ public class HerramientasYMaquinariaForm extends javax.swing.JFrame {
         
         tableModelMaquinaria = new DefaultTableModel(new Object[]{"Maquinaria", "-", "Status"}, 0);
         tblMaquinaria.setModel(tableModelMaquinaria);
+        tblMaquinaria.setDefaultEditor(Object.class, null);
         tableSorterMaquinaria = new TableRowSorter<>(tableModelMaquinaria);
         tblMaquinaria.setRowSorter(tableSorterMaquinaria);
         tblMaquinaria.getColumnModel().getColumn(1).setCellRenderer(new HerramientasYMaquinariaForm.ButtonRenderer());
         tblMaquinaria.getColumnModel().getColumn(1).setCellEditor(new HerramientasYMaquinariaForm.ButtonEditor(new JCheckBox(), false, tableModelMaquinaria, false));
         
-        herramientas = coordinadorNegocio.obtenerHerramientas();
-        maquinarias = coordinadorNegocio.obtenerMaquinaria();
-        obtenerNombreHerramientas();
-        obtenerNombreMaquinarias();
-        
+        cargarListas();
         buscadorListaHerramientas();
         buscadorListaMaquinaria();
     }
@@ -98,9 +97,6 @@ public class HerramientasYMaquinariaForm extends javax.swing.JFrame {
         jSeparator1 = new javax.swing.JSeparator();
         btnAtras = new javax.swing.JButton();
         btnSiguiente = new javax.swing.JButton();
-        jLabel1 = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        campoNotas = new javax.swing.JTextArea();
         jScrollPane3 = new javax.swing.JScrollPane();
         tblMaquinaria = new javax.swing.JTable();
         jScrollPane4 = new javax.swing.JScrollPane();
@@ -120,6 +116,12 @@ public class HerramientasYMaquinariaForm extends javax.swing.JFrame {
         jLabel5 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowActivated(java.awt.event.WindowEvent evt) {
+                formWindowActivated(evt);
+            }
+        });
 
         nombreEmpresa.setFont(new java.awt.Font("Segoe UI", 0, 32)); // NOI18N
         nombreEmpresa.setText("BuildControl");
@@ -149,13 +151,6 @@ public class HerramientasYMaquinariaForm extends javax.swing.JFrame {
             }
         });
 
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel1.setText("Notas adicionales:");
-
-        campoNotas.setColumns(20);
-        campoNotas.setRows(5);
-        jScrollPane1.setViewportView(campoNotas);
-
         tblMaquinaria.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -165,13 +160,14 @@ public class HerramientasYMaquinariaForm extends javax.swing.JFrame {
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, true
+                false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
             }
         });
+        tblMaquinaria.setRowSelectionAllowed(false);
         tblMaquinaria.getTableHeader().setResizingAllowed(false);
         tblMaquinaria.getTableHeader().setReorderingAllowed(false);
         jScrollPane3.setViewportView(tblMaquinaria);
@@ -185,13 +181,14 @@ public class HerramientasYMaquinariaForm extends javax.swing.JFrame {
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, true, true, true
+                false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
             }
         });
+        tblHerramientas.setRowSelectionAllowed(false);
         tblHerramientas.getTableHeader().setResizingAllowed(false);
         tblHerramientas.getTableHeader().setReorderingAllowed(false);
         jScrollPane4.setViewportView(tblHerramientas);
@@ -206,14 +203,6 @@ public class HerramientasYMaquinariaForm extends javax.swing.JFrame {
         jLabel3.setText("Ingresa el nombre de la maquinaria:");
 
         txtBuscadorListaH.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        txtBuscadorListaH.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
-                txtBuscadorListaHFocusGained(evt);
-            }
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                txtBuscadorListaHFocusLost(evt);
-            }
-        });
         txtBuscadorListaH.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 txtBuscadorListaHKeyReleased(evt);
@@ -231,14 +220,6 @@ public class HerramientasYMaquinariaForm extends javax.swing.JFrame {
         jScrollPaneH.setViewportView(listBuscadorH);
 
         txtBuscadorListaM.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        txtBuscadorListaM.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
-                txtBuscadorListaMFocusGained(evt);
-            }
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                txtBuscadorListaMFocusLost(evt);
-            }
-        });
         txtBuscadorListaM.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 txtBuscadorListaMKeyReleased(evt);
@@ -259,14 +240,6 @@ public class HerramientasYMaquinariaForm extends javax.swing.JFrame {
         jLabel4.setText("Filtrar por nombre de herramienta:");
 
         txtFiltroTablaH.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        txtFiltroTablaH.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
-                txtFiltroTablaHFocusGained(evt);
-            }
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                txtFiltroTablaHFocusLost(evt);
-            }
-        });
         txtFiltroTablaH.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 txtFiltroTablaHKeyReleased(evt);
@@ -274,14 +247,6 @@ public class HerramientasYMaquinariaForm extends javax.swing.JFrame {
         });
 
         txtFiltroTablaM.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        txtFiltroTablaM.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
-                txtFiltroTablaMFocusGained(evt);
-            }
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                txtFiltroTablaMFocusLost(evt);
-            }
-        });
         txtFiltroTablaM.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 txtFiltroTablaMKeyReleased(evt);
@@ -308,8 +273,6 @@ public class HerramientasYMaquinariaForm extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(36, 36, 36)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jScrollPaneM, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(nombreEmpresa, javax.swing.GroupLayout.PREFERRED_SIZE, 271, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jScrollPaneH, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -345,33 +308,27 @@ public class HerramientasYMaquinariaForm extends javax.swing.JFrame {
                     .addComponent(txtBuscadorListaH, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txtFiltroTablaH, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPaneH, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
+                        .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jScrollPaneH, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(registraHyM1)
-                        .addGap(5, 5, 5)
-                        .addComponent(jLabel3))
-                    .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtBuscadorListaM, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPaneM, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(5, 5, 5)
-                        .addComponent(jLabel5)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(txtFiltroTablaM, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(60, 60, 60)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel5)
+                    .addComponent(jLabel3))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtFiltroTablaM, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtBuscadorListaM, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jScrollPaneM, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(51, 51, 51)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -391,14 +348,6 @@ public class HerramientasYMaquinariaForm extends javax.swing.JFrame {
         siguiente();
     }//GEN-LAST:event_btnSiguienteActionPerformed
 
-    private void txtBuscadorListaHFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtBuscadorListaHFocusGained
-        Utilities.buscadorGanarFoco(txtBuscadorListaH, "Buscar...");
-    }//GEN-LAST:event_txtBuscadorListaHFocusGained
-
-    private void txtBuscadorListaHFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtBuscadorListaHFocusLost
-        Utilities.buscadorPerderFoco(txtBuscadorListaH, "Buscar...");
-    }//GEN-LAST:event_txtBuscadorListaHFocusLost
-
     private void txtBuscadorListaHKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBuscadorListaHKeyReleased
         buscadorListaHerramientas();
     }//GEN-LAST:event_txtBuscadorListaHKeyReleased
@@ -406,14 +355,6 @@ public class HerramientasYMaquinariaForm extends javax.swing.JFrame {
     private void listBuscadorHValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_listBuscadorHValueChanged
         seleccionarHerramientaLista(evt);
     }//GEN-LAST:event_listBuscadorHValueChanged
-
-    private void txtBuscadorListaMFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtBuscadorListaMFocusGained
-        Utilities.buscadorGanarFoco(txtBuscadorListaM, "");
-    }//GEN-LAST:event_txtBuscadorListaMFocusGained
-
-    private void txtBuscadorListaMFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtBuscadorListaMFocusLost
-        Utilities.buscadorPerderFoco(txtBuscadorListaM, "");
-    }//GEN-LAST:event_txtBuscadorListaMFocusLost
 
     private void txtBuscadorListaMKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBuscadorListaMKeyReleased
         buscadorListaMaquinaria();
@@ -423,29 +364,17 @@ public class HerramientasYMaquinariaForm extends javax.swing.JFrame {
         seleccionarMaquinariaLista(evt);
     }//GEN-LAST:event_listBuscadorMValueChanged
 
-    private void txtFiltroTablaHFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtFiltroTablaHFocusGained
-        Utilities.buscadorGanarFoco(txtFiltroTablaH, "");
-    }//GEN-LAST:event_txtFiltroTablaHFocusGained
-
-    private void txtFiltroTablaHFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtFiltroTablaHFocusLost
-        Utilities.buscadorPerderFoco(txtFiltroTablaH, "");
-    }//GEN-LAST:event_txtFiltroTablaHFocusLost
-
     private void txtFiltroTablaHKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtFiltroTablaHKeyReleased
         filtrarTablaHerramientas();
     }//GEN-LAST:event_txtFiltroTablaHKeyReleased
 
-    private void txtFiltroTablaMFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtFiltroTablaMFocusGained
-        Utilities.buscadorGanarFoco(txtFiltroTablaM, "");
-    }//GEN-LAST:event_txtFiltroTablaMFocusGained
-
-    private void txtFiltroTablaMFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtFiltroTablaMFocusLost
-        Utilities.buscadorPerderFoco(txtFiltroTablaM, "");
-    }//GEN-LAST:event_txtFiltroTablaMFocusLost
-
     private void txtFiltroTablaMKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtFiltroTablaMKeyReleased
         filtrarTablaMaquinaria();
     }//GEN-LAST:event_txtFiltroTablaMKeyReleased
+
+    private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
+
+    }//GEN-LAST:event_formWindowActivated
 
     class ButtonRenderer extends JButton implements javax.swing.table.TableCellRenderer {
 
@@ -524,7 +453,7 @@ public class HerramientasYMaquinariaForm extends javax.swing.JFrame {
     
     // Filtrar y actualizar la lista de materiales
     private void actualizarListaHerramientas(String textoBuscador) {
-        Utilities.actualizarLista(listBuscadorH, listModelHerramienta, nombresHerramientas, textoBuscador);
+        Utilities.actualizarLista(listBuscadorH, listModelHerramienta, nombresHerramientas, textoBuscador, jScrollPaneH);
     }
     
     private void seleccionarHerramientaLista(ListSelectionEvent evt) {
@@ -541,7 +470,7 @@ public class HerramientasYMaquinariaForm extends javax.swing.JFrame {
     
     // Filtrar y actualizar la lista de materiales
     private void actualizarListaMaquinaria(String textoBuscador) {
-        Utilities.actualizarLista(listBuscadorM, listModelMaquinaria, nombresMaquinarias, textoBuscador);
+        Utilities.actualizarLista(listBuscadorM, listModelMaquinaria, nombresMaquinarias, textoBuscador, jScrollPaneM);
     }
     
     private void seleccionarMaquinariaLista(ListSelectionEvent evt) {
@@ -552,29 +481,85 @@ public class HerramientasYMaquinariaForm extends javax.swing.JFrame {
         Utilities.filtrarTabla(tblMaquinaria, tableSorterMaquinaria, txtFiltroTablaM);
     }
     
-    // Obtiene el nombre de las herramientas
-    private void obtenerNombreHerramientas() {
-        nombresHerramientas = new ArrayList<>();
-        for (HerramientaIngresadaDTO herramientaIngresada : herramientas) {
-            nombresHerramientas.add(herramientaIngresada.getHerramienta().getNombre());
+    private List<HerramientaIngresadaDTO> obtenerHerramientasIngresadas() {
+        List<HerramientaIngresadaDTO> herramientasIngresadas = new ArrayList<>();
+
+        // Recorrer las filas de la tabla
+        for (int i = 0; i < tableModelHerramienta.getRowCount(); i++) {
+            String nombreHerramienta = (String) tableModelHerramienta.getValueAt(i, 0); // Nombre de la herramienta
+            Integer cantidad = (Integer) tableModelHerramienta.getValueAt(i, 2);
+            // Buscar el objeto HerramientaDTO correspondiente al nombre
+            System.out.println(nombreHerramienta);
+            HerramientaDTO herramientaDTO = buscarHerramientaPorNombre(nombreHerramienta);
+            System.out.println(herramientaDTO);
+            
+            if (herramientaDTO != null) {
+                // Crear el DTO con la herramienta y la cantidad
+                HerramientaIngresadaDTO herramientaIngresadaDTO = new HerramientaIngresadaDTO(herramientaDTO, cantidad);
+                herramientasIngresadas.add(herramientaIngresadaDTO);
+                herramientasIngresadas.forEach(a -> System.out.println(a));
+            }
         }
-    }
-    // Obtiene el nombre de la maquinaria
-    private void obtenerNombreMaquinarias() {
-        nombresMaquinarias = new ArrayList<>();
-        for (MaquinariaDTO maquinaria : maquinarias) {
-            nombresMaquinarias.add(maquinaria.getNombre());
-        }
+
+        return herramientasIngresadas;
     }
     
-    private List<HerramientaIngresadaDTO> crearDTOHerramienta() {
-        List<HerramientaIngresadaDTO> herramientaIngresada = new ArrayList<>();
-        return herramientaIngresada;
+    private HerramientaDTO buscarHerramientaPorNombre(String nombre) {
+        for (HerramientaDTO herramienta : herramientas) {
+            if (herramienta.getNombre().equalsIgnoreCase(nombre)) {
+                return herramienta;
+            }
+        }
+        return null; // Si no se encuentra, retorna null
     }
     
-    private List<MaquinariaDTO> crearDTOMaquinaria() {
+    private List<MaquinariaDTO> obtenerMaquinariaSeleccionada() {
         List<MaquinariaDTO> maquinariaIngresada = new ArrayList<>();
+        
+        for (int i = 0; i < tableModelMaquinaria.getRowCount(); i++) {
+            String nombreMaquinaria = (String) tableModelMaquinaria.getValueAt(i, 0);
+            
+            MaquinariaDTO maquinariaDTO = buscarMaquinariaPorNombre(nombreMaquinaria);
+            if (maquinariaDTO != null) {
+                maquinariaIngresada.add(maquinariaDTO);
+            }
+        }
+        
         return maquinariaIngresada;
+    }
+    
+    private MaquinariaDTO buscarMaquinariaPorNombre(String nombre) {
+        for (MaquinariaDTO maquinaria :  maquinarias) {
+            if (maquinaria.getNombre().equalsIgnoreCase(nombre)) {
+                return maquinaria;
+            }
+        }
+        return null; // Si no se encuentra, retorna null
+    }
+    
+    private List<String> obtenerNombresHerramientas() {
+        List<String> nombres = new ArrayList<>();
+        for (HerramientaDTO herramienta : herramientas) {
+            nombres.add(herramienta.getNombre());
+        }
+        
+        return nombres;
+    }
+    
+    private List<String> obtenerNombresMaquinarias() {
+        List<String> nombres = new ArrayList<>();
+        for (MaquinariaDTO maquinaria : maquinarias) {
+            nombres.add(maquinaria.getNombre());
+        }
+        
+        return nombres;
+    }
+    
+    private void cargarListas() {
+        this.herramientas = coordinadorNegocio.obtenerHerramientas();
+        this.maquinarias = coordinadorNegocio.obtenerMaquinaria();
+        this.nombresHerramientas = obtenerNombresHerramientas();
+        this.nombresMaquinarias = obtenerNombresMaquinarias();
     }
     
     private void siguiente() {
@@ -584,20 +569,22 @@ public class HerramientasYMaquinariaForm extends javax.swing.JFrame {
                     "Confirmar salida", JOptionPane.YES_NO_OPTION);
             if (opcion != JOptionPane.YES_OPTION) {
                 return;
-            } else {
-                List<HerramientaIngresadaDTO> herramientaIngresada = crearDTOHerramienta();
-                List<MaquinariaDTO> maquinariaIngresada = crearDTOMaquinaria();
-                
-                boolean herramientasGuardadas = coordinadorNegocio.registrarHerramientas(herramientaIngresada);
-                boolean maquinariasGuardadas = coordinadorNegocio.guardarMaquinaria(maquinariaIngresada);
-                
-                if (!herramientasGuardadas || !maquinariasGuardadas) {
-                    JOptionPane.showMessageDialog(this, "No fue posible registrar las herramientas/maquinarias.", "Error", JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
             }
+        } else {
+
+            List<HerramientaIngresadaDTO> herramientaIngresada = obtenerHerramientasIngresadas();
+            List<MaquinariaDTO> maquinariaIngresada = obtenerMaquinariaSeleccionada();
+
+            boolean herramientasGuardadas = coordinadorNegocio.registrarHerramientas(herramientaIngresada);
+            boolean maquinariasGuardadas = coordinadorNegocio.registrarMaquinaria(maquinariaIngresada);
+
+            if (!herramientasGuardadas || !maquinariasGuardadas) {
+                JOptionPane.showMessageDialog(this, "No fue posible registrar las herramientas/maquinarias.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
         }
-        
+
         this.dispose();
         coordinador.mostrarPersonal();
     }
@@ -610,13 +597,10 @@ public class HerramientasYMaquinariaForm extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAtras;
     private javax.swing.JButton btnSiguiente;
-    private javax.swing.JTextArea campoNotas;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPaneH;

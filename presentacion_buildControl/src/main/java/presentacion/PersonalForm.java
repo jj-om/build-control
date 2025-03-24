@@ -6,22 +6,20 @@ package presentacion;
 
 import com.github.lgooddatepicker.components.TimePicker;
 import dto.AsistenciaPersonalDTO;
-import dto.ListaAsistenciaDTO;
+import exception.PresentacionException;
 import java.awt.BorderLayout;
-import java.awt.Checkbox;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.Panel;
-import java.time.LocalDate;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
+import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -32,6 +30,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
+import utilities.Utilities;
 
 /**
  *
@@ -44,7 +43,9 @@ public class PersonalForm extends JFrame {
     
     private CoordinadorAplicacion coordinador;
     private CoordinadorNegocio coordinadorNegocio;
-
+    
+    private static final Logger logger = Logger.getLogger(PersonalForm.class.getName());
+    
     /**
      * Creates new form AsistenciaForm
      * @param coordinador
@@ -57,8 +58,7 @@ public class PersonalForm extends JFrame {
         this.coordinadorNegocio = CoordinadorNegocio.getInstance();
         
         // Inicializar lista de trabajadores
-        trabajadores = Arrays.asList("Juan Pérez", "Ana Gómez", "Carlos López", "Marta Ruiz", "Pepe Lopez");
-        
+        trabajadores = coordinadorNegocio.obtenerPersonal();
         crearPanelAsistencia();
     }
 
@@ -82,9 +82,13 @@ public class PersonalForm extends JFrame {
         btnAtras = new javax.swing.JButton();
         btnSiguiente = new javax.swing.JButton();
         panelPrincipal = new javax.swing.JPanel();
+        jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         nombreEmpresa = new javax.swing.JLabel();
         registrarAsistencia = new javax.swing.JLabel();
+        jPanel3 = new javax.swing.JPanel();
+        txtFiltroPersonal = new javax.swing.JTextField();
+        jLabel7 = new javax.swing.JLabel();
 
         jLabel4.setText("Entrada");
         jLabel4.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
@@ -100,6 +104,7 @@ public class PersonalForm extends JFrame {
         jScrollPane2.setViewportView(jTextArea2);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
 
         btnAtras.setText("Atrás");
         btnAtras.setBackground(new java.awt.Color(95, 168, 211));
@@ -125,6 +130,8 @@ public class PersonalForm extends JFrame {
 
         panelPrincipal.setBackground(new java.awt.Color(255, 255, 255));
         panelPrincipal.setLayout(new java.awt.BorderLayout());
+
+        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -155,7 +162,60 @@ public class PersonalForm extends JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        panelPrincipal.add(jPanel2, java.awt.BorderLayout.PAGE_START);
+        jPanel3.setBackground(new java.awt.Color(255, 255, 255));
+
+        txtFiltroPersonal.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        txtFiltroPersonal.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtFiltroPersonalKeyReleased(evt);
+            }
+        });
+
+        jLabel7.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel7.setText("Filtrar por nombre de personal:");
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel7)
+                    .addComponent(txtFiltroPersonal, javax.swing.GroupLayout.PREFERRED_SIZE, 379, javax.swing.GroupLayout.PREFERRED_SIZE)))
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                .addContainerGap(38, Short.MAX_VALUE)
+                .addComponent(jLabel7)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtFiltroPersonal, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(150, 150, 150)
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(121, 121, 121))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(8, Short.MAX_VALUE))
+        );
+
+        panelPrincipal.add(jPanel1, java.awt.BorderLayout.PAGE_START);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -163,27 +223,27 @@ public class PersonalForm extends JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jSeparator1)
             .addGroup(layout.createSequentialGroup()
-                .addGap(36, 36, 36)
+                .addGap(29, 29, 29)
                 .addComponent(btnAtras, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnSiguiente)
-                .addGap(31, 31, 31))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(29, Short.MAX_VALUE)
-                .addComponent(panelPrincipal, javax.swing.GroupLayout.PREFERRED_SIZE, 744, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(30, 30, 30))
+                .addGap(27, 27, 27))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(38, 38, 38)
+                .addComponent(panelPrincipal, javax.swing.GroupLayout.PREFERRED_SIZE, 776, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(26, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap(28, Short.MAX_VALUE)
-                .addComponent(panelPrincipal, javax.swing.GroupLayout.PREFERRED_SIZE, 433, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(27, 27, 27)
+                .addComponent(panelPrincipal, javax.swing.GroupLayout.PREFERRED_SIZE, 411, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 47, Short.MAX_VALUE)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnAtras, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnSiguiente, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnSiguiente, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnAtras, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(22, 22, 22))
         );
 
@@ -198,6 +258,10 @@ public class PersonalForm extends JFrame {
         siguiente();
     }//GEN-LAST:event_btnSiguienteActionPerformed
 
+    private void txtFiltroPersonalKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtFiltroPersonalKeyReleased
+        filtrarPersonal();
+    }//GEN-LAST:event_txtFiltroPersonalKeyReleased
+
     private void crearPanelAsistencia() {
         // Crear el panel contenedor con BoxLayout (apilado vertical)
         panelContenedor = new JPanel();
@@ -207,7 +271,7 @@ public class PersonalForm extends JFrame {
         panelContenedor.setBackground(Color.WHITE);
 
         // Llenar el panel con los trabajadores
-        agregarPanelesTrabajadores();
+        agregarPanelesPersonal();
 
         // Agregar el panel a un JScrollPane
         scrollPanel = new JScrollPane(panelContenedor);
@@ -223,50 +287,63 @@ public class PersonalForm extends JFrame {
 
         setVisible(true);
     }
-    
-    private void agregarPanelesTrabajadores() {
+
+    // Método principal para agregar los paneles de cada trabajador
+    private void agregarPanelesPersonal() {
         Font fuentePanelTrabajador = new Font("Segoe UI", Font.PLAIN, 14);
-        
+
         for (String trabajador : trabajadores) {
-            JPanel panelTrabajador = crearPanelEmpleado(trabajador);
-            cambiarFuente(panelTrabajador, fuentePanelTrabajador);
+            JPanel panelTrabajador = crearPanelPorPersonal(trabajador);
+            Utilities.cambiarFuente(panelTrabajador, fuentePanelTrabajador);
             panelContenedor.add(panelTrabajador);
             panelContenedor.add(Box.createVerticalStrut(10)); // Espacio entre paneles
         }
 
-        // Asegurar que la interfaz se actualice después de agregar componentes
-        panelContenedor.revalidate();
-        panelContenedor.repaint();
+        actualizarInterfaz();
     }
 
-    private JPanel crearPanelEmpleado(String trabajador) {
-        JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT, 20, 20));  // Distribuye los elementos en línea horizontal
+    private JPanel crearPanelPorPersonal(String trabajador) {
+        JPanel panel = new JPanel(new GridBagLayout());
         panel.setBackground(Color.WHITE);
-        panel.setPreferredSize(new Dimension(750, 30)); // Mantener tamaño uniforme
+        panel.setPreferredSize(new Dimension(750, 60)); // Tamaño uniforme para el panel del trabajador
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 10, 5, 10); // Espaciado alrededor de los componentes (top, left, bottom, right)
 
         // Crear los componentes
-        JCheckBox checkbox = new JCheckBox(trabajador);
-        checkbox.setBackground(Color.WHITE);
-        TimePicker timePickerEntrada = new TimePicker();
-        TimePicker timePickerSalida = new TimePicker();
-        JTextPane textPaneNotas = new JTextPane();
-        textPaneNotas.setPreferredSize(new Dimension(150, 25)); // Definir tamaño de notas
-        textPaneNotas.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        
+        JCheckBox checkbox = crearCheckBox(trabajador);
+        TimePicker timePickerEntrada = crearTimePicker("timePickerEntrada");
+        TimePicker timePickerSalida = crearTimePicker("timePickerSalida");
+        JTextPane textPaneNotas = crearTextPane("textPaneNotas");
+
         JLabel lbEntrada = new JLabel("Entrada:");
-        JLabel lbSalida = new JLabel ("Salida:");
-        JLabel lbNotas = new JLabel ("Notas:");
+        JLabel lbSalida = new JLabel("Salida:");
+        JLabel lbNotas = new JLabel("Notas:");
 
-        // Agregar los componentes en una línea horizontal
-        panel.add(checkbox);
-        panel.add(lbEntrada);
-        panel.add(timePickerEntrada);
-        panel.add(lbSalida);
-        panel.add(timePickerSalida);
-        panel.add(lbNotas);
-        panel.add(textPaneNotas);
+        // Para el checkbox, configuramos sin centrado, en la primera celda (columna 0)
+        gbc.gridx = 0;
+        panel.add(checkbox, gbc);
 
-        // Ocultar los componentes al inicio (menos el checkbox)
+        // Para las etiquetas, también alineadas a la izquierda
+        gbc.gridx = 1;
+        panel.add(lbEntrada, gbc);
+
+        gbc.gridx = 2;
+        panel.add(timePickerEntrada, gbc);
+
+        gbc.gridx = 3;
+        panel.add(lbSalida, gbc);
+
+        gbc.gridx = 4;
+        panel.add(timePickerSalida, gbc);
+
+        gbc.gridx = 5;
+        panel.add(lbNotas, gbc);
+
+        gbc.gridx = 6;
+        panel.add(textPaneNotas, gbc);
+
+        // Inicialmente, ocultar todos los componentes menos el checkbox
         lbEntrada.setVisible(false);
         lbSalida.setVisible(false);
         lbNotas.setVisible(false);
@@ -274,129 +351,170 @@ public class PersonalForm extends JFrame {
         timePickerSalida.setVisible(false);
         textPaneNotas.setVisible(false);
 
-        // Mostrar los campos solo cuando se selecciona el checkbox
-        checkbox.addActionListener(e -> {
-            boolean seleccionado = checkbox.isSelected();
-            lbEntrada.setVisible(seleccionado);
-            lbSalida.setVisible(seleccionado);
-            lbNotas.setVisible(seleccionado);
-            timePickerEntrada.setVisible(seleccionado);
-            timePickerSalida.setVisible(seleccionado);
-            textPaneNotas.setVisible(seleccionado);
-            panel.revalidate();
-            panel.repaint();
-        });
+        // Controlar la visibilidad de los componentes según el estado del checkbox
+        checkbox.addActionListener(e -> panelComponentesVisibilidad(checkbox, lbEntrada, lbSalida, lbNotas, timePickerEntrada, timePickerSalida, textPaneNotas));
 
         return panel;
     }
 
-    private void cambiarFuente(JPanel panel, Font fuente) {
-        for (Component componente : panel.getComponents()) {
-            componente.setFont(fuente);
-            if (componente instanceof JPanel) {
-                cambiarFuente((JPanel) componente, fuente); // Aplicar recursivamente a subpaneles
-            }
-        }
+// Crear un JCheckBox con nombre
+    private JCheckBox crearCheckBox(String texto) {
+        JCheckBox checkbox = new JCheckBox(texto);
+        checkbox.setBackground(Color.WHITE);
+        checkbox.setName("checkbox");
+        return checkbox;
     }
 
-    private List<Component> buscarEmpleadosSeleccionados() {
-        List<Component> panelesEmpleados = new ArrayList<>();
+// Crear un TimePicker con nombre
+    private TimePicker crearTimePicker(String nombre) {
+        TimePicker timePicker = new TimePicker();
+        timePicker.setName(nombre);
+        return timePicker;
+    }
+
+    // Crear un JTextPane con nombre
+    private JTextPane crearTextPane(String nombre) {
+        JTextPane textPane = new JTextPane();
+        textPane.setPreferredSize(new Dimension(150, 25));
+        textPane.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        textPane.setName(nombre);
+        
+        return textPane;
+    }
+
+    // Controlar la visibilidad de los componentes según el checkbox
+    private void panelComponentesVisibilidad(JCheckBox checkbox, JLabel lbEntrada, JLabel lbSalida, JLabel lbNotas, TimePicker timePickerEntrada, TimePicker timePickerSalida, JTextPane textPaneNotas) {
+        boolean seleccionado = checkbox.isSelected();
+        
+        lbEntrada.setVisible(seleccionado);
+        lbSalida.setVisible(seleccionado);
+        lbNotas.setVisible(seleccionado);
+        timePickerEntrada.setVisible(seleccionado);
+        timePickerSalida.setVisible(seleccionado);
+        textPaneNotas.setVisible(seleccionado);
+
+        // Actualizar la interfaz
+        checkbox.getParent().revalidate();
+        checkbox.getParent().repaint();
+    }
+
+    // Actualizar la interfaz después de agregar los paneles, para que no haya errores al mostrarse
+    private void actualizarInterfaz() {
+        panelContenedor.revalidate();
+        panelContenedor.repaint();
+    }
+
+    // Buscar los paneles de personal seleccionados
+    private List<Component> buscarPersonalSeleccionados() {
+        List<Component> panelesPersonal = new ArrayList<>();
 
         for (Component comp : panelContenedor.getComponents()) {
-            if (comp instanceof JPanel) {
-                // Buscar JCheckBox seleccionados dentro del subpanel
-                List<Component> checkboxSeleccionados = buscarCheckBoxSeleccionados((JPanel) comp);
-
-                // Si el subpanel tiene al menos un JCheckBox seleccionado, lo agregamos
-                if (!checkboxSeleccionados.isEmpty()) {
-                    panelesEmpleados.add(comp);
+            if (comp instanceof JPanel jPanel) {
+                if (isCheckboxSeleccionado(jPanel)) {
+                    panelesPersonal.add(comp);
                 }
             }
         }
-        return panelesEmpleados;
+        return panelesPersonal;
     }
 
-    // Método auxiliar que busca JCheckBox seleccionados dentro de un panel
-    private List<Component> buscarCheckBoxSeleccionados(Container container) {
-        List<Component> checkboxes = new ArrayList<>();
+    // Verificar si el checkbox está seleccionado en el panel
+    private boolean isCheckboxSeleccionado(JPanel panel) {
+        JCheckBox checkbox = obtenerCheckBoxEmpleado(panel);
+        return checkbox != null && checkbox.isSelected();
+    }
 
-        for (Component comp : container.getComponents()) {
-            if (comp instanceof JCheckBox && ((JCheckBox) comp).isSelected()) {
-                checkboxes.add(comp);
-            } else if (comp instanceof JPanel) {
-                // Buscar recursivamente en subpaneles
-                checkboxes.addAll(buscarCheckBoxSeleccionados((JPanel) comp));
+    // Mostrar paneles según el filtro ingresado
+    public void filtrarPersonal() {
+        String filtro = txtFiltroPersonal.getText().trim().toLowerCase(); // Obtener texto de búsqueda
+
+        for (Component componente : panelContenedor.getComponents()) {
+            if (componente instanceof JPanel panel) {
+                JCheckBox checkBoxEmpleado = obtenerCheckBoxEmpleado(panel);
+
+                if (checkBoxEmpleado != null) {
+                    String nombreEmpleado = checkBoxEmpleado.getText().toLowerCase();
+                    panel.setVisible(nombreEmpleado.contains(filtro));
+                }
             }
         }
-        return checkboxes;
     }
 
-    private void registrarAsistenciaEmpleado() {
-        List<Component> panelesEmpleadosSeleccionados = buscarEmpleadosSeleccionados();
-   
-        for (Component comp : panelesEmpleadosSeleccionados) {
-            AsistenciaPersonalDTO asistenciaPersonal = new AsistenciaPersonalDTO();
-            
-            // Verifica que el componente tenga un nombre definido
-            String nombreComponente = comp.getName();
-            if (nombreComponente == null) {
-                continue; // Si el componente no tiene nombre, lo ignoramos
+    // Obtener el JCheckBox del panel
+    private JCheckBox obtenerCheckBoxEmpleado(JPanel panel) {
+        for (Component comp : panel.getComponents()) {
+            if (comp instanceof JCheckBox jCheckBox) {
+                return jCheckBox;
+            }
+        }
+        return null;
+    }
+
+    // Registrar la asistencia de los empleados seleccionados
+    private List<AsistenciaPersonalDTO> registrarAsistenciaPorPersonal() throws PresentacionException {
+        List<Component> panelesPersonalSeleccionados = buscarPersonalSeleccionados();
+        List<AsistenciaPersonalDTO> listaAsistenciaPersonal = new ArrayList<>();
+
+        for (Component panel : panelesPersonalSeleccionados) {
+            if (!(panel instanceof JPanel panelEmpleado)) {
+                continue;
             }
 
-            switch (nombreComponente) {
-                case "checkbox" -> {
-                    Checkbox checkbox = (Checkbox) comp;
-                    asistenciaPersonal.setNombre(checkbox.getLabel());
-                }
-                case "timePickerEntrada" -> {
-                    TimePicker timePickerEntrada = (TimePicker) comp;
-                    asistenciaPersonal.setHoraEntrada(timePickerEntrada.getTime());
-                }
-                case "timePickerSalida" -> {
-                    TimePicker timePickerSalida = (TimePicker) comp;
-                    asistenciaPersonal.setHoraSalida(timePickerSalida.getTime());
-                }
-                case "textPaneNotas" -> {
-                    JTextPane textPaneNotas = (JTextPane) comp;
-                    asistenciaPersonal.setNotas(textPaneNotas.getText());
+            String nombre = null;
+            LocalTime horaEntrada = null;
+            LocalTime horaSalida = null;
+            String notas = null;
+
+            for (Component comp : panelEmpleado.getComponents()) {
+                String nombreComponente = comp.getName();
+                if (nombreComponente == null) {
+                    continue;
                 }
 
-                default -> {
-                    break; // Si el componente no es relevante, se ignora
+                switch (nombreComponente) {
+                    case "checkbox" ->
+                        nombre = ((JCheckBox) comp).getText();
+                    case "timePickerEntrada" ->
+                        horaEntrada = ((TimePicker) comp).getTime();
+                    case "timePickerSalida" ->
+                        horaSalida = ((TimePicker) comp).getTime();
+                    case "textPaneNotas" ->
+                        notas = ((JTextPane) comp).getText();
                 }
             }
-            
+
+            // Validar horas y lanzar excepción si es necesario
+            coordinadorNegocio.validarHoras(horaEntrada, horaSalida, nombre);
+
             // Agregar la asistencia del personal a la lista
-            coordinadorNegocio.registrarAsistencia(asistenciaPersonal);
+            listaAsistenciaPersonal.add(new AsistenciaPersonalDTO(nombre, horaEntrada, horaSalida, notas));
         }
+
+        return listaAsistenciaPersonal;
     }
-    
-    private void registrarAsistencia() {
-        boolean asistenciaRegistrada = coordinadorNegocio.guardarListaAsistencia();
-    }
-    
+ 
     private void siguiente() {
-        int opcion = JOptionPane.showConfirmDialog(this,
-                "¿Seguro que desea registrar la bitácora? No podrá editarse después.",
-                "Confirmar registro", JOptionPane.YES_NO_OPTION);
-        if (opcion != JOptionPane.YES_OPTION) {
-            return;
-        }
-        
         // Intentar registrar la bitacora
         try {
-            registrarAsistencia();
+            coordinadorNegocio.registrarAsistencia(registrarAsistenciaPorPersonal());
+
+            int opcion = JOptionPane.showConfirmDialog(this,
+                    "¿Seguro que desea registrar la bitácora? No podrá editarse después.",
+                    "Confirmar registro", JOptionPane.YES_NO_OPTION);
+            if (opcion != JOptionPane.YES_OPTION) {
+                return;
+            }
+
             coordinadorNegocio.registrarBitacora();
-            
             JOptionPane.showMessageDialog(this, "Bitácora registrada exitosamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-            
+
             // Regresar a ventana ObraSeleccionada
             this.dispose();
             coordinador.mostrarObraSeleccionada();
-        } catch (Exception e) { // Cambiar por excepcion personalizada
-            JOptionPane.showMessageDialog(this, "No fue posible registrar la bitácora.", "Error", JOptionPane.ERROR_MESSAGE);
-            System.out.println(e.getMessage());
-        }   
+        } catch (PresentacionException e) {
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+
     }
 
     private void atras() {
@@ -410,7 +528,10 @@ public class PersonalForm extends JFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTextArea jTextArea2;
@@ -419,5 +540,6 @@ public class PersonalForm extends JFrame {
     private javax.swing.JLabel registrarAsistencia;
     private com.github.lgooddatepicker.components.TimePicker timePicker4;
     private com.github.lgooddatepicker.components.TimePicker timePicker5;
+    private javax.swing.JTextField txtFiltroPersonal;
     // End of variables declaration//GEN-END:variables
 }

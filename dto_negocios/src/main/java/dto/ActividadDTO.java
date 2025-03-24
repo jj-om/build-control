@@ -36,7 +36,9 @@ public class ActividadDTO {
     public void setDescripcionActividad(String descripcionActividad) {
         this.descripcionActividad = descripcionActividad;
     }
-    
-    
-    
+
+    @Override
+    public String toString() {
+        return "ActividadDTO{" + "tituloActividad=" + tituloActividad + ", descripcionActividad=" + descripcionActividad + '}';
+    }
 }

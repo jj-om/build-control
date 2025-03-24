@@ -35,6 +35,9 @@ public class MaterialIngresadoDTO {
     public void setCantidad(Integer cantidad) {
         this.cantidad = cantidad;
     }
-    
-    
+
+    @Override
+    public String toString() {
+        return "MaterialIngresadoDTO{" + "recurso=" + recurso + ", cantidad=" + cantidad + '}';
+    }
 }

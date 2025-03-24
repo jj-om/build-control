@@ -57,6 +57,9 @@ public class AsistenciaPersonalDTO {
     public void setNotas(String notas) {
         this.notas = notas;
     }
-    
-    
+
+    @Override
+    public String toString() {
+        return "AsistenciaPersonalDTO{" + "nombre=" + nombre + ", horaEntrada=" + horaEntrada + ", horaSalida=" + horaSalida + ", notas=" + notas + '}';
+    }
 }

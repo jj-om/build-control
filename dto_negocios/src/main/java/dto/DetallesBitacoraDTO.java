@@ -14,18 +14,20 @@ public class DetallesBitacoraDTO {
     private ListaAsistenciaDTO listaAsistencia;
     private List<MaterialIngresadoDTO> materialesIngresados;
     private List<HerramientaIngresadaDTO> herramientasIngresadas;
+    private List<MaquinariaDTO> maquinarias;
     private List<ActividadDTO> actividades;
     private BitacoraDTO bitacora;
 
     public DetallesBitacoraDTO() {
     }
 
-    public DetallesBitacoraDTO(ListaAsistenciaDTO listaAsistencia, List<MaterialIngresadoDTO> materialesIngresados, List<HerramientaIngresadaDTO> herramientasIngresadas, List<ActividadDTO> actividades) {
+    public DetallesBitacoraDTO(ListaAsistenciaDTO listaAsistencia, List<MaterialIngresadoDTO> materialesIngresados, List<HerramientaIngresadaDTO> herramientasIngresadas, List<MaquinariaDTO> maquinarias, List<ActividadDTO> actividades, BitacoraDTO bitacora) {
         this.listaAsistencia = listaAsistencia;
         this.materialesIngresados = materialesIngresados;
         this.herramientasIngresadas = herramientasIngresadas;
+        this.maquinarias = maquinarias;
         this.actividades = actividades;
-        this.bitacora = null;
+        this.bitacora = bitacora;
     }
 
     public BitacoraDTO getBitacora() {
@@ -60,6 +62,14 @@ public class DetallesBitacoraDTO {
         this.herramientasIngresadas = herramientasIngresadas;
     }
 
+    public List<MaquinariaDTO> getMaquinarias() {
+        return maquinarias;
+    }
+
+    public void setMaquinarias(List<MaquinariaDTO> maquinarias) {
+        this.maquinarias = maquinarias;
+    }
+
     public List<ActividadDTO> getActividades() {
         return actividades;
     }
@@ -67,9 +77,9 @@ public class DetallesBitacoraDTO {
     public void setActividades(List<ActividadDTO> actividades) {
         this.actividades = actividades;
     }
-    
-    
-    
-            
-            
+
+    @Override
+    public String toString() {
+        return "DetallesBitacoraDTO{" + "listaAsistencia=" + listaAsistencia + ", materialesIngresados=" + materialesIngresados + ", herramientasIngresadas=" + herramientasIngresadas + ", maquinarias=" + maquinarias + ", actividades=" + actividades + ", bitacora=" + bitacora + '}';
+    } 
 }
