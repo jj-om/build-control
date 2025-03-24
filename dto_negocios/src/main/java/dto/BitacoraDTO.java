@@ -11,8 +11,8 @@ import java.time.LocalDate;
  * @author rocha
  */
 public class BitacoraDTO {
-    LocalDate fecha;
-    Long idObra;
+    private LocalDate fecha;
+    private Long idObra;
 
     public BitacoraDTO() {
     }
