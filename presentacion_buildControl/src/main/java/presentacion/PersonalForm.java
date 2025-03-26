@@ -7,6 +7,7 @@ package presentacion;
 import com.github.lgooddatepicker.components.TimePicker;
 import dto.AsistenciaPersonalDTO;
 import dto.ObraDTO;
+import excepciones.AdmMaterialesException;
 import exception.PresentacionException;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -20,6 +21,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -265,7 +267,11 @@ public class PersonalForm extends JFrame {
     }//GEN-LAST:event_btnAtrasActionPerformed
 
     private void btnSiguienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSiguienteActionPerformed
-        siguiente();
+        try {
+            siguiente();
+        } catch (AdmMaterialesException ex) {
+            Logger.getLogger(PersonalForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_btnSiguienteActionPerformed
 
     private void txtFiltroPersonalKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtFiltroPersonalKeyReleased
@@ -503,7 +509,7 @@ public class PersonalForm extends JFrame {
         return listaAsistenciaPersonal;
     }
  
-    private void siguiente() {
+    private void siguiente() throws AdmMaterialesException {
         // Intentar registrar la bitacora
         try {
             coordinadorNegocio.registrarAsistencia(registrarAsistenciaPorPersonal());
@@ -515,6 +521,7 @@ public class PersonalForm extends JFrame {
                 return;
             }
 
+            coordinadorNegocio.restarMaterial();
             coordinadorNegocio.registrarBitacora();
             JOptionPane.showMessageDialog(this, "Bitácora registrada exitosamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
 

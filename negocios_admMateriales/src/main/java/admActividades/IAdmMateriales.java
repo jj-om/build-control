@@ -25,8 +25,9 @@ public interface IAdmMateriales {
      * Obtiene la lista de recursos disponibles en la obra.
      * 
      * @return Lista de los recursos con los que cuenta la obra.
+     * @throws excepciones.AdmMaterialesException
      */
-    public List<RecursoDTO> obtenerRecursosObra();
+    public List<RecursoDTO> obtenerRecursosObra() throws AdmMaterialesException;
     
     /**
      * Valida que los recursos asignados a la obra y las cantidades ingresadas
@@ -38,5 +39,5 @@ public interface IAdmMateriales {
      * material.
      */
     public void validarRecurso(List<MaterialIngresadoDTO> materialIngresado) throws AdmMaterialesException;
-    
+        
 }

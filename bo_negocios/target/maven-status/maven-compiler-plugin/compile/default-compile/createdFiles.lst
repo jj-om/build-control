@@ -7,3 +7,4 @@ BOs_negocios\bo_detallesBitacora.class
 BOs_negocios\bo_negocios.class
 BOs_negocios\bo_recurso.class
 BOs_negocios\bo_asistencia.class
+excepciones\BOMaterialException.class

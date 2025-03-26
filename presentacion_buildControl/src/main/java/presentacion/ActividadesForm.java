@@ -5,6 +5,7 @@
 package presentacion;
 
 import dto.ObraDTO;
+import excepciones.AdmMaterialesException;
 import exception.PresentacionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -161,6 +162,8 @@ public class ActividadesForm extends javax.swing.JFrame {
             siguiente();
         } catch (PresentacionException ex) {
             Logger.getLogger(ActividadesForm.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (AdmMaterialesException ex) {
+            Logger.getLogger(ActividadesForm.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btnSiguienteActionPerformed
 
@@ -197,7 +200,7 @@ public class ActividadesForm extends javax.swing.JFrame {
         }
     }
 
-    private void siguiente() throws PresentacionException {
+    private void siguiente() throws PresentacionException, AdmMaterialesException {
         // Validar que se hayan registrado actividades
         if (coordinadorNegocio.obtenerActividades().isEmpty()) {
             JOptionPane.showMessageDialog(this,

@@ -9,10 +9,13 @@ import utilities.Utilities;
 import dto.HerramientaIngresadaDTO;
 import dto.MaquinariaDTO;
 import dto.ObraDTO;
+import excepciones.AdmMaterialesException;
 import exception.PresentacionException;
 import java.awt.Component;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultCellEditor;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -357,7 +360,11 @@ public class HerramientasYMaquinariaForm extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAtrasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAtrasActionPerformed
-        atras();
+        try {
+            atras();
+        } catch (AdmMaterialesException ex) {
+            Logger.getLogger(HerramientasYMaquinariaForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_btnAtrasActionPerformed
 
     private void btnSiguienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSiguienteActionPerformed
@@ -608,7 +615,7 @@ public class HerramientasYMaquinariaForm extends javax.swing.JFrame {
         coordinador.mostrarPersonal();
     }
     
-    private void atras() {
+    private void atras() throws AdmMaterialesException {
         this.dispose();
         coordinador.mostrarMateriales();
     }

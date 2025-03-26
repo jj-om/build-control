@@ -4,6 +4,8 @@
  */
 package presentacion;
 
+import excepciones.AdmMaterialesException;
+
 /**
  *
  * @author alega
@@ -46,7 +48,7 @@ public class CoordinadorAplicacion {
         actividadesForm.setVisible(true);
     }
 
-    public void mostrarMateriales() {
+    public void mostrarMateriales() throws AdmMaterialesException {
         if (materialesForm == null) {
             materialesForm = new MaterialesForm(this);
         }

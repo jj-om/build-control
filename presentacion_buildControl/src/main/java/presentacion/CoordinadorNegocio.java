@@ -4,6 +4,7 @@
  */
 package presentacion;
 
+import BOs_negocios.bo_material;
 import validadores.Validaciones;
 import admActividades.FAdmActividades;
 import admActividades.FAdmMateriales;
@@ -68,6 +69,8 @@ public class CoordinadorNegocio {
     private IAdmActividades admActividades;
     // Instancia del subsistema de materiales
     private IAdmMateriales admMateriales;
+    
+    private bo_material boMaterial;
 
     private CoordinadorNegocio() {
         // Inicializar fachada desde el coordinador
@@ -86,6 +89,8 @@ public class CoordinadorNegocio {
         this.obras = new ArrayList<>();
         
         this.asistencia = new ListaAsistenciaDTO();
+        
+        this.boMaterial = new bo_material();
     }
     
     // Método para obtener la instancia
@@ -131,7 +136,7 @@ public class CoordinadorNegocio {
     
     // MÉTODOS PARA EL FORMULARIO DE MATERIALES
     // Regresa la lista de materiales
-    public List<RecursoDTO> obtenerMateriales() {
+    public List<RecursoDTO> obtenerMateriales() throws AdmMaterialesException {
         return admMateriales.obtenerRecursosObra();
     }
     
@@ -164,6 +169,45 @@ public class CoordinadorNegocio {
         }
     }
     
+    // Restar material ingresado de los recursos. Cambiar a subsistema de AdmMateriales
+    public void restarMaterial() throws PresentacionException, AdmMaterialesException {
+        // Obtener lista de los recursos de la obra
+        List<RecursoDTO> recursosObra = admMateriales.obtenerRecursosObra();
+        // Para cada material ingresado para usarse, revisar los recursos dentro de la obra
+        for (MaterialIngresadoDTO materialIngresado : materialesIngresados) {
+            for (RecursoDTO recurso : recursosObra) {
+                // Si el nombre del material dentro del recurso y del recurso ingresado coindide, restarle la cantidad
+                if (recurso.getMaterial().getNombre().equals(materialIngresado.getRecurso().getMaterial().getNombre())) {
+                    // Si la cantidad que hay en los recursos es mayor o igual a la cantidad ingresada, se le resta y actualiza la cantidad de recursos
+                    if (recurso.getCantidad() >= materialIngresado.getCantidad()) {
+                        Integer nuevoStock = recurso.getCantidad() - materialIngresado.getCantidad();
+                        actualizarCantidadRecursos(recurso.getMaterial().getNombre(), nuevoStock);
+                        // Imprimir para probar si funciona
+                        // System.out.println("Material: " + recurso.getMaterial().getNombre() + ", Cantidad restante: " + nuevoStock);
+                    } else { // Sino se lanza excepción de que no hay stock
+                        throw new PresentacionException("No hay suficiente stock de " + recurso.getMaterial().getNombre() + " . Favor de registrar manualmente");
+                    }
+                }
+            }
+        }
+    }
+    
+    // Método privado para actualizar la cantidad de recursos en la obra. Cambiar a subsistema de AdmMateriales
+    private void actualizarCantidadRecursos(String nombreMaterial, Integer restante) throws AdmMaterialesException {
+        List<RecursoDTO> recursosObra = admMateriales.obtenerRecursosObra();
+            // Si el material se encuentra registrado, se actualiza la cantidad de stock
+            for (RecursoDTO recurso : recursosObra) {
+                if (recurso.getMaterial().getNombre().equals(nombreMaterial)) {
+                    recurso.setCantidad(restante);
+                    // Imprimir para probar si funciona
+                    // System.out.println("Cantidad actualizada");
+                    return;
+                }
+            }
+    }
+    
+    // MÉTODOS PARA EL FORMULARIO DE HERRAMIENTAS Y MAQUINARIA
+    // Regresar lista de las herramientas    
     // MÉTODOS PARA EL FORMULARIO DE HERRAMIENTAS Y MAQUINARIA
     // Regresar lista de las herramientas
     public List<HerramientaDTO> obtenerHerramientas() {
@@ -287,6 +331,8 @@ public class CoordinadorNegocio {
             detallesBitacora.setMaquinarias(maquinariaIngresada);
             detallesBitacora.setListaAsistencia(asistencia);
             detallesBitacora.setBitacora(bitacora);
+            
+            
 
             System.out.println(bitacora);
             System.out.println(detallesBitacora);

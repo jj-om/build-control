@@ -46,7 +46,7 @@ public class MaterialesForm extends javax.swing.JFrame {
      * Creates new form RegistrarMaterialForm
      * @param coordinador
      */
-    public MaterialesForm(CoordinadorAplicacion coordinador) {
+    public MaterialesForm(CoordinadorAplicacion coordinador) throws AdmMaterialesException {
         initComponents();
         getContentPane().setBackground(java.awt.Color.WHITE);
         this.setLocationRelativeTo(null);
@@ -445,7 +445,7 @@ public class MaterialesForm extends javax.swing.JFrame {
         return nombres;
     }
     
-    private void cargarListas() {
+    private void cargarListas() throws AdmMaterialesException {
         this.recursos = coordinadorNegocio.obtenerMateriales();
         this.nombresMateriales = obtenerNombresMateriales();
     }
