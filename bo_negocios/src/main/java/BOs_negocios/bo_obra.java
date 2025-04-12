@@ -9,5 +9,20 @@ package BOs_negocios;
  */
 
 public class bo_obra {
+    public static bo_obra obraBO;
     
+    public static bo_obra getInstance() {
+        if (obraBO == null) {
+            obraBO = new bo_obra();
+        }
+        return obraBO;
+    }
+    
+    public boolean validarObraExiste(Long numero) {
+        return true;
+    }
+    
+    public Long obtenerIdPorNumero(Long numero) {
+        return numero;
+    }
 }

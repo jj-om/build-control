@@ -70,7 +70,6 @@ public class CoordinadorNegocio {
     // Instancia del subsistema de materiales
     private IAdmMateriales admMateriales;
     
-    private bo_material boMaterial;
 
     private CoordinadorNegocio() {
         // Inicializar fachada desde el coordinador
@@ -90,7 +89,6 @@ public class CoordinadorNegocio {
         
         this.asistencia = new ListaAsistenciaDTO();
         
-        this.boMaterial = new bo_material();
     }
     
     // Método para obtener la instancia
