@@ -1,6 +1,8 @@
 package BOs_negocios;
 
 import dto.BitacoraDTO;
+import dto.DetallesBitacoraDTO;
+import excepciones.BOException;
 
 /**
  * @author Alejandra Garcia 252444
@@ -20,8 +22,10 @@ public class bo_bitacora {
         return bitacoraBO;
     }
     
-    public BitacoraDTO registrarBitacora(BitacoraDTO bitacora) {
-        return bitacora;
+    public boolean registrarBitacora(DetallesBitacoraDTO detallesBitacora, Long idObra) throws BOException {
+        System.out.println("Registrando bitácora para obra ID: " + idObra);
+        System.out.println("Detalles: " + detallesBitacora);
+        return true;
     }
     
     public boolean validarBitacoraRegistrada(Long idObra) {

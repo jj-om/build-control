@@ -50,13 +50,49 @@ public class ControlAdmBitacora {
     }
     
     // Métodos para bitácora
-    public boolean registrarBitacora(DetallesBitacoraDTO detallesBitacoraDTO, Long idObra) {
-        return true;
+    public boolean registrarBitacora(DetallesBitacoraDTO detallesBitacoraDTO, Long idObra) throws AdmBitacoraException {
+        try {
+            // Validar que la bitácora no esté ya registrada para esta obra/fecha
+            if (validarBitacoraRegistrada()) {
+                throw new AdmBitacoraException("Ya existe una bitácora registrada para esta obra hoy");
+            }
+
+            // Validar estructura de datos
+            if (!validarDatosBitacora(detallesBitacoraDTO, idObra)) {
+                throw new AdmBitacoraException("Datos de bitácora incompletos o inválidos");
+            }
+
+            // Validar materiales (si hay)
+            if (detallesBitacoraDTO.getMaterialesIngresados() != null && !detallesBitacoraDTO.getMaterialesIngresados().isEmpty()) {
+                validarRecursos(detallesBitacoraDTO.getMaterialesIngresados());
+            }
+
+            // Registrar en el BO
+            boolean exito = boBitacora.registrarBitacora(detallesBitacoraDTO, idObra);
+
+            if (!exito) {
+                throw new AdmBitacoraException("Error al guardar la bitácora");
+            }
+
+            //Actualizar inventario (si hay materiales)
+            if (detallesBitacoraDTO.getMaterialesIngresados() != null && !detallesBitacoraDTO.getMaterialesIngresados().isEmpty()) {
+                restarRecursos(detallesBitacoraDTO.getMaterialesIngresados());
+            }
+
+            return true;
+        } catch (BOException | BOMaterialException e) {
+            throw new AdmBitacoraException("Error en sistema: " + e.getMessage());
+        }
     }
     
     public boolean validarDatosBitacora(DetallesBitacoraDTO detallesBitacoraDTO, Long idObra) {
-        return true;
-    }
+    return detallesBitacoraDTO != null &&
+           detallesBitacoraDTO.getBitacora() != null &&
+           detallesBitacoraDTO.getBitacora().getIdObra() != null &&
+           detallesBitacoraDTO.getBitacora().getIdObra().equals(idObra) &&
+           detallesBitacoraDTO.getActividades() != null && !detallesBitacoraDTO.getActividades().isEmpty() &&
+           detallesBitacoraDTO.getListaAsistencia() != null && !detallesBitacoraDTO.getListaAsistencia().getAsistencias().isEmpty();
+}
     
     public boolean validarBitacoraRegistrada() {
         return true;
@@ -127,12 +163,34 @@ public class ControlAdmBitacora {
     
     // Métodos para herramientas y maquinaria
     // Falta que le llamen al subsistema para obtener id,  llamen al BO y validen
-    public List<HerramientaDTO> obtenerHerramientasObra() {
-        return new ArrayList<>();
+        public List<HerramientaDTO> obtenerHerramientasObra() throws AdmBitacoraException {
+        try {
+            Long idObra = admObraSeleccionada.obtenerIdObra();
+            List<HerramientaDTO> herramientas = boHerramienta.obtenerHerramientas(idObra);
+            
+            if (herramientas == null || herramientas.isEmpty()) {
+                throw new AdmBitacoraException("No hay herramientas asignadas a esta obra");
+            }
+            
+            return herramientas;
+        } catch (AdmObraSeleccionadaException e) {
+            throw new AdmBitacoraException("Error al obtener obra: " + e.getMessage());
+        }
     }
     
-    public List<MaquinariaDTO> obtenerMaquinariaObra() {
-        return new ArrayList<>();
+     public List<MaquinariaDTO> obtenerMaquinariaObra() throws AdmBitacoraException {
+        try {
+            Long idObra = admObraSeleccionada.obtenerIdObra();
+            List<MaquinariaDTO> maquinaria = boMaquinaria.obtenerMaquinaria(idObra);
+            
+            if (maquinaria == null || maquinaria.isEmpty()) {
+                throw new AdmBitacoraException("No hay maquinaria asignada a esta obra");
+            }
+            
+            return maquinaria;
+        } catch (AdmObraSeleccionadaException e) {
+            throw new AdmBitacoraException("Error al obtener obra: " + e.getMessage());
+        }
     }
     
     // Métodos para personal

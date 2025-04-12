@@ -10,6 +10,7 @@ import dto.MaquinariaDTO;
 import dto.MaterialIngresadoDTO;
 import dto.RecursoDTO;
 import excepciones.AdmBitacoraException;
+import excepciones.BOMaterialException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,35 +27,27 @@ public class FAdmBitacora implements IAdmBitacora {
     
     // Métodos para bitácora
     public boolean registrarBitacora(DetallesBitacoraDTO detallesBitacora) throws AdmBitacoraException {
-        // Mock: siempre retorna true
-        boolean bitacoraRegistrada = true; // Cambiar a false para probar error
-        
-        if (!bitacoraRegistrada) {
-            throw new AdmBitacoraException("Error al registrar la bitácora");
-        }
-        
-        return true;
+       return controlAdmBitacora.registrarBitacora(detallesBitacora, Long.MIN_VALUE);
     }
     
+    @Override
     public boolean validarBitacoraRegistrada() throws AdmBitacoraException {
-        return true;
+        return controlAdmBitacora.validarBitacoraRegistrada();
     }
-    
     
     // Métodos para materiales
+     @Override
     public List<RecursoDTO> obtenerRecursosObra() throws AdmBitacoraException {
-        return new ArrayList<>();
+        return controlAdmBitacora.obtenerRecursosObra();
     }
     
     public boolean validarRecurso(List<MaterialIngresadoDTO> materialIngresado) throws AdmBitacoraException {
         // Valida cada material elegido
-        for (MaterialIngresadoDTO material : materialIngresado) {
-            boolean recursoValido = true; // Cambiar a false para validar que no hay suficientes recursos en la obra
-            if (!recursoValido) {
-                throw new AdmBitacoraException("Cantidad de material en la obra insuficiente. Favor de registrar manualmente.");
-            }
+        try {
+            return controlAdmBitacora.validarRecursos(materialIngresado);
+        } catch (BOMaterialException e) {
+            throw new AdmBitacoraException(e.getMessage());
         }
-        return true;
     }
     
     // Métodos para herramientas y maquinaria
