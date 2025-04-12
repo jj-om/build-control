@@ -57,8 +57,12 @@ public class SesionObraManager {
      * @param idObra Identificador de la obra que se quiere establecer en la
      * sesión.
      */
-    public void iniciarSesion(Long idObra) {
-        this.idObra = idObra;
+    public boolean iniciarSesion(Long idObra) {
+        if (this.idObra == null) {
+            this.idObra = idObra;
+            return true;
+        }
+        return false; 
     }
 
     /**

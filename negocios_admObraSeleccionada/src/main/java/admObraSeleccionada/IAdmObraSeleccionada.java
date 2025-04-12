@@ -23,7 +23,7 @@ public interface IAdmObraSeleccionada {
      * @throws AdmObraSeleccionadaException Si ocurre un error al activar la
      * sesión.
      */
-    public void activarSesionObra(Long idObra) throws AdmObraSeleccionadaException;
+    public boolean activarSesionObra(Long idObra) throws AdmObraSeleccionadaException;
 
     /**
      * Cierra la sesión de la obra actual. Si hay una sesión activa, la finaliza

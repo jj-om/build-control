@@ -39,11 +39,12 @@ public class FAdmObraSeleccionada implements IAdmObraSeleccionada {
      * sesión.
      */
     @Override
-    public void activarSesionObra(Long idObra) throws AdmObraSeleccionadaException {
+    public boolean activarSesionObra(Long idObra) throws AdmObraSeleccionadaException {
         try {
             if (obtenerIdObra() == null) {
-                sesionObra.iniciarSesion(idObra);
+                return sesionObra.iniciarSesion(idObra);
             }
+            return false; // Ya hay una sesión activa
         } catch (Exception e) {
             throw new AdmObraSeleccionadaException("No se pudo activar la sesión de la obra.", e);
         }
