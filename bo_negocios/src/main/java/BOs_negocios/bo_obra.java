@@ -1,5 +1,7 @@
 package BOs_negocios;
 
+import excepciones.BOException;
+
 /**
  * @author Alejandra Garcia 252444
  * @author Isabel Valenzuela 253301
@@ -18,11 +20,11 @@ public class bo_obra {
         return obraBO;
     }
     
-    public boolean validarObraExiste(Long numero) {
+    public boolean validarObraExiste(Long numero) throws BOException {
         return true;
     }
     
-    public Long obtenerIdPorNumero(Long numero) {
+    public Long obtenerIdPorNumero(Long numero) throws Exception{
         return numero;
     }
 }

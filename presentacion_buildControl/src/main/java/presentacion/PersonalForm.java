@@ -62,8 +62,7 @@ public class PersonalForm extends JFrame {
         ObraDTO obra = this.coordinadorNegocio.obtenerObraSeleccionada();
         campoNombreObra.setText(obra.getDireccion());
         
-        // Inicializar lista de trabajadores
-        trabajadores = coordinadorNegocio.obtenerPersonal();
+        obtenerPersonal();
         crearPanelAsistencia();
     }
 
@@ -278,6 +277,19 @@ public class PersonalForm extends JFrame {
         filtrarPersonal();
     }//GEN-LAST:event_txtFiltroPersonalKeyReleased
 
+    private void obtenerPersonal() {
+        try {
+            // Inicializar lista de trabajadores
+            trabajadores = coordinadorNegocio.obtenerPersonal();
+        } catch (PresentacionException e) {
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            this.dispose();
+            coordinador.mostrarObraSeleccionada();
+            coordinadorNegocio.reset();
+            coordinador.reset();
+        }
+    }
+    
     private void crearPanelAsistencia() {
         // Crear el panel contenedor con BoxLayout (apilado vertical)
         panelContenedor = new JPanel();

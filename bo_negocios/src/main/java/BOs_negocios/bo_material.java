@@ -16,20 +16,26 @@ import java.util.List;
  * @author Dario Cortez 252267
  * @author Jesús Osuna 240549
  */
-
+// ESTE SE VA A BORRAR
 public class bo_material {
-    // Crear lista para guardar los materiales
-    private List<RecursoDTO> recursos = new ArrayList<>();
+    private static bo_material instance;
+
     // Crear lista para los materiales ingresados
     private List<MaterialIngresadoDTO> materialesIngresados = new ArrayList<>();
 
-    public bo_material() {
-        this.recursos = new ArrayList<>();
-        this.materialesIngresados = new ArrayList<>();
-        insertarRecursos();
+    private bo_material() {
+    }
+
+    public static bo_material getInstance() {
+        if (instance == null) {
+            instance = new bo_material();
+        }
+        return instance;
     }
     
-    private void insertarRecursos() {
+    public List<RecursoDTO> obtenerRecursosObra() throws BOMaterialException {
+        List<RecursoDTO> recursos = new ArrayList<>();
+        
         MaterialDTO material1 = new MaterialDTO("Cemento", 50.0f, "Holcim", "kg");
         MaterialDTO material2 = new MaterialDTO("Arena", 100.0f, "Cemex", "kg");
         MaterialDTO material3 = new MaterialDTO("Varilla", 20.5f, "Ternium", "kg");
@@ -48,18 +54,12 @@ public class bo_material {
         recursos.add(new RecursoDTO(material6, 500));  // 500 unidades de clavos
         recursos.add(new RecursoDTO(material7, 150));  // 150 unidades de madera
         recursos.add(new RecursoDTO(material8, 25));   // 25 unidades de adhesivo
+        
+        return recursos;
     }
     
-    // El tipo retorno se va a cambiar por List<RecursoDTO>
-    public List<RecursoDTO> obtenerRecursosObra() throws BOMaterialException {
-        if (!validarLista()) {
-            throw new BOMaterialException("No hay recursos en la obra");
-        }
-        return new ArrayList<>(recursos);
+    // FALTA PONER LOGICA, ESTA EN COORDINADOR NEGOCIO DE PRESENTACION
+    public boolean actualizarCantidadRecurso(String nombreMaterial, String unidadPeso, Integer cantidad) {
+        return true;
     }
-    
-    private boolean validarLista() {
-        return recursos != null && !recursos.isEmpty();
-    }
-    
 }

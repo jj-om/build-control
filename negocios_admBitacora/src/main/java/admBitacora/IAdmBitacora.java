@@ -4,10 +4,20 @@
  */
 package admBitacora;
 
+import dto.HerramientaDTO;
+import dto.MaquinariaDTO;
+import excepciones.AdmBitacoraException;
+import java.util.List;
+
 /**
  *
  * @author rocha
  */
 public interface IAdmBitacora {
     
+    public List<HerramientaDTO> obtenerHerramientasObra() throws AdmBitacoraException;
+    
+    public List<MaquinariaDTO> obtenerMaquinariaObra() throws AdmBitacoraException;
+    
+    public List<String> obtenerPersonalObra() throws AdmBitacoraException;
 }

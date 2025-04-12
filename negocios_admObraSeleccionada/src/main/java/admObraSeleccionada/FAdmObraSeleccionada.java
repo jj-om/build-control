@@ -19,35 +19,26 @@ import excepciones.AdmObraSeleccionadaException;
  */
 public class FAdmObraSeleccionada implements IAdmObraSeleccionada {
 
-    // Instancia única del gestor de sesión de obra (Singleton).
-    private SesionObraManager sesionObra;
+    private ControlAdmObraSeleccionada controlAdmObraSeleccionada;
 
     /**
      * Constructor de la fachada. Inicializa la instancia de SesionObraManager
      * obteniéndola del Singleton.
      */
     public FAdmObraSeleccionada() {
-        this.sesionObra = SesionObraManager.getInstance();
+        this.controlAdmObraSeleccionada = new ControlAdmObraSeleccionada();
     }
 
     /**
      * Activa la sesión de una obra en el sistema. Si no hay una obra en sesión,
      * se establece la nueva obra con su identificador.
      *
-     * @param idObra Identificador único de la obra a activar.
      * @throws AdmObraSeleccionadaException Si ocurre un error al activar la
      * sesión.
      */
     @Override
-    public boolean activarSesionObra(Long idObra) throws AdmObraSeleccionadaException {
-        try {
-            if (obtenerIdObra() == null) {
-                return sesionObra.iniciarSesion(idObra);
-            }
-            return false; // Ya hay una sesión activa
-        } catch (Exception e) {
-            throw new AdmObraSeleccionadaException("No se pudo activar la sesión de la obra.", e);
-        }
+    public boolean activarSesionObra(Long numero) throws AdmObraSeleccionadaException {
+        return controlAdmObraSeleccionada.iniciarSesion(numero);
     }
 
     /**
@@ -59,13 +50,7 @@ public class FAdmObraSeleccionada implements IAdmObraSeleccionada {
      */
     @Override
     public void cerrarSesionObra() throws AdmObraSeleccionadaException {
-        try {
-            if (obtenerIdObra() != null) {
-                sesionObra.cerrarSesion();
-            }
-        } catch (Exception e) {
-            throw new AdmObraSeleccionadaException("No se pudo cerrar la sesión de la obra.", e);
-        }
+        controlAdmObraSeleccionada.cerrarSesion();
     }
 
     /**
@@ -77,6 +62,6 @@ public class FAdmObraSeleccionada implements IAdmObraSeleccionada {
      */
     @Override
     public Long obtenerIdObra() throws AdmObraSeleccionadaException {
-        return sesionObra.getIdObra();
+        return controlAdmObraSeleccionada.obtenerIdObra();
     }
 }

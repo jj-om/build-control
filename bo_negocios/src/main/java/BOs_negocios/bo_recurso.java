@@ -4,6 +4,7 @@ import dto.MaterialDTO;
 import dto.MaterialIngresadoDTO;
 import dto.ObraDTO;
 import dto.RecursoDTO;
+import excepciones.BOException;
 import excepciones.BOMaterialException;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +33,7 @@ public class bo_recurso {
         return recursoBO;
     }
     
-    public List<RecursoDTO> obtenerRecursosObra(Long idObra) throws BOMaterialException {
+    public List<RecursoDTO> obtenerRecursosObra(Long idObra) throws BOException {
         MaterialDTO material1 = new MaterialDTO("Cemento", 50.0f, "Holcim", "kg");
         MaterialDTO material2 = new MaterialDTO("Arena", 100.0f, "Cemex", "kg");
         MaterialDTO material3 = new MaterialDTO("Varilla", 20.5f, "Ternium", "kg");
@@ -55,16 +56,17 @@ public class bo_recurso {
         return recursos;
     }
     
-    public boolean actualizarCantidadRecurso(String nombreMaterial, String unidadPeso, Integer cantidad) throws BOMaterialException {
-        List<RecursoDTO> recursosObra = obtenerRecursosObra(obra.getIdObra());
-        // Si el material se encuentra registrado, se actualiza la cantidad de stock
-        for (RecursoDTO recurso : recursosObra) {
-            if (recurso.getMaterial().getNombre().equals(nombreMaterial) || recurso.getMaterial().getUnidadPeso().equals(unidadPeso)) {
-                recurso.setCantidad(cantidad);
-                // Imprimir para probar si funciona
-                // System.out.println("Cantidad actualizada");
-            }
-        }
+    // Checar con el que esta en coordinador negocio en presentacion
+    public boolean actualizarCantidadRecurso(String nombreMaterial, String unidadPeso, Integer cantidad) throws BOException {
+//        List<RecursoDTO> recursosObra = obtenerRecursosObra(obra.getIdObra());
+//        // Si el material se encuentra registrado, se actualiza la cantidad de stock
+//        for (RecursoDTO recurso : recursosObra) {
+//            if (recurso.getMaterial().getNombre().equals(nombreMaterial) || recurso.getMaterial().getUnidadPeso().equals(unidadPeso)) {
+//                recurso.setCantidad(cantidad);
+//                // Imprimir para probar si funciona
+//                // System.out.println("Cantidad actualizada");
+//            }
+//        }
         return true;
     }
     

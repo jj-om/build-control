@@ -10,7 +10,7 @@ import java.util.List;
  * @author Dario Cortez 252267
  * @author Jesús Osuna 240549
  */
-
+// SE VA A QUITAR
 public class bo_asistencia {
     public static bo_asistencia personalBO;
     

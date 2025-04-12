@@ -4,12 +4,13 @@
  */
 package presentacion;
 
-import BOs_negocios.bo_material;
 import validadores.Validaciones;
 import admActividades.FAdmActividades;
 import admActividades.FAdmMateriales;
 import admActividades.IAdmActividades;
 import admActividades.IAdmMateriales;
+import admBitacora.FAdmBitacora;
+import admBitacora.IAdmBitacora;
 import admObraSeleccionada.FAdmObraSeleccionada;
 import admObraSeleccionada.IAdmObraSeleccionada;
 import dto.ActividadDTO;
@@ -20,11 +21,11 @@ import dto.HerramientaDTO;
 import dto.HerramientaIngresadaDTO;
 import dto.ListaAsistenciaDTO;
 import dto.MaquinariaDTO;
-import dto.MaterialDTO;
 import dto.MaterialIngresadoDTO;
 import dto.ObraDTO;
 import dto.RecursoDTO;
 import excepciones.AdmActividadesException;
+import excepciones.AdmBitacoraException;
 import excepciones.AdmMaterialesException;
 import excepciones.AdmObraSeleccionadaException;
 import exception.PresentacionException;
@@ -65,16 +66,21 @@ public class CoordinadorNegocio {
     private List<ObraDTO> obras;
     // Instancia del subsistema de obra seleccionada
     private IAdmObraSeleccionada admObraSeleccionada;
+    // Instancia del subsistema de bitacora
+    private IAdmBitacora admBitacora;
+    
+   
     // Instancia del subsistema de actividades
-    private IAdmActividades admActividades;
+    private IAdmActividades admActividades;              // ESTAS 2 YA NO VAN, BORRAR YA QUE SE PASE TODO A BITACORA
     // Instancia del subsistema de materiales
     private IAdmMateriales admMateriales;
-    
 
     private CoordinadorNegocio() {
         // Inicializar fachada desde el coordinador
-        this.admActividades = new FAdmActividades();
+        this.admBitacora = new FAdmBitacora();
         this.admObraSeleccionada = new FAdmObraSeleccionada();
+        
+        this.admActividades = new FAdmActividades(); // ESTOS 2 YA NO VAN
         this.admMateriales = new FAdmMateriales();
         
         // Iniciar listas
@@ -100,7 +106,7 @@ public class CoordinadorNegocio {
     }
     
     // MÉTODOS PARA EL FORMULARIO DE ACTIVIDADES
-    // Método para registrar una actividad en la lista
+    // Método para registrar una actividad en la lista interna
     public void registrarActividad(String titulo, String descripcion) throws PresentacionException {
         // Validar antes de agregar la actividad
         String mensajeError = Validaciones.validarActividad(titulo, descripcion);
@@ -205,23 +211,13 @@ public class CoordinadorNegocio {
     }
     
     // MÉTODOS PARA EL FORMULARIO DE HERRAMIENTAS Y MAQUINARIA
-    // Regresar lista de las herramientas    
-    // MÉTODOS PARA EL FORMULARIO DE HERRAMIENTAS Y MAQUINARIA
     // Regresar lista de las herramientas
-    public List<HerramientaDTO> obtenerHerramientas() {
-        // Crear lista y agregar herramientas directamente en la inicialización
-        return new ArrayList<>(List.of(
-                new HerramientaDTO("Llave Inglesa", "Stanley", "87-367"),
-                new HerramientaDTO("Sierra Circular", "Makita", "HS7601"),
-                new HerramientaDTO("Taladro Percutor", "DeWalt", "DWD024"),
-                new HerramientaDTO("Llave de Impacto", "Milwaukee", "M18 FUEL"),
-                new HerramientaDTO("Esmeril Angular", "Bosch", "GWS 750-115"),
-                new HerramientaDTO("Lijadora Orbital", "Black+Decker", "BDEQS300"),
-                new HerramientaDTO("Destornillador Eléctrico", "Einhell", "TC-SD 3.6 Li"),
-                new HerramientaDTO("Clavadora Neumática", "Stanley", "TRE650"),
-                new HerramientaDTO("Pistola de Calor", "Wagner", "FURNO 500"),
-                new HerramientaDTO("Compresor de Aire", "Kobalt", "XC802000")
-        ));
+    public List<HerramientaDTO> obtenerHerramientas() throws PresentacionException {
+        try {
+            return admBitacora.obtenerHerramientasObra();
+        } catch (AdmBitacoraException e) {
+            throw new PresentacionException(e.getMessage(), e);
+        }
     }
     
     // Guardar herramientas dentro de la lista del coordinador
@@ -236,31 +232,12 @@ public class CoordinadorNegocio {
 //        return true;
     }
     
-    public List<MaquinariaDTO> obtenerMaquinaria() {
-        // Crear instancias de maquinarias
-        MaquinariaDTO maquinaria1 = new MaquinariaDTO("Excavadora", "Caterpillar", "CAT-EXC-001");
-        MaquinariaDTO maquinaria2 = new MaquinariaDTO("Bulldozer", "Komatsu", "KOM-BLD-002");
-        MaquinariaDTO maquinaria3 = new MaquinariaDTO("Retroexcavadora", "JCB", "JCB-RETRO-003");
-        MaquinariaDTO maquinaria4 = new MaquinariaDTO("Grúa Torre", "Liebherr", "LIEB-GRU-004");
-        MaquinariaDTO maquinaria5 = new MaquinariaDTO("Compactadora", "Bomag", "BOM-COMP-005");
-        MaquinariaDTO maquinaria6 = new MaquinariaDTO("Motoniveladora", "John Deere", "JD-MOTONIV-006");
-        MaquinariaDTO maquinaria7 = new MaquinariaDTO("Cargador Frontal", "Volvo", "VOL-CARG-007");
-        MaquinariaDTO maquinaria8 = new MaquinariaDTO("Perforadora", "Atlas Copco", "ATLAS-PERF-008");
-        MaquinariaDTO maquinaria9 = new MaquinariaDTO("Trituradora", "Metso", "METSO-TRIT-009");
-        MaquinariaDTO maquinaria10 = new MaquinariaDTO("Mezcladora de Concreto", "CemenTech", "CEM-MEZC-010");
-        // Añadir maquinaria a la lista
-        maquinaria.add(maquinaria1);
-        maquinaria.add(maquinaria2);
-        maquinaria.add(maquinaria3);
-        maquinaria.add(maquinaria4);
-        maquinaria.add(maquinaria5);
-        maquinaria.add(maquinaria6);
-        maquinaria.add(maquinaria7);
-        maquinaria.add(maquinaria8);
-        maquinaria.add(maquinaria9);
-        maquinaria.add(maquinaria10);
-        
-        return maquinaria;
+    public List<MaquinariaDTO> obtenerMaquinaria() throws PresentacionException {
+        try {
+            return admBitacora.obtenerMaquinariaObra();
+        } catch (AdmBitacoraException e) {
+            throw new PresentacionException(e.getMessage(), e);
+        }
     }
     
     // Guardar la maquinaria ingresada
@@ -287,19 +264,17 @@ public class CoordinadorNegocio {
         return true;
     }
     
-    // Método para obtener la lista de asistencia del personal
-    public List<String> obtenerPersonal() {
-        List<String> personal = new ArrayList<>();
-
-        // Agregar nombres a la lista
-        personal.add("Juan Pérez");
-        personal.add("Ana Gómez");
-        personal.add("Carlos Rodríguez");
-        personal.add("María Fernández");
-        personal.add("Luis Martínez");
-
-        // Retornar la lista de nombres
-        return personal;
+    /**
+     * Obtiene la lista de personal mediante el subsistema.
+     * @return Lista con los nombres del personal de la obra.
+     * @throws PresentacionException Si hubo un error al obtener el personal.
+     */
+    public List<String> obtenerPersonal() throws PresentacionException {
+        try {
+            return admBitacora.obtenerPersonalObra();
+        } catch (AdmBitacoraException e) {
+            throw new PresentacionException(e.getMessage(), e);
+        }
     }
 
     public void validarHoras(LocalTime horaEntrada, LocalTime horaSalida, String nombre) throws PresentacionException {

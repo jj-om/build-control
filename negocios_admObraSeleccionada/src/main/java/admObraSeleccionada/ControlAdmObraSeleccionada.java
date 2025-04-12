@@ -5,6 +5,8 @@
 package admObraSeleccionada;
 
 import BOs_negocios.bo_obra;
+import excepciones.AdmObraSeleccionadaException;
+import excepciones.BOException;
 
 /**
  *
@@ -20,12 +22,18 @@ public class ControlAdmObraSeleccionada {
         this.obraBO = bo_obra.getInstance();
     }
 
-    public boolean iniciarSesion(Long numero) {
-        if (obraBO.validarObraExiste(numero)) {
-            Long idObra = obraBO.obtenerIdPorNumero(numero);
+    public boolean iniciarSesion(Long numero) throws AdmObraSeleccionadaException {
+        try {
+            if (!obraBO.validarObraExiste(numero)) {
+                throw new AdmObraSeleccionadaException("No se encontró obra con número " + numero + ".");
+            }
+            
+            Long idObra = obtenerIdPorNumero(numero);
+            
             return sesionManager.iniciarSesion(idObra);
+        } catch (BOException e) {
+            throw new AdmObraSeleccionadaException("No se pudo iniciar la sesión de la obra.", e);
         }
-        return false;
     }
 
     public void cerrarSesion() {
@@ -36,11 +44,19 @@ public class ControlAdmObraSeleccionada {
         return sesionManager.getIdObra();
     }
 
-    public boolean validarObraExiste(Long numero) {
-        return obraBO.validarObraExiste(numero);
+    public boolean validarObraExiste(Long numero) throws AdmObraSeleccionadaException {
+        try {
+            return obraBO.validarObraExiste(numero);
+        } catch (BOException e) {
+            throw new AdmObraSeleccionadaException("No se pudo verificar si la obra existe.", e);
+        }
     }
 
-    public Long obtenerIdPorNumero(Long numero) {
-        return obraBO.obtenerIdPorNumero(numero);
+    private Long obtenerIdPorNumero(Long numero) throws AdmObraSeleccionadaException {
+        try {
+            return obraBO.obtenerIdPorNumero(numero);
+        } catch (Exception e) {
+            throw new AdmObraSeleccionadaException("No se pudo obtener el id de la obra.", e);
+        }
     }
 }

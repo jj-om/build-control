@@ -3,7 +3,8 @@ BOs_negocios\bo_obra.class
 BOs_negocios\bo_maquinaria.class
 BOs_negocios\bo_material.class
 BOs_negocios\bo_bitacora.class
-BOs_negocios\bo_detallesBitacora.class
+BOs_negocios\bo_personal.class
+excepciones\BOException.class
 BOs_negocios\bo_negocios.class
 BOs_negocios\bo_recurso.class
 BOs_negocios\bo_asistencia.class

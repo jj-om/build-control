@@ -19,11 +19,12 @@ public interface IAdmObraSeleccionada {
      * Activa la sesión de una obra en el sistema. Si no hay una obra en sesión,
      * se establece la nueva obra con su identificador.
      *
-     * @param idObra Identificador único de la obra a activar.
+     * @param numero Numero de la obra.
+     * @return True si se activó la obra, false en caso contrario.
      * @throws AdmObraSeleccionadaException Si ocurre un error al activar la
      * sesión.
      */
-    public boolean activarSesionObra(Long idObra) throws AdmObraSeleccionadaException;
+    public boolean activarSesionObra(Long numero) throws AdmObraSeleccionadaException;
 
     /**
      * Cierra la sesión de la obra actual. Si hay una sesión activa, la finaliza
