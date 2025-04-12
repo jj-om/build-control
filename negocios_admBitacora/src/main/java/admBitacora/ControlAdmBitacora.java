@@ -41,8 +41,12 @@ public class ControlAdmBitacora {
 
     public ControlAdmBitacora() {
         this.admObraSeleccionada = new FAdmObraSeleccionada();
-        this.boRecurso = new bo_recurso();
+        
+        this.boBitacora = bo_bitacora.getInstance();
+        this.boHerramienta = bo_herramienta.getInstance();
+        this.boMaquinaria = bo_maquinaria.getInstance();
         this.boPersonal = bo_personal.getInstance();
+        this.boRecurso = bo_recurso.getInstance();
     }
     
     // Métodos para bitácora
