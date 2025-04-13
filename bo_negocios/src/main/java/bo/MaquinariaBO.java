@@ -1,4 +1,4 @@
-package BOs_negocios;
+package bo;
 
 import dto.MaquinariaDTO;
 import java.util.ArrayList;
@@ -12,17 +12,20 @@ import java.util.List;
  * @author Jesús Osuna 240549
  */
 
-public class bo_maquinaria {
-    public static bo_maquinaria maquinariaBO;
-    
-    public static bo_maquinaria getInstance() {
-        if (maquinariaBO == null) {
-            maquinariaBO = new bo_maquinaria();
+public class MaquinariaBO {
+    public static MaquinariaBO instance;
+
+    private MaquinariaBO() {
+    }
+
+    public static MaquinariaBO getInstance() {
+        if (instance == null) {
+            instance = new MaquinariaBO();
         }
-        return maquinariaBO;
+        return instance;
     }
     
-    public List<MaquinariaDTO> obtenerMaquinaria(Long idObra) {
+    public List<MaquinariaDTO> obtenerMaquinariaObra(Long idObra) {
         // Lista mock de maquinaria disponible
         List<MaquinariaDTO> maquinaria = new ArrayList<>();
         

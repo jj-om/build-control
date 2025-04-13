@@ -61,7 +61,7 @@ public class FAdmObraSeleccionada implements IAdmObraSeleccionada {
      * de la obra.
      */
     @Override
-    public Long obtenerIdObra() throws AdmObraSeleccionadaException {
+    public Long obtenerSesion() throws AdmObraSeleccionadaException {
         return controlAdmObraSeleccionada.obtenerIdObra();
     }
     

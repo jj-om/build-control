@@ -4,6 +4,7 @@
  */
 package presentacion;
 
+import exception.DatosInvalidosException;
 import exception.PresentacionException;
 import javax.swing.JOptionPane;
 
@@ -19,7 +20,6 @@ public class ActividadesForm extends javax.swing.JFrame {
 
     /**
      * Creates new form ActividadesRealizadasForm
-     * @param coordinador
      */
     public ActividadesForm() {
         initComponents();
@@ -177,6 +177,8 @@ public class ActividadesForm extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Actividad agregada correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);   
         } catch (PresentacionException e) {
             JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (DatosInvalidosException e) {
+            JOptionPane.showMessageDialog(this, "Error por datos inválidos: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }  
     }
 

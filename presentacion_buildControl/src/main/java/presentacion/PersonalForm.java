@@ -6,6 +6,7 @@ package presentacion;
 
 import com.github.lgooddatepicker.components.TimePicker;
 import dto.AsistenciaPersonalDTO;
+import exception.DatosInvalidosException;
 import exception.PresentacionException;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -232,9 +233,9 @@ public class PersonalForm extends JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 514, Short.MAX_VALUE)
                 .addComponent(btnSiguiente)
                 .addGap(27, 27, 27))
-            .addGroup(layout.createSequentialGroup()
-                .addGap(38, 38, 38)
-                .addComponent(panelPrincipal, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(panelPrincipal, javax.swing.GroupLayout.PREFERRED_SIZE, 818, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -468,7 +469,7 @@ public class PersonalForm extends JFrame {
     }
 
     // Registrar la asistencia de los empleados seleccionados
-    private List<AsistenciaPersonalDTO> registrarAsistenciaPorPersonal() throws PresentacionException {
+    private List<AsistenciaPersonalDTO> registrarAsistenciaPorPersonal() throws DatosInvalidosException {
         List<Component> panelesPersonalSeleccionados = buscarPersonalSeleccionados();
         List<AsistenciaPersonalDTO> listaAsistenciaPersonal = null;
 
@@ -536,8 +537,9 @@ public class PersonalForm extends JFrame {
             coordinador.mostrarObraSeleccionada();
         } catch (PresentacionException e) {
             JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (DatosInvalidosException e) {
+            JOptionPane.showMessageDialog(this, "Error por datos inválidos: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
-
     }
 
     private void atras() {

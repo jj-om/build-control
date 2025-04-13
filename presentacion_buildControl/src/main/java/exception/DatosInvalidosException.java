@@ -2,19 +2,22 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package excepciones;
+package exception;
 
 /**
  *
- * @author Ximena
+ * @author rocha
  */
-public class BOMaterialException extends Exception {
+public class DatosInvalidosException extends Exception {
 
-    public BOMaterialException(String message) {
+    public DatosInvalidosException() {
+    }
+
+    public DatosInvalidosException(String message) {
         super(message);
     }
 
-    public BOMaterialException(String message, Throwable cause) {
+    public DatosInvalidosException(String message, Throwable cause) {
         super(message, cause);
     }
     

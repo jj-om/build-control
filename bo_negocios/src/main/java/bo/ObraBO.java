@@ -1,4 +1,4 @@
-package BOs_negocios;
+package bo;
 
 import excepciones.BOException;
 
@@ -10,14 +10,17 @@ import excepciones.BOException;
  * @author Jesús Osuna 240549
  */
 
-public class bo_obra {
-    public static bo_obra obraBO;
-    
-    public static bo_obra getInstance() {
-        if (obraBO == null) {
-            obraBO = new bo_obra();
+public class ObraBO {
+    public static ObraBO instance;
+
+    private ObraBO() {
+    }
+
+    public static ObraBO getInstance() {
+        if (instance == null) {
+            instance = new ObraBO();
         }
-        return obraBO;
+        return instance;
     }
     
     public boolean validarObraExiste(Long numero) throws BOException {
@@ -30,6 +33,5 @@ public class bo_obra {
     
     public String obtenerDireccionObra(Long id) throws Exception{
         return "Camino de los Mayos #716";
-    }
-    
+    } 
 }

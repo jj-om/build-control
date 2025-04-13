@@ -21,12 +21,12 @@ import dto.ObraDTO;
 import dto.RecursoDTO;
 import excepciones.AdmBitacoraException;
 import excepciones.AdmObraSeleccionadaException;
+import exception.DatosInvalidosException;
 import exception.PresentacionException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  *
@@ -90,13 +90,9 @@ public class CoordinadorNegocio {
 
     // MÉTODOS PARA EL FORMULARIO DE ACTIVIDADES
     // Método para registrar una actividad en la lista interna
-    public void registrarActividad(String titulo, String descripcion) throws PresentacionException {
+    public void registrarActividad(String titulo, String descripcion) throws PresentacionException, DatosInvalidosException {
         // Validar antes de agregar la actividad
-        String mensajeError = Validaciones.validarActividad(titulo, descripcion);
-
-        if (mensajeError != null) {
-            throw new PresentacionException(mensajeError);
-        }
+        Validaciones.validarActividad(titulo, descripcion);
 
         // Agregar actividad después de validar
         actividades.add(new ActividadDTO(titulo, descripcion));
@@ -184,13 +180,9 @@ public class CoordinadorNegocio {
         }
     }
 
-    public void validarHoras(LocalTime horaEntrada, LocalTime horaSalida, String nombre) throws PresentacionException {
+    public void validarHoras(LocalTime horaEntrada, LocalTime horaSalida, String nombre) throws DatosInvalidosException {
         // Validar antes de agregar la asistencia
-        String mensajeError = Validaciones.validarHorasPersonal(horaEntrada, horaSalida, nombre);
-
-        if (mensajeError != null) {
-            throw new PresentacionException("Error: " + mensajeError);
-        }
+        Validaciones.validarHorasPersonal(horaEntrada, horaSalida, nombre);
     }
 
     // Para saber si la obra ya tiene una bitácora

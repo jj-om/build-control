@@ -4,7 +4,7 @@
  */
 package admObraSeleccionada;
 
-import BOs_negocios.bo_obra;
+import bo.ObraBO;
 import excepciones.AdmObraSeleccionadaException;
 import excepciones.BOException;
 
@@ -15,11 +15,11 @@ import excepciones.BOException;
 public class ControlAdmObraSeleccionada {
     
     private final SesionObraManager sesionManager;
-    private final bo_obra obraBO;
+    private final ObraBO obraBO;
 
     public ControlAdmObraSeleccionada() {
         this.sesionManager = SesionObraManager.getInstance();
-        this.obraBO = bo_obra.getInstance();
+        this.obraBO = ObraBO.getInstance();
     }
 
     public boolean iniciarSesion(Long numero) throws AdmObraSeleccionadaException {

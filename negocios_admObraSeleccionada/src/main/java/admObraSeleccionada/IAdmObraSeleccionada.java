@@ -42,7 +42,7 @@ public interface IAdmObraSeleccionada {
      * @throws AdmObraSeleccionadaException Si ocurre un error al obtener el ID
      * de la obra.
      */
-    public Long obtenerIdObra() throws AdmObraSeleccionadaException;
+    public Long obtenerSesion() throws AdmObraSeleccionadaException;
     
     public String obtenerDireccionObra() throws AdmObraSeleccionadaException;
     

@@ -8,19 +8,19 @@ public class ObraDTO {
 
     private Long idObra;
     private String direccion;
-    private Long metrosCubicos;
+    private Double metrosCubicos;
 
     public ObraDTO() {
         
     }
     
-    public ObraDTO(Long idObra, String direccion, Long metrosCubicos) {
+    public ObraDTO(Long idObra, String direccion, Double metrosCubicos) {
         this.idObra = idObra;
         this.direccion = direccion;
         this.metrosCubicos = metrosCubicos;
     }
 
-    public ObraDTO(String direccion, Long metrosCubicos) {
+    public ObraDTO(String direccion, Double metrosCubicos) {
         this.direccion = direccion;
         this.metrosCubicos = metrosCubicos;
     }
@@ -41,11 +41,11 @@ public class ObraDTO {
         this.direccion = direccion;
     }
 
-    public Long getMetrosCubicos() {
+    public Double getMetrosCubicos() {
         return metrosCubicos;
     }
 
-    public void setMetrosCubicos(Long metrosCubicos) {
+    public void setMetrosCubicos(Double metrosCubicos) {
         this.metrosCubicos = metrosCubicos;
     }
 

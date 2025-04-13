@@ -1,4 +1,4 @@
-package BOs_negocios;
+package bo;
 
 import dto.BitacoraDTO;
 import dto.DetallesBitacoraDTO;
@@ -12,14 +12,17 @@ import excepciones.BOException;
  * @author Jesús Osuna 240549
  */
 
-public class bo_bitacora {
-    public static bo_bitacora bitacoraBO;
-    
-    public static bo_bitacora getInstance() {
-        if (bitacoraBO == null) {
-            bitacoraBO = new bo_bitacora();
+public class BitacoraBO {
+    private static BitacoraBO instance;
+
+    private BitacoraBO() {
+    }
+
+    public static BitacoraBO getInstance() {
+        if (instance == null) {
+            instance = new BitacoraBO();
         }
-        return bitacoraBO;
+        return instance;
     }
     
     public BitacoraDTO registrarBitacora(DetallesBitacoraDTO detallesBitacoraDTO) throws BOException {
@@ -27,6 +30,7 @@ public class bo_bitacora {
     }
     
     public boolean validarBitacoraRegistrada(Long idObra) {
+        // Cambiar valor para probar error de bitácora ya registrada
         return false;
     }
 }

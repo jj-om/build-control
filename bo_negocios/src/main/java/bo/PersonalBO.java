@@ -1,5 +1,10 @@
-package BOs_negocios;
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+package bo;
 
+import excepciones.BOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,18 +15,20 @@ import java.util.List;
  * @author Dario Cortez 252267
  * @author Jesús Osuna 240549
  */
-// SE VA A QUITAR
-public class bo_asistencia {
-    public static bo_asistencia personalBO;
-    
-    public static bo_asistencia getInstance() {
-        if (personalBO == null) {
-            personalBO = new bo_asistencia();
+public class PersonalBO {
+    private static PersonalBO instance;
+
+    private PersonalBO() {
+    }
+
+    public static PersonalBO getInstance() {
+        if (instance == null) {
+            instance = new PersonalBO();
         }
-        return personalBO;
+        return instance;
     }
     
-    public List<String> obtenerPersonalObra(Long idObra) {
+    public List<String> obtenerPersonalObra(Long idObra) throws BOException { // Cuando esté infraestructura va a tirar la excepckión
         // Lista mock de personal disponible
         List<String> personal = new ArrayList<>();
         
@@ -36,5 +43,4 @@ public class bo_asistencia {
         
         return personal;
     }
-    
 }

@@ -1,4 +1,4 @@
-package BOs_negocios;
+package bo;
 
 import dto.MaterialDTO;
 import dto.MaterialIngresadoDTO;
@@ -16,21 +16,21 @@ import java.util.List;
  * @author Jesús Osuna 240549
  */
 
-public class bo_recurso {
+public class RecursoBO {
     
-    public static bo_recurso recursoBO;
+    public static RecursoBO instance;
     // Crear lista para guardar los materiales
-    private List<RecursoDTO> recursos = new ArrayList<>();
-    // Crear lista para los materiales ingresados
-    private List<MaterialIngresadoDTO> materialesIngresados = new ArrayList<>();
-    //TEMPORAL objeto obra
-    private ObraDTO obra;
+    private List<RecursoDTO> recursos;
+
+    private RecursoBO() {
+        this.recursos = new ArrayList<>();
+    }
     
-    public static bo_recurso getInstance() {
-        if (recursoBO == null) {
-            recursoBO = new bo_recurso();
+    public static RecursoBO getInstance() {
+        if (instance == null) {
+            instance = new RecursoBO();
         }
-        return recursoBO;
+        return instance;
     }
     
     public List<RecursoDTO> obtenerRecursosObra(Long idObra) throws BOException {

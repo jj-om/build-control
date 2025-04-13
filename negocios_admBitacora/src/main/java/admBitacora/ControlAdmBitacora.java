@@ -4,11 +4,11 @@
  */
 package admBitacora;
 
-import BOs_negocios.bo_bitacora;
-import BOs_negocios.bo_herramienta;
-import BOs_negocios.bo_maquinaria;
-import BOs_negocios.bo_personal;
-import BOs_negocios.bo_recurso;
+import bo.BitacoraBO;
+import bo.HerramientaBO;
+import bo.MaquinariaBO;
+import bo.PersonalBO;
+import bo.RecursoBO;
 import admObraSeleccionada.FAdmObraSeleccionada;
 import admObraSeleccionada.IAdmObraSeleccionada;
 import dto.BitacoraDTO;
@@ -22,8 +22,6 @@ import excepciones.AdmObraSeleccionadaException;
 import excepciones.BOException;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -33,33 +31,29 @@ public class ControlAdmBitacora {
     private IAdmObraSeleccionada admObraSeleccionada;
     
     // BOs
-    private bo_bitacora boBitacora;
-    private bo_herramienta boHerramienta;
-    private bo_maquinaria boMaquinaria;
-    private bo_personal boPersonal;
-    private bo_recurso boRecurso;
+    private BitacoraBO boBitacora;
+    private HerramientaBO boHerramienta;
+    private MaquinariaBO boMaquinaria;
+    private PersonalBO boPersonal;
+    private RecursoBO boRecurso;
 
     public ControlAdmBitacora() {
         this.admObraSeleccionada = new FAdmObraSeleccionada();
         
-        this.boBitacora = bo_bitacora.getInstance();
-        this.boHerramienta = bo_herramienta.getInstance();
-        this.boMaquinaria = bo_maquinaria.getInstance();
-        this.boPersonal = bo_personal.getInstance();
-        this.boRecurso = bo_recurso.getInstance();
+        this.boBitacora = BitacoraBO.getInstance();
+        this.boHerramienta = HerramientaBO.getInstance();
+        this.boMaquinaria = MaquinariaBO.getInstance();
+        this.boPersonal = PersonalBO.getInstance();
+        this.boRecurso = RecursoBO.getInstance();
     }
     
     // Métodos para bitácora
     public boolean registrarBitacora(DetallesBitacoraDTO detallesBitacoraDTO) throws AdmBitacoraException {
         try {
-            // Validar que la bitácora no esté ya registrada para esta obra/fecha
-            if (validarBitacoraRegistrada()) {
-                throw new AdmBitacoraException("Ya existe una bitácora registrada para esta obra hoy");
-            }
-
             Long idObra = null;
+            
             try {
-                idObra = admObraSeleccionada.obtenerIdObra();
+                idObra = admObraSeleccionada.obtenerSesion();
             } catch (AdmObraSeleccionadaException ex) {
                 throw new AdmBitacoraException(ex.getMessage(), ex);
             }
@@ -88,66 +82,64 @@ public class ControlAdmBitacora {
             }
 
             return true;
-        } catch (AdmBitacoraException e) {
+        } catch (AdmBitacoraException | BOException e) {
             throw new AdmBitacoraException("Error en sistema: " + e.getMessage());
-        } catch (BOException ex) {
-           throw new AdmBitacoraException("Error en sistema: " + ex.getMessage());
         }
     }
-    
-    public boolean validarDatosBitacora(DetallesBitacoraDTO detallesBitacoraDTO, Long idObra) {
-    return detallesBitacoraDTO != null &&
-           idObra != null &&
-           detallesBitacoraDTO.getActividades() != null 
-            && !detallesBitacoraDTO.getActividades().isEmpty();
-}
-    
+
+    private boolean validarDatosBitacora(DetallesBitacoraDTO detallesBitacoraDTO, Long idObra) {
+        return detallesBitacoraDTO != null
+                && idObra != null
+                && detallesBitacoraDTO.getActividades() != null
+                && !detallesBitacoraDTO.getActividades().isEmpty();
+    }
+
     public boolean validarBitacoraRegistrada() throws AdmBitacoraException {
         try {
-            Long idObra = admObraSeleccionada.obtenerIdObra();
+            Long idObra = admObraSeleccionada.obtenerSesion();
             return boBitacora.validarBitacoraRegistrada(idObra);
         } catch (AdmObraSeleccionadaException ex) {
             throw new AdmBitacoraException("Fallo al validar la bitacora.");
         }
     }
-    
+
     // Métodos para materiales
     public List<RecursoDTO> obtenerRecursosObra() throws AdmBitacoraException {
         try {
             // Obtiene el id mediante el subsistema
-            Long idObra = admObraSeleccionada.obtenerIdObra();
-            
+            Long idObra = admObraSeleccionada.obtenerSesion();
+
             // Obtiene el recurso de la obra mediante el BO
             List<RecursoDTO> recursos = boRecurso.obtenerRecursosObra(idObra);
-            
+
             // Valida la lista de personal
             if (recursos == null || recursos.isEmpty()) {
                 throw new AdmBitacoraException("No hay recursos asignados a la obra.");
             }
-            
+
             return recursos;
         } catch (BOException | AdmObraSeleccionadaException e) {
             throw new AdmBitacoraException("No se pudo obtener el personal de la obra.");
         }
     }
-    
+
     public boolean validarRecursos(List<MaterialIngresadoDTO> materialIngresado) throws AdmBitacoraException {
         // Valida cada material elegido
         for (MaterialIngresadoDTO material : materialIngresado) {
-            if (material.getCantidad() > material.getRecurso().getCantidad()) { 
+            if (material.getCantidad() > material.getRecurso().getCantidad()) {
                 throw new AdmBitacoraException("Cantidad de material en la obra insuficiente. Favor de registrar manualmente.");
             }
         }
         return true;
     }
-    
+
     private void restarRecursos(List<MaterialIngresadoDTO> materialIngresado) throws AdmBitacoraException {
         try {
             // Obtener lista de los recursos de la obra
             List<RecursoDTO> recursosObra = obtenerRecursosObra();
             Long idObra;
             try {
-                idObra = admObraSeleccionada.obtenerIdObra();
+                idObra = admObraSeleccionada.obtenerSesion();
             } catch (AdmObraSeleccionadaException ex) {
                 throw new AdmBitacoraException("Fallo al obtener el id de la obra.");
             }
@@ -159,7 +151,7 @@ public class ControlAdmBitacora {
                         // Si la cantidad que hay en los recursos es mayor o igual a la cantidad ingresada, se le resta y actualiza la cantidad de recursos
                         if (recurso.getCantidad() >= material.getCantidad()) {
                             Integer nuevoStock = recurso.getCantidad() - material.getCantidad();
-                            boolean actualizado = boRecurso.actualizarCantidadRecurso(idObra,recurso.getMaterial().getNombre(), recurso.getMaterial().getUnidadPeso(), nuevoStock);
+                            boolean actualizado = boRecurso.actualizarCantidadRecurso(idObra, recurso.getMaterial().getNombre(), recurso.getMaterial().getUnidadPeso(), nuevoStock);
                             if (actualizado) {
                                 return;
                             }
@@ -173,57 +165,53 @@ public class ControlAdmBitacora {
             throw new AdmBitacoraException("Fallo al restar los recursos de la obra.");
         }
     }
-    
-    public boolean actualizarCantidadRecurso(String nombreMaterial, Integer restante) {
-        return true;
-    }
-    
+
     // Métodos para herramientas y maquinaria
     // Falta que le llamen al subsistema para obtener id,  llamen al BO y validen
-        public List<HerramientaDTO> obtenerHerramientasObra() throws AdmBitacoraException {
+    public List<HerramientaDTO> obtenerHerramientasObra() throws AdmBitacoraException {
         try {
-            Long idObra = admObraSeleccionada.obtenerIdObra();
-            List<HerramientaDTO> herramientas = boHerramienta.obtenerHerramientas(idObra);
-            
+            Long idObra = admObraSeleccionada.obtenerSesion();
+            List<HerramientaDTO> herramientas = boHerramienta.obtenerHerramientasObra(idObra);
+
             if (herramientas == null || herramientas.isEmpty()) {
                 throw new AdmBitacoraException("No hay herramientas asignadas a esta obra");
             }
-            
+
             return herramientas;
         } catch (AdmObraSeleccionadaException e) {
             throw new AdmBitacoraException("Error al obtener obra: " + e.getMessage());
         }
     }
-    
-     public List<MaquinariaDTO> obtenerMaquinariaObra() throws AdmBitacoraException {
+
+    public List<MaquinariaDTO> obtenerMaquinariaObra() throws AdmBitacoraException {
         try {
-            Long idObra = admObraSeleccionada.obtenerIdObra();
-            List<MaquinariaDTO> maquinaria = boMaquinaria.obtenerMaquinaria(idObra);
-            
+            Long idObra = admObraSeleccionada.obtenerSesion();
+            List<MaquinariaDTO> maquinaria = boMaquinaria.obtenerMaquinariaObra(idObra);
+
             if (maquinaria == null || maquinaria.isEmpty()) {
                 throw new AdmBitacoraException("No hay maquinaria asignada a esta obra");
             }
-            
+
             return maquinaria;
         } catch (AdmObraSeleccionadaException e) {
             throw new AdmBitacoraException("Error al obtener obra: " + e.getMessage());
         }
     }
-    
+
     // Métodos para personal
     public List<String> obtenerPersonalObra() throws AdmBitacoraException {
         try {
             // Obtiene el id mediante el subsistema
-            Long idObra = admObraSeleccionada.obtenerIdObra();
-            
+            Long idObra = admObraSeleccionada.obtenerSesion();
+
             // Obtiene el personal de la obra mediante el BO
-            List<String> listaPersonal = boPersonal.obtenerPersonal(idObra);
-            
+            List<String> listaPersonal = boPersonal.obtenerPersonalObra(idObra);
+
             // Valida la lista de personal
             if (listaPersonal == null || listaPersonal.isEmpty()) {
                 throw new AdmBitacoraException("No hay personal asignado a la obra.");
             }
-            
+
             return listaPersonal;
         } catch (BOException | AdmObraSeleccionadaException e) {
             throw new AdmBitacoraException("No se pudo obtener el personal de la obra.");

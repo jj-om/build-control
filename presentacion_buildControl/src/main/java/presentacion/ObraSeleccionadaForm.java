@@ -29,10 +29,8 @@ public class ObraSeleccionadaForm extends javax.swing.JFrame {
         this.coordinadorNegocio = CoordinadorNegocio.getInstance();
         
         //ESTO ES MOMENTANEO, VA EN LA PANTALLA ANTERIOR DONDE SE SELECCIONAN LAS OBRAS
-        this.coordinadorNegocio.iniciarSesion(1L);
+        iniciarSesion();
         campoNombreObra.setText(coordinadorNegocio.obtenerDireccionObra());
-        
-        //Falta iniciar la sesion de la obra
     }
 
     /**
@@ -155,7 +153,14 @@ public class ObraSeleccionadaForm extends javax.swing.JFrame {
     private void btnRegistrarBitacoraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarBitacoraActionPerformed
         registrarBitacora();
     }//GEN-LAST:event_btnRegistrarBitacoraActionPerformed
-
+    
+    //ESTO ES MOMENTANEO, VA EN LA PANTALLA ANTERIOR DONDE SE SELECCIONAN LAS OBRAS
+    private void iniciarSesion() {
+        if (!this.coordinadorNegocio.iniciarSesion(1L)) {
+            JOptionPane.showMessageDialog(this, "Ocurrió un error al seleccionar la obra.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    
     private void atras() {
         // Cerrar sesión de la obra
         coordinadorNegocio.cerrarSesion();

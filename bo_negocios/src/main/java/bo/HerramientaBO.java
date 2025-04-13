@@ -1,4 +1,4 @@
-package BOs_negocios;
+package bo;
 
 import dto.HerramientaDTO;
 import java.util.ArrayList;
@@ -12,17 +12,20 @@ import java.util.List;
  * @author Jesús Osuna 240549
  */
 
-public class bo_herramienta {
-    public static bo_herramienta herramientaBO;
-    
-    public static bo_herramienta getInstance() {
-        if (herramientaBO == null) {
-            herramientaBO = new bo_herramienta();
+public class HerramientaBO {
+    public static HerramientaBO instance;
+
+    private HerramientaBO() {
+    }
+
+    public static HerramientaBO getInstance() {
+        if (instance == null) {
+            instance = new HerramientaBO();
         }
-        return herramientaBO;
+        return instance;
     }
     
-    public List<HerramientaDTO> obtenerHerramientas(Long idObra) {
+    public List<HerramientaDTO> obtenerHerramientasObra(Long idObra) {
         // Lista mock de herramientas disponibles
         List<HerramientaDTO> herramientas = new ArrayList<>();
         
