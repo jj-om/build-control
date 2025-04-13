@@ -8,8 +8,6 @@ import dto.HerramientaDTO;
 import utilities.Utilities;
 import dto.HerramientaIngresadaDTO;
 import dto.MaquinariaDTO;
-import dto.ObraDTO;
-import excepciones.AdmMaterialesException;
 import exception.PresentacionException;
 import java.awt.Component;
 import java.util.ArrayList;
@@ -31,37 +29,38 @@ import javax.swing.table.TableRowSorter;
  * @author alega
  */
 public class HerramientasYMaquinariaForm extends javax.swing.JFrame {
-    
+
     private CoordinadorAplicacion coordinador;
     private CoordinadorNegocio coordinadorNegocio;
-    
+
     private DefaultTableModel tableModelHerramienta;
     private TableRowSorter<DefaultTableModel> tableSorterHerramienta; // Filtro para la tabla
     private DefaultListModel<String> listModelHerramienta; // Modelo para la lista
-    
+
     private DefaultTableModel tableModelMaquinaria;
     private TableRowSorter<DefaultTableModel> tableSorterMaquinaria; // Filtro para la tabla
     private DefaultListModel<String> listModelMaquinaria; // Modelo para la lista
-    
+
     List<HerramientaDTO> herramientas;
     List<String> nombresHerramientas; // Obtiene el nombre de las herramientas
     List<MaquinariaDTO> maquinarias;
-    List<String> nombresMaquinarias; 
+    List<String> nombresMaquinarias;
 
     /**
      * Creates new form RegistrarHyMForm
+     *
      * @param coordinador
      */
-    public HerramientasYMaquinariaForm(CoordinadorAplicacion coordinador) {
+    public HerramientasYMaquinariaForm() {
         initComponents();
         getContentPane().setBackground(java.awt.Color.WHITE);
         this.setLocationRelativeTo(null);
-        this.coordinador = coordinador;
+        this.coordinador = CoordinadorAplicacion.getInstancia();
         this.coordinadorNegocio = CoordinadorNegocio.getInstance();
-        
+
         listModelHerramienta = new DefaultListModel<>();
         listBuscadorH.setModel(listModelHerramienta);
-        
+
         tableModelHerramienta = new DefaultTableModel(new Object[]{"Herramienta", "-", "Cantidad", "+"}, 0);
         tblHerramientas.setModel(tableModelHerramienta);
         tblHerramientas.setDefaultEditor(Object.class, null);
@@ -71,10 +70,10 @@ public class HerramientasYMaquinariaForm extends javax.swing.JFrame {
         tblHerramientas.getColumnModel().getColumn(3).setCellRenderer(new HerramientasYMaquinariaForm.ButtonRenderer());
         tblHerramientas.getColumnModel().getColumn(1).setCellEditor(new HerramientasYMaquinariaForm.ButtonEditor(new JCheckBox(), false, tableModelHerramienta, true));
         tblHerramientas.getColumnModel().getColumn(3).setCellEditor(new HerramientasYMaquinariaForm.ButtonEditor(new JCheckBox(), true, tableModelHerramienta, true));
-        
+
         listModelMaquinaria = new DefaultListModel<>();
         listBuscadorM.setModel(listModelMaquinaria);
-        
+
         tableModelMaquinaria = new DefaultTableModel(new Object[]{"Maquinaria", "-", "Status"}, 0);
         tblMaquinaria.setModel(tableModelMaquinaria);
         tblMaquinaria.setDefaultEditor(Object.class, null);
@@ -82,9 +81,8 @@ public class HerramientasYMaquinariaForm extends javax.swing.JFrame {
         tblMaquinaria.setRowSorter(tableSorterMaquinaria);
         tblMaquinaria.getColumnModel().getColumn(1).setCellRenderer(new HerramientasYMaquinariaForm.ButtonRenderer());
         tblMaquinaria.getColumnModel().getColumn(1).setCellEditor(new HerramientasYMaquinariaForm.ButtonEditor(new JCheckBox(), false, tableModelMaquinaria, false));
-        ObraDTO obra = this.coordinadorNegocio.obtenerObraSeleccionada();
-        campoNombreObra.setText(obra.getDireccion());
-        
+        campoNombreObra.setText(coordinadorNegocio.obtenerDireccionObra());
+
         cargarListas();
         buscadorListaHerramientas();
         buscadorListaMaquinaria();
@@ -360,11 +358,7 @@ public class HerramientasYMaquinariaForm extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAtrasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAtrasActionPerformed
-        try {
             atras();
-        } catch (AdmMaterialesException ex) {
-            Logger.getLogger(HerramientasYMaquinariaForm.class.getName()).log(Level.SEVERE, null, ex);
-        }
     }//GEN-LAST:event_btnAtrasActionPerformed
 
     private void btnSiguienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSiguienteActionPerformed
@@ -413,7 +407,7 @@ public class HerramientasYMaquinariaForm extends javax.swing.JFrame {
             return this;
         }
     }
-    
+
     class ButtonEditor extends DefaultCellEditor {
 
         private JButton button;
@@ -468,65 +462,63 @@ public class HerramientasYMaquinariaForm extends javax.swing.JFrame {
             return isIncrement ? "+" : "-"; // Retornar el símbolo correcto
         }
     }
-    
+
     // Comportamiento del buscador de herramientas
     private void buscadorListaHerramientas() {
         Utilities.buscadorLista(txtBuscadorListaH, listModelHerramienta, jScrollPaneH, nombresHerramientas, listBuscadorH);
     }
-    
+
     // Filtrar y actualizar la lista de materiales
     private void actualizarListaHerramientas(String textoBuscador) {
         Utilities.actualizarLista(listBuscadorH, listModelHerramienta, nombresHerramientas, textoBuscador, jScrollPaneH);
     }
-    
+
     private void seleccionarHerramientaLista(ListSelectionEvent evt) {
         Utilities.seleccionarElementoLista(evt, listBuscadorH, tableModelHerramienta, false);
     }
-    
+
     private void filtrarTablaHerramientas() {
         Utilities.filtrarTabla(tblHerramientas, tableSorterHerramienta, txtFiltroTablaH);
     }
-    
+
     private void buscadorListaMaquinaria() {
         Utilities.buscadorLista(txtBuscadorListaM, listModelMaquinaria, jScrollPaneM, nombresMaquinarias, listBuscadorM);
     }
-    
+
     // Filtrar y actualizar la lista de materiales
     private void actualizarListaMaquinaria(String textoBuscador) {
         Utilities.actualizarLista(listBuscadorM, listModelMaquinaria, nombresMaquinarias, textoBuscador, jScrollPaneM);
     }
-    
+
     private void seleccionarMaquinariaLista(ListSelectionEvent evt) {
         Utilities.seleccionarElementoLista(evt, listBuscadorM, tableModelMaquinaria, true);
     }
-    
+
     private void filtrarTablaMaquinaria() {
         Utilities.filtrarTabla(tblMaquinaria, tableSorterMaquinaria, txtFiltroTablaM);
     }
-    
+
     private List<HerramientaIngresadaDTO> obtenerHerramientasIngresadas() {
-        List<HerramientaIngresadaDTO> herramientasIngresadas = new ArrayList<>();
+        List<HerramientaIngresadaDTO> herramientasIngresadas = null;
 
         // Recorrer las filas de la tabla
         for (int i = 0; i < tableModelHerramienta.getRowCount(); i++) {
+            herramientasIngresadas = new ArrayList<>();
             String nombreHerramienta = (String) tableModelHerramienta.getValueAt(i, 0); // Nombre de la herramienta
             Integer cantidad = (Integer) tableModelHerramienta.getValueAt(i, 2);
             // Buscar el objeto HerramientaDTO correspondiente al nombre
-            System.out.println(nombreHerramienta);
             HerramientaDTO herramientaDTO = buscarHerramientaPorNombre(nombreHerramienta);
-            System.out.println(herramientaDTO);
-            
+
             if (herramientaDTO != null) {
                 // Crear el DTO con la herramienta y la cantidad
                 HerramientaIngresadaDTO herramientaIngresadaDTO = new HerramientaIngresadaDTO(herramientaDTO, cantidad);
                 herramientasIngresadas.add(herramientaIngresadaDTO);
-                herramientasIngresadas.forEach(a -> System.out.println(a));
             }
         }
 
         return herramientasIngresadas;
     }
-    
+
     private HerramientaDTO buscarHerramientaPorNombre(String nombre) {
         for (HerramientaDTO herramienta : herramientas) {
             if (herramienta.getNombre().equalsIgnoreCase(nombre)) {
@@ -535,56 +527,61 @@ public class HerramientasYMaquinariaForm extends javax.swing.JFrame {
         }
         return null; // Si no se encuentra, retorna null
     }
-    
+
     private List<MaquinariaDTO> obtenerMaquinariaSeleccionada() {
-        List<MaquinariaDTO> maquinariaIngresada = new ArrayList<>();
-        
+        List<MaquinariaDTO> maquinariaIngresada = null;
+
         for (int i = 0; i < tableModelMaquinaria.getRowCount(); i++) {
+            maquinariaIngresada = new ArrayList<>();
             String nombreMaquinaria = (String) tableModelMaquinaria.getValueAt(i, 0);
-            
+
             MaquinariaDTO maquinariaDTO = buscarMaquinariaPorNombre(nombreMaquinaria);
             if (maquinariaDTO != null) {
                 maquinariaIngresada.add(maquinariaDTO);
             }
         }
-        
+
         return maquinariaIngresada;
     }
-    
+
     private MaquinariaDTO buscarMaquinariaPorNombre(String nombre) {
-        for (MaquinariaDTO maquinaria :  maquinarias) {
+        for (MaquinariaDTO maquinaria : maquinarias) {
             if (maquinaria.getNombre().equalsIgnoreCase(nombre)) {
                 return maquinaria;
             }
         }
         return null; // Si no se encuentra, retorna null
     }
-    
+
     private List<String> obtenerNombresHerramientas() {
         List<String> nombres = new ArrayList<>();
         for (HerramientaDTO herramienta : herramientas) {
             nombres.add(herramienta.getNombre());
         }
-        
+
         return nombres;
     }
-    
+
     private List<String> obtenerNombresMaquinarias() {
         List<String> nombres = new ArrayList<>();
         for (MaquinariaDTO maquinaria : maquinarias) {
             nombres.add(maquinaria.getNombre());
         }
-        
+
         return nombres;
     }
-    
+
     private void cargarListas() {
-        this.herramientas = coordinadorNegocio.obtenerHerramientas();
-        this.maquinarias = coordinadorNegocio.obtenerMaquinaria();
-        this.nombresHerramientas = obtenerNombresHerramientas();
-        this.nombresMaquinarias = obtenerNombresMaquinarias();
+        try {
+            this.herramientas = coordinadorNegocio.obtenerHerramientas();
+            this.maquinarias = coordinadorNegocio.obtenerMaquinaria();
+            this.nombresHerramientas = obtenerNombresHerramientas();
+            this.nombresMaquinarias = obtenerNombresMaquinarias();
+        } catch (PresentacionException ex) {
+            Logger.getLogger(HerramientasYMaquinariaForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
-    
+
     private void siguiente() {
         if (tblHerramientas.getRowCount() == 0 || tblMaquinaria.getRowCount() == 0) {
             int opcion = JOptionPane.showConfirmDialog(this,
@@ -608,18 +605,18 @@ public class HerramientasYMaquinariaForm extends javax.swing.JFrame {
                 coordinador.mostrarObraSeleccionada();
                 coordinador.reset();
                 return;
-            }     
+            }
         }
-        
+
         this.dispose();
         coordinador.mostrarPersonal();
     }
-    
-    private void atras() throws AdmMaterialesException {
+
+    private void atras(){
         this.dispose();
         coordinador.mostrarMateriales();
     }
-    
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAtras;
     private javax.swing.JButton btnSiguiente;

@@ -31,4 +31,5 @@ public interface IAdmBitacora {
     public List<RecursoDTO> obtenerRecursosObra() throws AdmBitacoraException;
     
     public boolean validarRecurso(List<MaterialIngresadoDTO> materialIngresado) throws AdmBitacoraException;
+    
 }

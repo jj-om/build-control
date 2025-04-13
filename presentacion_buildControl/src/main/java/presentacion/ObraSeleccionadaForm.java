@@ -4,7 +4,6 @@
  */
 package presentacion;
 
-import dto.ObraDTO;
 import exception.PresentacionException;
 import javax.swing.JOptionPane;
 
@@ -21,19 +20,17 @@ public class ObraSeleccionadaForm extends javax.swing.JFrame {
      * Creates new form ObraSeleccionadaForm
      * @param coordinador
      */
-    public ObraSeleccionadaForm(CoordinadorAplicacion coordinador) {
+    public ObraSeleccionadaForm() {
         initComponents();
         getContentPane().setBackground(java.awt.Color.WHITE);
         // aquí se debe obtener el nombre de la obra para mostrarlo en su campo
         this.setLocationRelativeTo(null);
-        this.coordinador = coordinador;
+        this.coordinador = CoordinadorAplicacion.getInstancia();
         this.coordinadorNegocio = CoordinadorNegocio.getInstance();
-        this.coordinadorNegocio.obtenerObra();
         
         //ESTO ES MOMENTANEO, VA EN LA PANTALLA ANTERIOR DONDE SE SELECCIONAN LAS OBRAS
         this.coordinadorNegocio.iniciarSesion(1L);
-        ObraDTO obra = this.coordinadorNegocio.obtenerObraSeleccionada();
-        campoNombreObra.setText(obra.getDireccion());
+        campoNombreObra.setText(coordinadorNegocio.obtenerDireccionObra());
         
         //Falta iniciar la sesion de la obra
     }
@@ -161,23 +158,22 @@ public class ObraSeleccionadaForm extends javax.swing.JFrame {
 
     private void atras() {
         // Cerrar sesión de la obra
-        try {
-            coordinadorNegocio.cerrarSesion();
-            System.out.println(coordinadorNegocio.obtenerIdObra());
-        } catch (PresentacionException e) {
-            JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        }
+        coordinadorNegocio.cerrarSesion();
         this.dispose();
     }
     
     private void registrarBitacora() {
-        if (coordinadorNegocio.validarBitacoraRegistrada()) {
-            JOptionPane.showMessageDialog(this, "La obra ya cuenta con una bitácora registrada el día de hoy.", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
+        try {
+            if (coordinadorNegocio.validarBitacoraRegistrada()) {
+                JOptionPane.showMessageDialog(this, "La obra ya cuenta con una bitácora registrada el día de hoy.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            
+            this.dispose();
+            coordinador.mostrarActividades();
+        } catch (PresentacionException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
-        
-        this.dispose();
-        coordinador.mostrarActividades();
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables

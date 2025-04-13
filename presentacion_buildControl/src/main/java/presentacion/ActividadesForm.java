@@ -4,11 +4,7 @@
  */
 package presentacion;
 
-import dto.ObraDTO;
-import excepciones.AdmMaterialesException;
 import exception.PresentacionException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 /**
@@ -25,14 +21,13 @@ public class ActividadesForm extends javax.swing.JFrame {
      * Creates new form ActividadesRealizadasForm
      * @param coordinador
      */
-    public ActividadesForm(CoordinadorAplicacion coordinador) {
+    public ActividadesForm() {
         initComponents();
         getContentPane().setBackground(java.awt.Color.WHITE);
         this.setLocationRelativeTo(null);
-        this.coordinador = coordinador;
+        this.coordinador = CoordinadorAplicacion.getInstancia();
         this.coordinadorNegocio = CoordinadorNegocio.getInstance();
-        ObraDTO obra = this.coordinadorNegocio.obtenerObraSeleccionada();
-        campoNombreObra.setText(obra.getDireccion());
+        campoNombreObra.setText(coordinadorNegocio.obtenerDireccionObra());
     }
 
     /**
@@ -158,13 +153,7 @@ public class ActividadesForm extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnSiguienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSiguienteActionPerformed
-        try {
-            siguiente();
-        } catch (PresentacionException ex) {
-            Logger.getLogger(ActividadesForm.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (AdmMaterialesException ex) {
-            Logger.getLogger(ActividadesForm.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        siguiente();
     }//GEN-LAST:event_btnSiguienteActionPerformed
 
     private void btnAtrasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAtrasActionPerformed
@@ -191,25 +180,14 @@ public class ActividadesForm extends javax.swing.JFrame {
         }  
     }
 
-    private void registrarActividades() {
-        try {
-            coordinadorNegocio.registrarActividades();
-            JOptionPane.showMessageDialog(this, "Actividades registradas exitosamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-        } catch (PresentacionException e) {
-            JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
-    private void siguiente() throws PresentacionException, AdmMaterialesException {
+    private void siguiente() {
         // Validar que se hayan registrado actividades
         if (coordinadorNegocio.obtenerActividades().isEmpty()) {
             JOptionPane.showMessageDialog(this,
                     "Debe registrar al menos una actividad antes de continuar",
                     "Error", JOptionPane.ERROR_MESSAGE);
             return;
-        } else {
-            registrarActividades();
-        }
+        } 
         this.dispose();
         coordinador.mostrarMateriales();
     }
@@ -228,7 +206,6 @@ public class ActividadesForm extends javax.swing.JFrame {
             }
             
             // Limpiar la lista de actividades
-            coordinadorNegocio.cancelarActividades();
             coordinadorNegocio.reset();
         }
         this.dispose();

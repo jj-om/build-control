@@ -4,8 +4,6 @@
  */
 package presentacion;
 
-import excepciones.AdmMaterialesException;
-
 /**
  *
  * @author alega
@@ -36,35 +34,35 @@ public class CoordinadorAplicacion {
     // Métodos para mostrar las pantallas
     public void mostrarObraSeleccionada() {
         if (obraSeleccionadaForm == null) {
-            obraSeleccionadaForm = new ObraSeleccionadaForm(this);
+            obraSeleccionadaForm = new ObraSeleccionadaForm();
         }
         obraSeleccionadaForm.setVisible(true);
     }
 
     public void mostrarActividades() {
         if (actividadesForm == null) {
-            actividadesForm = new ActividadesForm(this);
+            actividadesForm = new ActividadesForm();
         }
         actividadesForm.setVisible(true);
     }
 
-    public void mostrarMateriales() throws AdmMaterialesException {
+    public void mostrarMateriales(){
         if (materialesForm == null) {
-            materialesForm = new MaterialesForm(this);
+            materialesForm = new MaterialesForm();
         }
         materialesForm.setVisible(true);
     }
 
     public void mostrarHerramientasYMaquinaria() {
         if (hymForm == null) {
-            hymForm = new HerramientasYMaquinariaForm(this);
+            hymForm = new HerramientasYMaquinariaForm();
         }
         hymForm.setVisible(true);
     }
 
     public void mostrarPersonal() {
         if (personalForm == null) {
-            personalForm = new PersonalForm(this);
+            personalForm = new PersonalForm();
         }
         personalForm.setVisible(true);
     }

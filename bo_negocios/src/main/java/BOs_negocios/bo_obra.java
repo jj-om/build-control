@@ -27,4 +27,9 @@ public class bo_obra {
     public Long obtenerIdPorNumero(Long numero) throws Exception{
         return numero;
     }
+    
+    public String obtenerDireccionObra(Long id) throws Exception{
+        return "Camino de los Mayos #716";
+    }
+    
 }

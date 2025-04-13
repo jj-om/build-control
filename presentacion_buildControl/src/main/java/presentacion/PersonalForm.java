@@ -6,8 +6,6 @@ package presentacion;
 
 import com.github.lgooddatepicker.components.TimePicker;
 import dto.AsistenciaPersonalDTO;
-import dto.ObraDTO;
-import excepciones.AdmMaterialesException;
 import exception.PresentacionException;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -19,10 +17,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -47,20 +42,18 @@ public class PersonalForm extends JFrame {
     private CoordinadorAplicacion coordinador;
     private CoordinadorNegocio coordinadorNegocio;
     
-    private static final Logger logger = Logger.getLogger(PersonalForm.class.getName());
     
     /**
      * Creates new form AsistenciaForm
      * @param coordinador
      */
-    public PersonalForm(CoordinadorAplicacion coordinador) {
+    public PersonalForm() {
         initComponents();
         getContentPane().setBackground(Color.WHITE);
         this.setLocationRelativeTo(null);
-        this.coordinador = coordinador;
+        this.coordinador = CoordinadorAplicacion.getInstancia();
         this.coordinadorNegocio = CoordinadorNegocio.getInstance();
-        ObraDTO obra = this.coordinadorNegocio.obtenerObraSeleccionada();
-        campoNombreObra.setText(obra.getDireccion());
+        campoNombreObra.setText(coordinadorNegocio.obtenerDireccionObra());
         
         obtenerPersonal();
         crearPanelAsistencia();
@@ -266,11 +259,7 @@ public class PersonalForm extends JFrame {
     }//GEN-LAST:event_btnAtrasActionPerformed
 
     private void btnSiguienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSiguienteActionPerformed
-        try {
             siguiente();
-        } catch (AdmMaterialesException ex) {
-            Logger.getLogger(PersonalForm.class.getName()).log(Level.SEVERE, null, ex);
-        }
     }//GEN-LAST:event_btnSiguienteActionPerformed
 
     private void txtFiltroPersonalKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtFiltroPersonalKeyReleased
@@ -481,7 +470,7 @@ public class PersonalForm extends JFrame {
     // Registrar la asistencia de los empleados seleccionados
     private List<AsistenciaPersonalDTO> registrarAsistenciaPorPersonal() throws PresentacionException {
         List<Component> panelesPersonalSeleccionados = buscarPersonalSeleccionados();
-        List<AsistenciaPersonalDTO> listaAsistenciaPersonal = new ArrayList<>();
+        List<AsistenciaPersonalDTO> listaAsistenciaPersonal = null;
 
         for (Component panel : panelesPersonalSeleccionados) {
             if (!(panel instanceof JPanel panelEmpleado)) {
@@ -515,13 +504,14 @@ public class PersonalForm extends JFrame {
             coordinadorNegocio.validarHoras(horaEntrada, horaSalida, nombre);
 
             // Agregar la asistencia del personal a la lista
+            listaAsistenciaPersonal = new ArrayList<>();
             listaAsistenciaPersonal.add(new AsistenciaPersonalDTO(nombre, horaEntrada, horaSalida, notas));
         }
 
         return listaAsistenciaPersonal;
     }
  
-    private void siguiente() throws AdmMaterialesException {
+    private void siguiente(){
         // Intentar registrar la bitacora
         try {
             coordinadorNegocio.registrarAsistencia(registrarAsistenciaPorPersonal());
@@ -533,10 +523,12 @@ public class PersonalForm extends JFrame {
                 return;
             }
 
-            coordinadorNegocio.restarMaterial();
-            coordinadorNegocio.registrarBitacora();
-            JOptionPane.showMessageDialog(this, "Bitácora registrada exitosamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-
+            if (coordinadorNegocio.registrarBitacora()) {
+                JOptionPane.showMessageDialog(this, "Bitácora registrada exitosamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(this, "Fallo al registrar la bitacora.", "Error", JOptionPane.ERROR_MESSAGE);            
+            }
+            
             // Regresar a ventana ObraSeleccionada
             coordinadorNegocio.reset();
             this.dispose();

@@ -59,4 +59,14 @@ public class ControlAdmObraSeleccionada {
             throw new AdmObraSeleccionadaException("No se pudo obtener el id de la obra.", e);
         }
     }
+    
+    public String obtenerDireccionObra() throws AdmObraSeleccionadaException{
+        try {
+            Long idObra = obtenerIdPorNumero(sesionManager.getIdObra());
+            return obraBO.obtenerDireccionObra(idObra);
+        } catch (Exception e) {
+            throw new AdmObraSeleccionadaException("No se pudo obtener la direccion de la obra.", e);
+        }
+    }
+    
 }

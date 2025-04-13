@@ -10,8 +10,6 @@ import dto.MaquinariaDTO;
 import dto.MaterialIngresadoDTO;
 import dto.RecursoDTO;
 import excepciones.AdmBitacoraException;
-import excepciones.BOMaterialException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -19,48 +17,48 @@ import java.util.List;
  * @author rocha
  */
 public class FAdmBitacora implements IAdmBitacora {
+
     private ControlAdmBitacora controlAdmBitacora;
-    
+
     public FAdmBitacora() {
         this.controlAdmBitacora = new ControlAdmBitacora();
     }
-    
+
     // Métodos para bitácora
+    @Override
     public boolean registrarBitacora(DetallesBitacoraDTO detallesBitacora) throws AdmBitacoraException {
-       return controlAdmBitacora.registrarBitacora(detallesBitacora, Long.MIN_VALUE);
+        return controlAdmBitacora.registrarBitacora(detallesBitacora);
     }
-    
+
     @Override
     public boolean validarBitacoraRegistrada() throws AdmBitacoraException {
         return controlAdmBitacora.validarBitacoraRegistrada();
     }
-    
+
     // Métodos para materiales
-     @Override
+    @Override
     public List<RecursoDTO> obtenerRecursosObra() throws AdmBitacoraException {
         return controlAdmBitacora.obtenerRecursosObra();
     }
-    
+
+    @Override
     public boolean validarRecurso(List<MaterialIngresadoDTO> materialIngresado) throws AdmBitacoraException {
         // Valida cada material elegido
-        try {
-            return controlAdmBitacora.validarRecursos(materialIngresado);
-        } catch (BOMaterialException e) {
-            throw new AdmBitacoraException(e.getMessage());
-        }
+        return controlAdmBitacora.validarRecursos(materialIngresado);
+
     }
-    
+
     // Métodos para herramientas y maquinaria
     @Override
     public List<HerramientaDTO> obtenerHerramientasObra() throws AdmBitacoraException {
-       return controlAdmBitacora.obtenerHerramientasObra();
+        return controlAdmBitacora.obtenerHerramientasObra();
     }
-    
+
     @Override
     public List<MaquinariaDTO> obtenerMaquinariaObra() throws AdmBitacoraException {
         return controlAdmBitacora.obtenerMaquinariaObra();
     }
-    
+
     // Métodos para personal    
     @Override
     public List<String> obtenerPersonalObra() throws AdmBitacoraException {

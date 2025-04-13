@@ -64,4 +64,10 @@ public class FAdmObraSeleccionada implements IAdmObraSeleccionada {
     public Long obtenerIdObra() throws AdmObraSeleccionadaException {
         return controlAdmObraSeleccionada.obtenerIdObra();
     }
+    
+    @Override
+    public String obtenerDireccionObra() throws AdmObraSeleccionadaException {
+        return controlAdmObraSeleccionada.obtenerDireccionObra();
+    }
+    
 }

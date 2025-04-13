@@ -4,15 +4,14 @@
  */
 package admBitacora;
 
-import BOs_negocios.bo_asistencia;
 import BOs_negocios.bo_bitacora;
 import BOs_negocios.bo_herramienta;
 import BOs_negocios.bo_maquinaria;
-import BOs_negocios.bo_material;
 import BOs_negocios.bo_personal;
 import BOs_negocios.bo_recurso;
 import admObraSeleccionada.FAdmObraSeleccionada;
 import admObraSeleccionada.IAdmObraSeleccionada;
+import dto.BitacoraDTO;
 import dto.DetallesBitacoraDTO;
 import dto.HerramientaDTO;
 import dto.MaquinariaDTO;
@@ -21,9 +20,10 @@ import dto.RecursoDTO;
 import excepciones.AdmBitacoraException;
 import excepciones.AdmObraSeleccionadaException;
 import excepciones.BOException;
-import excepciones.BOMaterialException;
-import java.util.ArrayList;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -50,14 +50,20 @@ public class ControlAdmBitacora {
     }
     
     // Métodos para bitácora
-    public boolean registrarBitacora(DetallesBitacoraDTO detallesBitacoraDTO, Long idObra) throws AdmBitacoraException {
+    public boolean registrarBitacora(DetallesBitacoraDTO detallesBitacoraDTO) throws AdmBitacoraException {
         try {
             // Validar que la bitácora no esté ya registrada para esta obra/fecha
             if (validarBitacoraRegistrada()) {
                 throw new AdmBitacoraException("Ya existe una bitácora registrada para esta obra hoy");
             }
 
-            // Validar estructura de datos
+            Long idObra = null;
+            try {
+                idObra = admObraSeleccionada.obtenerIdObra();
+            } catch (AdmObraSeleccionadaException ex) {
+                throw new AdmBitacoraException(ex.getMessage(), ex);
+            }
+            
             if (!validarDatosBitacora(detallesBitacoraDTO, idObra)) {
                 throw new AdmBitacoraException("Datos de bitácora incompletos o inválidos");
             }
@@ -68,9 +74,11 @@ public class ControlAdmBitacora {
             }
 
             // Registrar en el BO
-            boolean exito = boBitacora.registrarBitacora(detallesBitacoraDTO, idObra);
-
-            if (!exito) {
+            BitacoraDTO bitacoraDTO = new BitacoraDTO(LocalDate.now(), idObra);
+            detallesBitacoraDTO.setBitacora(bitacoraDTO);
+            BitacoraDTO bitacoraRegistrada = boBitacora.registrarBitacora(detallesBitacoraDTO);
+            
+            if (bitacoraRegistrada == null) {
                 throw new AdmBitacoraException("Error al guardar la bitácora");
             }
 
@@ -80,85 +88,69 @@ public class ControlAdmBitacora {
             }
 
             return true;
-        } catch (BOException | BOMaterialException e) {
+        } catch (AdmBitacoraException e) {
             throw new AdmBitacoraException("Error en sistema: " + e.getMessage());
+        } catch (BOException ex) {
+           throw new AdmBitacoraException("Error en sistema: " + ex.getMessage());
         }
     }
     
     public boolean validarDatosBitacora(DetallesBitacoraDTO detallesBitacoraDTO, Long idObra) {
     return detallesBitacoraDTO != null &&
-           detallesBitacoraDTO.getBitacora() != null &&
-           detallesBitacoraDTO.getBitacora().getIdObra() != null &&
-           detallesBitacoraDTO.getBitacora().getIdObra().equals(idObra) &&
-           detallesBitacoraDTO.getActividades() != null && !detallesBitacoraDTO.getActividades().isEmpty() &&
-           detallesBitacoraDTO.getListaAsistencia() != null && !detallesBitacoraDTO.getListaAsistencia().getAsistencias().isEmpty();
+           idObra != null &&
+           detallesBitacoraDTO.getActividades() != null 
+            && !detallesBitacoraDTO.getActividades().isEmpty();
 }
     
-    public boolean validarBitacoraRegistrada() {
-        return true;
+    public boolean validarBitacoraRegistrada() throws AdmBitacoraException {
+        try {
+            Long idObra = admObraSeleccionada.obtenerIdObra();
+            return boBitacora.validarBitacoraRegistrada(idObra);
+        } catch (AdmObraSeleccionadaException ex) {
+            throw new AdmBitacoraException("Fallo al validar la bitacora.");
+        }
     }
     
     // Métodos para materiales
     public List<RecursoDTO> obtenerRecursosObra() throws AdmBitacoraException {
         try {
-            //Obtener ID de obra activa (subsistema obra seleccionada)
+            // Obtiene el id mediante el subsistema
             Long idObra = admObraSeleccionada.obtenerIdObra();
-
-            //Llamar al BO para obtener recursos
+            
+            // Obtiene el recurso de la obra mediante el BO
             List<RecursoDTO> recursos = boRecurso.obtenerRecursosObra(idObra);
-
-            // Validar la respuesta
+            
+            // Valida la lista de personal
             if (recursos == null || recursos.isEmpty()) {
-                throw new AdmBitacoraException("No hay recursos asignados a esta obra");
+                throw new AdmBitacoraException("No hay recursos asignados a la obra.");
             }
-
+            
             return recursos;
-
-        } catch (AdmObraSeleccionadaException e) {
-            throw new AdmBitacoraException("Error al obtener obra seleccionada: " + e.getMessage());
-        } catch (BOException e) {
-            throw new AdmBitacoraException("Error al consultar recursos: " + e.getMessage());
+        } catch (BOException | AdmObraSeleccionadaException e) {
+            throw new AdmBitacoraException("No se pudo obtener el personal de la obra.");
         }
     }
     
-    public boolean validarRecursos(List<MaterialIngresadoDTO> materialIngresado) throws BOMaterialException {
+    public boolean validarRecursos(List<MaterialIngresadoDTO> materialIngresado) throws AdmBitacoraException {
         // Valida cada material elegido
-        if (materialIngresado == null || materialIngresado.isEmpty()) {
-            throw new BOMaterialException("La lista de materiales no puede estar vacía");
-        }
-
-        //Validar cada material
         for (MaterialIngresadoDTO material : materialIngresado) {
-            RecursoDTO recurso = material.getRecurso();
-
-            if (recurso == null || recurso.getMaterial() == null) {
-                throw new BOMaterialException("El material no tiene información válida");
-            }
-
-            if (material.getCantidad() <= 0) {
-                throw new BOMaterialException("La cantidad debe ser mayor a cero");
-            }
-
-            if (material.getCantidad() > recurso.getCantidad()) {
-                throw new BOMaterialException(
-                    String.format("Stock insuficiente de %s (disponible: %d %s, solicitado: %d)",
-                        recurso.getMaterial().getNombre(),
-                        recurso.getCantidad(),
-                        recurso.getMaterial().getUnidadPeso(),
-                        material.getCantidad()
-                    )
-                );
+            if (material.getCantidad() > material.getRecurso().getCantidad()) { 
+                throw new AdmBitacoraException("Cantidad de material en la obra insuficiente. Favor de registrar manualmente.");
             }
         }
-
         return true;
     }
-
     
-    public void restarRecursos(List<MaterialIngresadoDTO> materialIngresado) throws AdmBitacoraException {
+    private void restarRecursos(List<MaterialIngresadoDTO> materialIngresado) throws AdmBitacoraException {
         try {
             // Obtener lista de los recursos de la obra
             List<RecursoDTO> recursosObra = obtenerRecursosObra();
+            Long idObra;
+            try {
+                idObra = admObraSeleccionada.obtenerIdObra();
+            } catch (AdmObraSeleccionadaException ex) {
+                throw new AdmBitacoraException("Fallo al obtener el id de la obra.");
+            }
             // Para cada material ingresado para usarse, revisar los recursos dentro de la obra
             for (MaterialIngresadoDTO material : materialIngresado) {
                 for (RecursoDTO recurso : recursosObra) {
@@ -167,12 +159,10 @@ public class ControlAdmBitacora {
                         // Si la cantidad que hay en los recursos es mayor o igual a la cantidad ingresada, se le resta y actualiza la cantidad de recursos
                         if (recurso.getCantidad() >= material.getCantidad()) {
                             Integer nuevoStock = recurso.getCantidad() - material.getCantidad();
-                            boolean actualizado = boRecurso.actualizarCantidadRecurso(recurso.getMaterial().getNombre(), recurso.getMaterial().getUnidadPeso(), nuevoStock);
+                            boolean actualizado = boRecurso.actualizarCantidadRecurso(idObra,recurso.getMaterial().getNombre(), recurso.getMaterial().getUnidadPeso(), nuevoStock);
                             if (actualizado) {
                                 return;
                             }
-                            // Imprimir para probar si funciona
-                            // System.out.println("Material: " + recurso.getMaterial().getNombre() + ", Cantidad restante: " + nuevoStock);
                         } else { // Sino se lanza excepción de que no hay stock
                             throw new AdmBitacoraException("No hay suficiente stock de " + recurso.getMaterial().getNombre() + " . Favor de registrar manualmente");
                         }
@@ -180,7 +170,7 @@ public class ControlAdmBitacora {
                 }
             }
         } catch (BOException e) {
-            
+            throw new AdmBitacoraException("Fallo al restar los recursos de la obra.");
         }
     }
     

@@ -22,13 +22,11 @@ public class bo_bitacora {
         return bitacoraBO;
     }
     
-    public boolean registrarBitacora(DetallesBitacoraDTO detallesBitacora, Long idObra) throws BOException {
-        System.out.println("Registrando bitácora para obra ID: " + idObra);
-        System.out.println("Detalles: " + detallesBitacora);
-        return true;
+    public BitacoraDTO registrarBitacora(DetallesBitacoraDTO detallesBitacoraDTO) throws BOException {
+        return detallesBitacoraDTO.getBitacora();
     }
     
     public boolean validarBitacoraRegistrada(Long idObra) {
-        return true;
+        return false;
     }
 }

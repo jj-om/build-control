@@ -5,7 +5,6 @@ import dto.MaterialIngresadoDTO;
 import dto.ObraDTO;
 import dto.RecursoDTO;
 import excepciones.BOException;
-import excepciones.BOMaterialException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,6 +17,7 @@ import java.util.List;
  */
 
 public class bo_recurso {
+    
     public static bo_recurso recursoBO;
     // Crear lista para guardar los materiales
     private List<RecursoDTO> recursos = new ArrayList<>();
@@ -57,20 +57,15 @@ public class bo_recurso {
     }
     
     // Checar con el que esta en coordinador negocio en presentacion
-    public boolean actualizarCantidadRecurso(String nombreMaterial, String unidadPeso, Integer cantidad) throws BOException {
-        for (RecursoDTO recurso : recursos) {
-            if (recurso.getMaterial().getNombre().equals(nombreMaterial) && 
-                recurso.getMaterial().getUnidadPeso().equals(unidadPeso)) {
-
-                if (cantidad < 0) {
-                    throw new BOException("No puede haber cantidad negativa");
-                }
-
+    public boolean actualizarCantidadRecurso(Long idObra, String nombreMaterial, String unidadPeso, Integer cantidad) throws BOException {
+        List<RecursoDTO> recursosObra = obtenerRecursosObra(idObra);
+        // Si el material se encuentra registrado, se actualiza la cantidad de stock
+        for (RecursoDTO recurso : recursosObra) {
+            if (recurso.getMaterial().getNombre().equals(nombreMaterial) || recurso.getMaterial().getUnidadPeso().equals(unidadPeso)) {
                 recurso.setCantidad(cantidad);
-                return true;
             }
         }
-        throw new BOException("Material no encontrado: " + nombreMaterial);
+        return true;
     }
     
 }

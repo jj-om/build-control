@@ -4,12 +4,10 @@
  */
 package presentacion;
 
-import dto.MaterialDTO;
 import utilities.Utilities;
 import dto.MaterialIngresadoDTO;
-import dto.ObraDTO;
 import dto.RecursoDTO;
-import excepciones.AdmMaterialesException;
+import excepciones.AdmBitacoraException;
 import exception.PresentacionException;
 import java.awt.Component;
 import java.util.ArrayList;
@@ -32,10 +30,10 @@ import javax.swing.table.TableRowSorter;
  * @author alega
  */
 public class MaterialesForm extends javax.swing.JFrame {
-    
+
     private CoordinadorAplicacion coordinador;
     private CoordinadorNegocio coordinadorNegocio;
-    
+
     private DefaultTableModel tableModel;
     private TableRowSorter<DefaultTableModel> tableSorter; // Filtro para la tabla
     private DefaultListModel<String> listModel; // Modelo para la lista
@@ -44,15 +42,16 @@ public class MaterialesForm extends javax.swing.JFrame {
 
     /**
      * Creates new form RegistrarMaterialForm
+     *
      * @param coordinador
      */
-    public MaterialesForm(CoordinadorAplicacion coordinador) throws AdmMaterialesException {
+    public MaterialesForm() {
         initComponents();
         getContentPane().setBackground(java.awt.Color.WHITE);
         this.setLocationRelativeTo(null);
-        this.coordinador = coordinador;
+        this.coordinador = CoordinadorAplicacion.getInstancia();
         this.coordinadorNegocio = CoordinadorNegocio.getInstance();
-        
+
         listModel = new DefaultListModel<>();
         listBuscador.setModel(listModel);
 
@@ -65,10 +64,8 @@ public class MaterialesForm extends javax.swing.JFrame {
         tblMateriales.getColumnModel().getColumn(3).setCellRenderer(new ButtonRenderer());
         tblMateriales.getColumnModel().getColumn(1).setCellEditor(new ButtonEditor(new JCheckBox(), false)); // Botón "-"
         tblMateriales.getColumnModel().getColumn(3).setCellEditor(new ButtonEditor(new JCheckBox(), true));  // Botón "+"
-        ObraDTO obra = this.coordinadorNegocio.obtenerObraSeleccionada();
-        campoNombreObra.setText(obra.getDireccion());
-        
-        
+        campoNombreObra.setText(coordinadorNegocio.obtenerDireccionObra());
+
         cargarListas();
         buscadorListaMateriales();
     }
@@ -301,11 +298,7 @@ public class MaterialesForm extends javax.swing.JFrame {
     }//GEN-LAST:event_btnAtrasActionPerformed
 
     private void btnSiguienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSiguienteActionPerformed
-        try {
             siguiente();
-        } catch (AdmMaterialesException ex) {
-            Logger.getLogger(MaterialesForm.class.getName()).log(Level.SEVERE, null, ex);
-        }
     }//GEN-LAST:event_btnSiguienteActionPerformed
 
     private void txtBuscadorListaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBuscadorListaKeyReleased
@@ -387,7 +380,7 @@ public class MaterialesForm extends javax.swing.JFrame {
     private void seleccionarMaterialLista(ListSelectionEvent evt) {
         Utilities.seleccionarElementoLista(evt, listBuscador, tableModel, false);
     }
-    
+
     private void buscadorListaMateriales() {
         Utilities.buscadorLista(txtBuscadorLista, listModel, jScrollPaneBuscador, nombresMateriales, listBuscador);
     }
@@ -396,19 +389,20 @@ public class MaterialesForm extends javax.swing.JFrame {
     private void actualizarListaMateriales(String textoBuscador) {
         Utilities.actualizarLista(listBuscador, listModel, nombresMateriales, textoBuscador, jScrollPaneBuscador);
     }
-    
+
     private void filtrarTabla() {
         Utilities.filtrarTabla(jTable1, tableSorter, txtFiltroTabla);
     }
-    
+
     private List<MaterialIngresadoDTO> obtenerMaterialesIngresados() {
-        List<MaterialIngresadoDTO> materialesIngresados = new ArrayList<>();
+        List<MaterialIngresadoDTO> materialesIngresados = null;
 
         // Recorremos todas las filas de la tabla
         for (int i = 0; i < tableModel.getRowCount(); i++) {
+            materialesIngresados = new ArrayList<>();
             // Extraemos los datos de la tabla: nombre de material y cantidad ingresada
             String nombreMaterial = (String) tableModel.getValueAt(i, 0);
-            Integer cantidadMaterial = (Integer) tableModel.getValueAt(i, 2);  
+            Integer cantidadMaterial = (Integer) tableModel.getValueAt(i, 2);
 
             // Buscar el material en la lista de materiales
             RecursoDTO recursoDTO = buscarRecursoDeMaterial(nombreMaterial);
@@ -434,24 +428,28 @@ public class MaterialesForm extends javax.swing.JFrame {
         }
         return null;  // Si no se encuentra, retorna null
     }
-    
+
     private List<String> obtenerNombresMateriales() {
         List<String> nombres = new ArrayList<>();
-        
+
         for (RecursoDTO recurso : recursos) {
             nombres.add(recurso.getMaterial().getNombre());
         }
-        
+
         return nombres;
     }
-    
-    private void cargarListas() throws AdmMaterialesException {
-        this.recursos = coordinadorNegocio.obtenerMateriales();
-        this.nombresMateriales = obtenerNombresMateriales();
+
+    private void cargarListas() {
+        try {
+            this.recursos = coordinadorNegocio.obtenerMateriales();
+            this.nombresMateriales = obtenerNombresMateriales();
+        } catch (AdmBitacoraException ex) {
+            Logger.getLogger(MaterialesForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     // Confirmación y procesamiento de los datos para continuar
-    private void siguiente() throws AdmMaterialesException {
+    private void siguiente(){
         if (tblMateriales.getRowCount() == 0) {
             int opcion = JOptionPane.showConfirmDialog(this,
                     "No se han ingresado materiales, ¿Seguro que desea continuar?",
@@ -463,7 +461,7 @@ public class MaterialesForm extends javax.swing.JFrame {
             try {
                 List<MaterialIngresadoDTO> materialesIngresados = obtenerMaterialesIngresados();
                 coordinadorNegocio.registrarMateriales(materialesIngresados);
-            } catch (PresentacionException | AdmMaterialesException e) {
+            } catch (PresentacionException e) {
                 JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 this.dispose();
                 coordinadorNegocio.reset();
@@ -475,7 +473,7 @@ public class MaterialesForm extends javax.swing.JFrame {
         this.dispose();
         coordinador.mostrarHerramientasYMaquinaria();
     }
-    
+
     private void atras() {
         this.dispose();
         coordinador.mostrarActividades();

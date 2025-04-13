@@ -43,4 +43,7 @@ public interface IAdmObraSeleccionada {
      * de la obra.
      */
     public Long obtenerIdObra() throws AdmObraSeleccionadaException;
+    
+    public String obtenerDireccionObra() throws AdmObraSeleccionadaException;
+    
 }

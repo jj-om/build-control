@@ -18,12 +18,12 @@ import java.util.List;
  */
 // ESTE SE VA A BORRAR
 public class bo_material {
-    private static bo_material instance;
+    public static bo_material instance;
 
     // Crear lista para los materiales ingresados
     private List<MaterialIngresadoDTO> materialesIngresados = new ArrayList<>();
 
-    private bo_material() {
+    public bo_material() {
     }
 
     public static bo_material getInstance() {
