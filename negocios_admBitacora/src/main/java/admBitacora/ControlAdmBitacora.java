@@ -101,32 +101,59 @@ public class ControlAdmBitacora {
     // Métodos para materiales
     public List<RecursoDTO> obtenerRecursosObra() throws AdmBitacoraException {
         try {
-            // Obtiene el id mediante el subsistema
+            //Obtener ID de obra activa (subsistema obra seleccionada)
             Long idObra = admObraSeleccionada.obtenerIdObra();
-            
-            // Obtiene el recurso de la obra mediante el BO
+
+            //Llamar al BO para obtener recursos
             List<RecursoDTO> recursos = boRecurso.obtenerRecursosObra(idObra);
-            
-            // Valida la lista de personal
+
+            // Validar la respuesta
             if (recursos == null || recursos.isEmpty()) {
-                throw new AdmBitacoraException("No hay recursos asignados a la obra.");
+                throw new AdmBitacoraException("No hay recursos asignados a esta obra");
             }
-            
+
             return recursos;
-        } catch (BOException | AdmObraSeleccionadaException e) {
-            throw new AdmBitacoraException("No se pudo obtener el personal de la obra.");
+
+        } catch (AdmObraSeleccionadaException e) {
+            throw new AdmBitacoraException("Error al obtener obra seleccionada: " + e.getMessage());
+        } catch (BOException e) {
+            throw new AdmBitacoraException("Error al consultar recursos: " + e.getMessage());
         }
     }
     
     public boolean validarRecursos(List<MaterialIngresadoDTO> materialIngresado) throws BOMaterialException {
         // Valida cada material elegido
+        if (materialIngresado == null || materialIngresado.isEmpty()) {
+            throw new BOMaterialException("La lista de materiales no puede estar vacía");
+        }
+
+        //Validar cada material
         for (MaterialIngresadoDTO material : materialIngresado) {
-            if (material.getCantidad() > material.getRecurso().getCantidad()) { 
-                throw new BOMaterialException("Cantidad de material en la obra insuficiente. Favor de registrar manualmente.");
+            RecursoDTO recurso = material.getRecurso();
+
+            if (recurso == null || recurso.getMaterial() == null) {
+                throw new BOMaterialException("El material no tiene información válida");
+            }
+
+            if (material.getCantidad() <= 0) {
+                throw new BOMaterialException("La cantidad debe ser mayor a cero");
+            }
+
+            if (material.getCantidad() > recurso.getCantidad()) {
+                throw new BOMaterialException(
+                    String.format("Stock insuficiente de %s (disponible: %d %s, solicitado: %d)",
+                        recurso.getMaterial().getNombre(),
+                        recurso.getCantidad(),
+                        recurso.getMaterial().getUnidadPeso(),
+                        material.getCantidad()
+                    )
+                );
             }
         }
+
         return true;
     }
+
     
     public void restarRecursos(List<MaterialIngresadoDTO> materialIngresado) throws AdmBitacoraException {
         try {

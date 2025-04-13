@@ -58,16 +58,19 @@ public class bo_recurso {
     
     // Checar con el que esta en coordinador negocio en presentacion
     public boolean actualizarCantidadRecurso(String nombreMaterial, String unidadPeso, Integer cantidad) throws BOException {
-//        List<RecursoDTO> recursosObra = obtenerRecursosObra(obra.getIdObra());
-//        // Si el material se encuentra registrado, se actualiza la cantidad de stock
-//        for (RecursoDTO recurso : recursosObra) {
-//            if (recurso.getMaterial().getNombre().equals(nombreMaterial) || recurso.getMaterial().getUnidadPeso().equals(unidadPeso)) {
-//                recurso.setCantidad(cantidad);
-//                // Imprimir para probar si funciona
-//                // System.out.println("Cantidad actualizada");
-//            }
-//        }
-        return true;
+        for (RecursoDTO recurso : recursos) {
+            if (recurso.getMaterial().getNombre().equals(nombreMaterial) && 
+                recurso.getMaterial().getUnidadPeso().equals(unidadPeso)) {
+
+                if (cantidad < 0) {
+                    throw new BOException("No puede haber cantidad negativa");
+                }
+
+                recurso.setCantidad(cantidad);
+                return true;
+            }
+        }
+        throw new BOException("Material no encontrado: " + nombreMaterial);
     }
     
 }
