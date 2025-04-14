@@ -23,34 +23,30 @@ import excepciones.AdmObraSeleccionadaException;
  */
 public class FAdmObraSeleccionada implements IAdmObraSeleccionada {
 
-    // Instancia única del gestor de sesión de obra (Singleton).
-    private SesionObraManager sesionObra;
+    /**
+     * Controlador del subsistema admObraSeleccionada. Se encarga de gestionar
+     * la lógica de negocio relacionada con la obra en sesión.
+     */
+    private ControlAdmObraSeleccionada controlAdmObraSeleccionada;
 
     /**
      * Constructor de la fachada. Inicializa la instancia de SesionObraManager
      * obteniéndola del Singleton.
      */
     public FAdmObraSeleccionada() {
-        this.sesionObra = SesionObraManager.getInstance();
+        this.controlAdmObraSeleccionada = new ControlAdmObraSeleccionada();
     }
 
     /**
      * Activa la sesión de una obra en el sistema. Si no hay una obra en sesión,
      * se establece la nueva obra con su identificador.
      *
-     * @param idObra Identificador único de la obra a activar.
      * @throws AdmObraSeleccionadaException Si ocurre un error al activar la
      * sesión.
      */
     @Override
-    public void activarSesionObra(Long idObra) throws AdmObraSeleccionadaException {
-        try {
-            if (obtenerIdObra() == null) {
-                sesionObra.iniciarSesion(idObra);
-            }
-        } catch (Exception e) {
-            throw new AdmObraSeleccionadaException("No se pudo activar la sesión de la obra.", e);
-        }
+    public boolean activarSesionObra(Long numero) throws AdmObraSeleccionadaException {
+        return controlAdmObraSeleccionada.iniciarSesion(numero);
     }
 
     /**
@@ -62,13 +58,7 @@ public class FAdmObraSeleccionada implements IAdmObraSeleccionada {
      */
     @Override
     public void cerrarSesionObra() throws AdmObraSeleccionadaException {
-        try {
-            if (obtenerIdObra() != null) {
-                sesionObra.cerrarSesion();
-            }
-        } catch (Exception e) {
-            throw new AdmObraSeleccionadaException("No se pudo cerrar la sesión de la obra.", e);
-        }
+        controlAdmObraSeleccionada.cerrarSesion();
     }
 
     /**
@@ -79,7 +69,20 @@ public class FAdmObraSeleccionada implements IAdmObraSeleccionada {
      * de la obra.
      */
     @Override
-    public Long obtenerIdObra() throws AdmObraSeleccionadaException {
-        return sesionObra.getIdObra();
+    public Long obtenerSesion() throws AdmObraSeleccionadaException {
+        return controlAdmObraSeleccionada.obtenerIdObra();
     }
+    
+    /**
+     * Obtiene la dirección de la obra actualmente en sesión.
+     *
+     * @return Dirección de la obra en sesión.
+     * @throws AdmObraSeleccionadaException Si ocurre un error al obtener la
+     * dirección.
+     */
+    @Override
+    public String obtenerDireccionObra() throws AdmObraSeleccionadaException {
+        return controlAdmObraSeleccionada.obtenerDireccionObra();
+    }
+    
 }

@@ -28,7 +28,7 @@ public class ObraDTO {
     /**
      * Volumen de construcción en metros cúbicos. 
      */
-    private Long metrosCubicos;
+    private Double metrosCubicos;
 
     /**
      * Constructor por defecto. 
@@ -45,19 +45,19 @@ public class ObraDTO {
      * @param direccion La dirección física de la obra
      * @param metrosCubicos El volumen en metros cúbicos
      */
-    public ObraDTO(Long idObra, String direccion, Long metrosCubicos) {
+    public ObraDTO(Long idObra, String direccion, Double metrosCubicos) {
         this.idObra = idObra;
         this.direccion = direccion;
         this.metrosCubicos = metrosCubicos;
     }
-
+    
     /**
      * Constructor parametrizado sin identificador. 
      *
      * @param direccion La dirección física de la obra
      * @param metrosCubicos El volumen en metros cúbicos
      */
-    public ObraDTO(String direccion, Long metrosCubicos) {
+    public ObraDTO(String direccion, Double metrosCubicos) {
         this.direccion = direccion;
         this.metrosCubicos = metrosCubicos;
     }
@@ -103,16 +103,16 @@ public class ObraDTO {
      *
      * @return El tamaño de la obra en metros cúbicos
      */
-    public Long getMetrosCubicos() {
+    public Double getMetrosCubicos() {
         return metrosCubicos;
     }
-
+    
     /**
      * Establece el volumen de la obra en metros cúbicos.
      *
      * @param metrosCubicos El nuevo volumen para la obra
      */
-    public void setMetrosCubicos(Long metrosCubicos) {
+    public void setMetrosCubicos(Double metrosCubicos) {
         this.metrosCubicos = metrosCubicos;
     }
 

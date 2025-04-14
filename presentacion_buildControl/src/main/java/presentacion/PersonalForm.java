@@ -6,7 +6,7 @@ package presentacion;
 
 import com.github.lgooddatepicker.components.TimePicker;
 import dto.AsistenciaPersonalDTO;
-import dto.ObraDTO;
+import exception.DatosInvalidosException;
 import exception.PresentacionException;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -19,7 +19,6 @@ import java.awt.Insets;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -77,11 +76,6 @@ public class PersonalForm extends JFrame {
      * negocio para el registro de asistencia.
      */
     private CoordinadorNegocio coordinadorNegocio;
-
-    /**
-     * Logger para registro de eventos y errores en la clase.
-     */
-    private static final Logger logger = Logger.getLogger(PersonalForm.class.getName());
     
     /**
      * Constructor del formulario de personal.
@@ -91,19 +85,16 @@ public class PersonalForm extends JFrame {
      * lista de trabajadores y construye dinámicamente la interfaz para el
      * registro de asistencia.
      *
-     * @param coordinador Referencia al coordinador de aplicación
      */
-    public PersonalForm(CoordinadorAplicacion coordinador) {
+    public PersonalForm() {
         initComponents();
         getContentPane().setBackground(Color.WHITE);
         this.setLocationRelativeTo(null);
-        this.coordinador = coordinador;
+        this.coordinador = CoordinadorAplicacion.getInstancia();
         this.coordinadorNegocio = CoordinadorNegocio.getInstance();
-        ObraDTO obra = this.coordinadorNegocio.obtenerObraSeleccionada();
-        campoNombreObra.setText(obra.getDireccion());
+        campoNombreObra.setText(coordinadorNegocio.obtenerDireccionObra());
         
-        // Inicializar lista de trabajadores
-        trabajadores = coordinadorNegocio.obtenerPersonal();
+        obtenerPersonal();
         crearPanelAsistencia();
     }
 
@@ -280,9 +271,9 @@ public class PersonalForm extends JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 514, Short.MAX_VALUE)
                 .addComponent(btnSiguiente)
                 .addGap(27, 27, 27))
-            .addGroup(layout.createSequentialGroup()
-                .addGap(38, 38, 38)
-                .addComponent(panelPrincipal, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(panelPrincipal, javax.swing.GroupLayout.PREFERRED_SIZE, 818, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -319,7 +310,7 @@ public class PersonalForm extends JFrame {
      * @param evt Evento de acción que desencadenó este método
      */
     private void btnSiguienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSiguienteActionPerformed
-        siguiente();
+            siguiente();
     }//GEN-LAST:event_btnSiguienteActionPerformed
 
     /**
@@ -339,6 +330,23 @@ public class PersonalForm extends JFrame {
      * Inicializa el panel contenedor con un BoxLayout vertical, agrega los
      * paneles individuales para cada trabajador y lo incorpora en un
      * JScrollPane para permitir el desplazamiento cuando hay muchos empleados.
+     */
+    private void obtenerPersonal() {
+        try {
+            // Inicializar lista de trabajadores
+            trabajadores = coordinadorNegocio.obtenerPersonal();
+        } catch (PresentacionException e) {
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            this.dispose();
+            coordinador.mostrarObraSeleccionada();
+            coordinadorNegocio.reset();
+            coordinador.reset();
+        }
+    }
+    
+    /**
+     * Crea y configura dinámicamente el panel de asistencia para mostrar una
+     * lista de trabajadores dentro de un contenedor con scroll.
      */
     private void crearPanelAsistencia() {
         // Crear el panel contenedor con BoxLayout (apilado vertical)
@@ -615,11 +623,11 @@ public class PersonalForm extends JFrame {
      * uno. También valida que las horas sean coherentes.
      *
      * @return Lista de AsistenciaPersonalDTO con los registros de asistencia
-     * @throws PresentacionException Si hay errores en los datos ingresados
+     * @throws DatosInvalidosException Si hay errores en los datos ingresados
      */
-    private List<AsistenciaPersonalDTO> registrarAsistenciaPorPersonal() throws PresentacionException {
+    private List<AsistenciaPersonalDTO> registrarAsistenciaPorPersonal() throws DatosInvalidosException {
         List<Component> panelesPersonalSeleccionados = buscarPersonalSeleccionados();
-        List<AsistenciaPersonalDTO> listaAsistenciaPersonal = new ArrayList<>();
+        List<AsistenciaPersonalDTO> listaAsistenciaPersonal = null;
 
         for (Component panel : panelesPersonalSeleccionados) {
             if (!(panel instanceof JPanel panelEmpleado)) {
@@ -653,6 +661,7 @@ public class PersonalForm extends JFrame {
             coordinadorNegocio.validarHoras(horaEntrada, horaSalida, nombre);
 
             // Agregar la asistencia del personal a la lista
+            listaAsistenciaPersonal = new ArrayList<>();
             listaAsistenciaPersonal.add(new AsistenciaPersonalDTO(nombre, horaEntrada, horaSalida, notas));
         }
 
@@ -667,7 +676,7 @@ public class PersonalForm extends JFrame {
      * obra seleccionada. También maneja los posibles errores durante el
      * proceso.
      */
-    private void siguiente() {
+    private void siguiente(){
         // Intentar registrar la bitacora
         try {
             coordinadorNegocio.registrarAsistencia(registrarAsistenciaPorPersonal());
@@ -679,9 +688,12 @@ public class PersonalForm extends JFrame {
                 return;
             }
 
-            coordinadorNegocio.registrarBitacora();
-            JOptionPane.showMessageDialog(this, "Bitácora registrada exitosamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-
+            if (coordinadorNegocio.registrarBitacora()) {
+                JOptionPane.showMessageDialog(this, "Bitácora registrada exitosamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(this, "Fallo al registrar la bitacora.", "Error", JOptionPane.ERROR_MESSAGE);            
+            }
+            
             // Regresar a ventana ObraSeleccionada
             coordinadorNegocio.reset();
             this.dispose();
@@ -689,8 +701,9 @@ public class PersonalForm extends JFrame {
             coordinador.mostrarObraSeleccionada();
         } catch (PresentacionException e) {
             JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (DatosInvalidosException e) {
+            JOptionPane.showMessageDialog(this, "Error por datos inválidos: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
-
     }
 
     /**

@@ -4,6 +4,7 @@
  */
 package validadores;
 
+import exception.DatosInvalidosException;
 import java.time.LocalTime;
 
 /**
@@ -36,26 +37,24 @@ public class Validaciones {
      *
      * @param titulo El título de la actividad a validar
      * @param descripcion La descripción de la actividad a validar
-     * @return Un mensaje de error si la validación falla, o null si es correcta
+     * @throws exception.DatosInvalidosException Excepción si algo sale mal.
      */
-    public static String validarActividad(String titulo, String descripcion) {
+    public static void validarActividad(String titulo, String descripcion) throws DatosInvalidosException {
         if (titulo == null || titulo.trim().isBlank()) {
-            return "El título de la actividad no puede estar vacío.";
+            throw new DatosInvalidosException("El título de la actividad no puede estar vacío.");
         }
 
         if (!titulo.matches(REGEX_VALIDO)) {
-            return "El título debe contener al menos una letra.";
+            throw new DatosInvalidosException("El título debe contener al menos una letra.");
         }
 
         if (descripcion == null || descripcion.trim().isBlank()) {
-            return "La descripción de la actividad no puede estar vacía.";
+            throw new DatosInvalidosException("La descripción de la actividad no puede estar vacía.");
         }
 
         if (!descripcion.matches(REGEX_VALIDO)) {
-            return "La descripción debe contener al menos una letra.";
+            throw new DatosInvalidosException("La descripción debe contener al menos una letra.");
         }
-
-        return null; // Retorna null si la validación es correcta
     }
 
     /**
@@ -68,18 +67,16 @@ public class Validaciones {
      * @param horaEntrada La hora de entrada a validar
      * @param horaSalida La hora de salida a validar
      * @param nombre El nombre del trabajador
-     * @return Un mensaje de error si la validación falla, o null si es correcta
+     * @throws exception.DatosInvalidosException Excepción si algo sale mal.
      */
-    public static String validarHorasPersonal(LocalTime horaEntrada, LocalTime horaSalida, String nombre) {
+    public static void validarHorasPersonal(LocalTime horaEntrada, LocalTime horaSalida, String nombre) throws DatosInvalidosException {
         if (horaEntrada == null || horaSalida == null) {
-            return "Falta llenar la hora de entrada o salida para " + (nombre != null ? nombre : "desconocido");
+            throw new DatosInvalidosException("Falta llenar la hora de entrada o salida para " + (nombre != null ? nombre : "desconocido"));
         }
 
         // Validar que la hora de salida no sea antes que la hora de entrada
         if (horaSalida.isBefore(horaEntrada)) {
-            return "La hora de salida no puede ser antes de la hora de entrada para " + (nombre != null ? nombre : "desconocido");
+            throw new DatosInvalidosException("La hora de salida no puede ser antes de la hora de entrada para " + (nombre != null ? nombre : "desconocido"));
         }
-
-        return null; // Si todo es correcto, retornar null
     }
 }

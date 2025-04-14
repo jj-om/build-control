@@ -81,7 +81,7 @@ public class CoordinadorAplicacion {
      */
     public void mostrarObraSeleccionada() {
         if (obraSeleccionadaForm == null) {
-            obraSeleccionadaForm = new ObraSeleccionadaForm(this);
+            obraSeleccionadaForm = new ObraSeleccionadaForm();
         }
         obraSeleccionadaForm.setVisible(true);
     }
@@ -92,7 +92,7 @@ public class CoordinadorAplicacion {
      */
     public void mostrarActividades() {
         if (actividadesForm == null) {
-            actividadesForm = new ActividadesForm(this);
+            actividadesForm = new ActividadesForm();
         }
         actividadesForm.setVisible(true);
     }
@@ -101,9 +101,9 @@ public class CoordinadorAplicacion {
      * Muestra el formulario de registro de materiales. Si el formulario no ha
      * sido creado previamente, lo instancia.
      */
-    public void mostrarMateriales() {
+    public void mostrarMateriales(){
         if (materialesForm == null) {
-            materialesForm = new MaterialesForm(this);
+            materialesForm = new MaterialesForm();
         }
         materialesForm.setVisible(true);
     }
@@ -114,7 +114,7 @@ public class CoordinadorAplicacion {
      */
     public void mostrarHerramientasYMaquinaria() {
         if (hymForm == null) {
-            hymForm = new HerramientasYMaquinariaForm(this);
+            hymForm = new HerramientasYMaquinariaForm();
         }
         hymForm.setVisible(true);
     }
@@ -125,7 +125,7 @@ public class CoordinadorAplicacion {
      */
     public void mostrarPersonal() {
         if (personalForm == null) {
-            personalForm = new PersonalForm(this);
+            personalForm = new PersonalForm();
         }
         personalForm.setVisible(true);
     }

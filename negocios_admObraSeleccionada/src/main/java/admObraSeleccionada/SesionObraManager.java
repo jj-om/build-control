@@ -15,7 +15,15 @@ package admObraSeleccionada;
  * @author Jesús Osuna 240549
  */
 public class SesionObraManager {
-
+    
+    // Instancia única de la clase.
+    /**
+     * Instancia única de la clase (patrón Singleton). Garantiza que solo exista
+     * una instancia en toda la aplicación.
+     */
+    private static SesionObraManager instance;
+    
+    // Identificador único de la obra en sesión.
     /**
      * Identificador único de la obra en sesión.
      */
@@ -29,23 +37,16 @@ public class SesionObraManager {
 
     /**
      * Método para obtener la instancia única de SesionObraManager. Se utiliza
-     * el patrón Singleton con el Holder para garantizar la inicialización
+     * el patrón Singleton para garantizar la inicialización
      * segura en entornos concurrentes.
      *
      * @return la única instancia de SesionObraManager.
      */
     public static SesionObraManager getInstance() {
-        return SesionObraManagerHolder.INSTANCE;
-    }
-
-    /**
-     * Clase estática interna que contiene la única instancia de
-     * SesionObraManager. Esta estrategia garantiza la carga perezosa y la
-     * seguridad en entornos multi-hilo.
-     */
-    private static class SesionObraManagerHolder {
-
-        private static final SesionObraManager INSTANCE = new SesionObraManager();
+        if (instance == null) {
+            instance = new SesionObraManager();
+        }
+        return instance;
     }
 
     /**
@@ -62,9 +63,14 @@ public class SesionObraManager {
      *
      * @param idObra Identificador de la obra que se quiere establecer en la
      * sesión.
+     * @return 
      */
-    public void iniciarSesion(Long idObra) {
-        this.idObra = idObra;
+    public boolean iniciarSesion(Long idObra) {
+        if (this.idObra == null) {
+            this.idObra = idObra;
+            return true;
+        }
+        return false; 
     }
 
     /**

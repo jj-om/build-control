@@ -4,10 +4,8 @@
  */
 package presentacion;
 
-import dto.ObraDTO;
+import exception.DatosInvalidosException;
 import exception.PresentacionException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 /**
@@ -39,21 +37,14 @@ public class ActividadesForm extends javax.swing.JFrame {
 
     /**
      * Constructor del formulario de actividades.
-     *
-     * Inicializa los componentes gráficos, configura la apariencia y establece
-     * la conexión con los coordinadores de la aplicación. También obtiene y
-     * muestra la información de la obra seleccionada.
-     *
-     * @param coordinador Referencia al coordinador de aplicación
      */
-    public ActividadesForm(CoordinadorAplicacion coordinador) {
+    public ActividadesForm() {
         initComponents();
         getContentPane().setBackground(java.awt.Color.WHITE);
         this.setLocationRelativeTo(null);
-        this.coordinador = coordinador;
+        this.coordinador = CoordinadorAplicacion.getInstancia();
         this.coordinadorNegocio = CoordinadorNegocio.getInstance();
-        ObraDTO obra = this.coordinadorNegocio.obtenerObraSeleccionada();
-        campoNombreObra.setText(obra.getDireccion());
+        campoNombreObra.setText(coordinadorNegocio.obtenerDireccionObra());
     }
 
     /**
@@ -185,11 +176,7 @@ public class ActividadesForm extends javax.swing.JFrame {
      * @param evt Evento de acción que desencadenó este método
      */
     private void btnSiguienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSiguienteActionPerformed
-        try {
-            siguiente();
-        } catch (PresentacionException ex) {
-            Logger.getLogger(ActividadesForm.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        siguiente();
     }//GEN-LAST:event_btnSiguienteActionPerformed
 
     /**
@@ -233,24 +220,9 @@ public class ActividadesForm extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Actividad agregada correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);   
         } catch (PresentacionException e) {
             JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (DatosInvalidosException e) {
+            JOptionPane.showMessageDialog(this, "Error por datos inválidos: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }  
-    }
-
-    /**
-     * Registra formalmente todas las actividades agregadas en la bitácora
-     * actual a través del coordinador de negocio.
-     *
-     * Este método se invoca cuando el usuario decide avanzar al siguiente paso
-     * del flujo de trabajo, confirmando así la finalización de la entrada de
-     * actividades.
-     */
-    private void registrarActividades() {
-        try {
-            coordinadorNegocio.registrarActividades();
-            JOptionPane.showMessageDialog(this, "Actividades registradas exitosamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-        } catch (PresentacionException e) {
-            JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        }
     }
 
     /**
@@ -262,16 +234,14 @@ public class ActividadesForm extends javax.swing.JFrame {
      *
      * @throws PresentacionException Si ocurre un error durante el proceso
      */
-    private void siguiente() throws PresentacionException {
+    private void siguiente() {
         // Validar que se hayan registrado actividades
         if (coordinadorNegocio.obtenerActividades().isEmpty()) {
             JOptionPane.showMessageDialog(this,
                     "Debe registrar al menos una actividad antes de continuar",
                     "Error", JOptionPane.ERROR_MESSAGE);
             return;
-        } else {
-            registrarActividades();
-        }
+        } 
         this.dispose();
         coordinador.mostrarMateriales();
     }
@@ -298,7 +268,6 @@ public class ActividadesForm extends javax.swing.JFrame {
             }
             
             // Limpiar la lista de actividades
-            coordinadorNegocio.cancelarActividades();
             coordinadorNegocio.reset();
         }
         this.dispose();
