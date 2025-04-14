@@ -5,9 +5,18 @@
 package admBitacora;
 
 /**
+ * Interface IAdmBitacora
  *
- * @author rocha
+ * Esta interfaz establece los métodos que deben implementar las clases que
+ * gestionan las bitácoras de seguimiento diario de los proyectos de
+ * construcción.
+ *
+ * @author Alejandra García 252444
+ * @author Isabel Valenzuela 253301
+ * @author Ximena Rosales 253088
+ * @author Dario Cortez 252267
+ * @author Jesús Osuna 240549
  */
 public interface IAdmBitacora {
-    
+
 }
