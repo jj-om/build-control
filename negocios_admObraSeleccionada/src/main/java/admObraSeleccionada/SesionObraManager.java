@@ -8,11 +8,17 @@ package admObraSeleccionada;
  * Clase que maneja la sesión de una obra en el sistema. Implementa el patrón
  * Singleton con la variante de Holder para garantizar una única instancia.
  *
- * @author rocha
+ * @author Alejandra García 252444
+ * @author Isabel Valenzuela 253301
+ * @author Ximena Rosales 253088
+ * @author Dario Cortez 252267
+ * @author Jesús Osuna 240549
  */
 public class SesionObraManager {
 
-    // Identificador único de la obra en sesión.
+    /**
+     * Identificador único de la obra en sesión.
+     */
     private Long idObra;
 
     /**

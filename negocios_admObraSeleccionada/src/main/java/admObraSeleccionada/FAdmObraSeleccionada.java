@@ -15,7 +15,11 @@ import excepciones.AdmObraSeleccionadaException;
  * Implementa la interfaz IAdmObraSeleccionada para garantizar un contrato de
  * uso uniforme dentro del sistema.
  *
- * @author rocha
+ * @author Alejandra García 252444
+ * @author Isabel Valenzuela 253301
+ * @author Ximena Rosales 253088
+ * @author Dario Cortez 252267
+ * @author Jesús Osuna 240549
  */
 public class FAdmObraSeleccionada implements IAdmObraSeleccionada {
 

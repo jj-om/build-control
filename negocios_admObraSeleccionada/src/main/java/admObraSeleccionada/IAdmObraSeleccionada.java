@@ -11,7 +11,11 @@ import excepciones.AdmObraSeleccionadaException;
  * seleccionada. Encapsula la lógica de gestión de sesiones dentro del
  * subsistema.
  *
- * @author rocha
+ * @author Alejandra García 252444
+ * @author Isabel Valenzuela 253301
+ * @author Ximena Rosales 253088
+ * @author Dario Cortez 252267
+ * @author Jesús Osuna 240549
  */
 public interface IAdmObraSeleccionada {
 
