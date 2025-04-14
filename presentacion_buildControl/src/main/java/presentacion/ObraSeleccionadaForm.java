@@ -9,17 +9,40 @@ import exception.PresentacionException;
 import javax.swing.JOptionPane;
 
 /**
+ * Clase ObraSeleccionadaForm
  *
- * @author alega
+ * Formulario de la capa de presentación que muestra la obra actualmente seleccionada y permite al usuario
+ * iniciar el proceso de registro de una nueva bitácora diaria.
+ * 
+ * @author Alejandra García 252444
+ * @author Isabel Valenzuela 253301
+ * @author Ximena Rosales 253088
+ * @author Dario Cortez 252267
+ * @author Jesús Osuna 240549
  */
 public class ObraSeleccionadaForm extends javax.swing.JFrame {
     
+    /**
+     * Referencia al coordinador de aplicación. Permite la navegación entre los
+     * distintos formularios del sistema.
+     */
     private CoordinadorAplicacion coordinador;
+
+    /**
+     * Referencia al coordinador de negocio. Proporciona acceso a la lógica de
+     * negocio para la gestión de obras y bitácoras.
+     */
     private CoordinadorNegocio coordinadorNegocio;
 
     /**
-     * Creates new form ObraSeleccionadaForm
-     * @param coordinador
+     * Constructor del formulario de obra seleccionada.
+     *
+     * Inicializa los componentes gráficos, configura la apariencia y establece
+     * la conexión con los coordinadores de la aplicación. Como medida temporal,
+     * también carga los datos de prueba e inicia una sesión con la primera obra
+     * disponible.
+     *
+     * @param coordinador Referencia al coordinador de aplicación
      */
     public ObraSeleccionadaForm(CoordinadorAplicacion coordinador) {
         initComponents();
@@ -151,14 +174,33 @@ public class ObraSeleccionadaForm extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    /**
+     * Maneja el evento de clic en el botón "Atrás". Cierra la sesión de la obra
+     * actual y regresa a la pantalla anterior.
+     *
+     * @param evt Evento de acción que desencadenó este método
+     */
     private void btnAtrasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAtrasActionPerformed
         atras();
     }//GEN-LAST:event_btnAtrasActionPerformed
 
+    /**
+     * Maneja el evento de clic en el botón "Registrar Bitácora". Inicia el
+     * proceso de creación de una nueva bitácora para la obra seleccionada.
+     *
+     * @param evt Evento de acción que desencadenó este método
+     */
     private void btnRegistrarBitacoraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarBitacoraActionPerformed
         registrarBitacora();
     }//GEN-LAST:event_btnRegistrarBitacoraActionPerformed
 
+    /**
+     * Gestiona el retorno a la pantalla anterior.
+     *
+     * Cierra la sesión activa de la obra y dispone el formulario actual. Este
+     * método se llama cuando el usuario hace clic en el botón "Atrás" o decide
+     * cancelar la operación.
+     */
     private void atras() {
         // Cerrar sesión de la obra
         try {
@@ -170,6 +212,13 @@ public class ObraSeleccionadaForm extends javax.swing.JFrame {
         this.dispose();
     }
     
+    /**
+     * Inicia el proceso de registro de una nueva bitácora para la obra actual.
+     *
+     * Verifica que no exista ya una bitácora registrada para la fecha actual y,
+     * en caso afirmativo, avanza al formulario de registro de actividades. Si
+     * ya existe una bitácora, muestra un mensaje de error.
+     */
     private void registrarBitacora() {
         if (coordinadorNegocio.validarBitacoraRegistrada()) {
             JOptionPane.showMessageDialog(this, "La obra ya cuenta con una bitácora registrada el día de hoy.", "Error", JOptionPane.ERROR_MESSAGE);

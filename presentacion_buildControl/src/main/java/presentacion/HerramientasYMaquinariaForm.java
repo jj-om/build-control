@@ -24,30 +24,99 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 
 /**
+ * Clase HerramientasYMaquinariaForm
  *
- * @author alega
+ * Formulario de la capa de presentación para el registro de herramientas y
+ * maquinaria en el sistema BuildControl. 
+ * 
+ * @author Alejandra García 252444
+ * @author Isabel Valenzuela 253301
+ * @author Ximena Rosales 253088
+ * @author Dario Cortez 252267
+ * @author Jesús Osuna 240549
  */
 public class HerramientasYMaquinariaForm extends javax.swing.JFrame {
     
+    /**
+     * Referencia al coordinador de aplicación. Permite la navegación entre los
+     * distintos formularios del sistema.
+     */
     private CoordinadorAplicacion coordinador;
+    
+    /**
+     * Referencia al coordinador de negocio. Proporciona acceso a la lógica de
+     * negocio para el registro de herramientas y maquinaria.
+     */
     private CoordinadorNegocio coordinadorNegocio;
     
+    /**
+     * Modelo de tabla para la gestión de herramientas. Almacena las
+     * herramientas seleccionadas y sus cantidades.
+     */
     private DefaultTableModel tableModelHerramienta;
+    
+    /**
+     * Ordenador de filas para la tabla de herramientas. Proporciona capacidades
+     * de filtrado para la tabla.
+     */
     private TableRowSorter<DefaultTableModel> tableSorterHerramienta; // Filtro para la tabla
+    
+    /**
+     * Modelo de lista para la búsqueda de herramientas. Gestiona la lista
+     * desplegable con las herramientas disponibles.
+     */
     private DefaultListModel<String> listModelHerramienta; // Modelo para la lista
     
+    /**
+     * Modelo de tabla para la gestión de maquinaria. Almacena la maquinaria
+     * seleccionada y su estado.
+     */
     private DefaultTableModel tableModelMaquinaria;
+    
+    /**
+     * Ordenador de filas para la tabla de maquinaria. Proporciona capacidades
+     * de filtrado para la tabla.
+     */
     private TableRowSorter<DefaultTableModel> tableSorterMaquinaria; // Filtro para la tabla
+    
+    /**
+     * Modelo de lista para la búsqueda de maquinaria. Gestiona la lista
+     * desplegable con la maquinaria disponible.
+     */
     private DefaultListModel<String> listModelMaquinaria; // Modelo para la lista
     
+    /**
+     * Lista de todas las herramientas disponibles en el sistema. Catálogo
+     * completo obtenido del coordinador de negocio.
+     */
     List<HerramientaDTO> herramientas;
+    
+    /**
+     * Lista con los nombres de todas las herramientas disponibles. Facilita la
+     * búsqueda por nombre en la interfaz.
+     */
     List<String> nombresHerramientas; // Obtiene el nombre de las herramientas
+    
+    /**
+     * Lista de toda la maquinaria disponible en el sistema. Catálogo completo
+     * obtenido del coordinador de negocio.
+     */
     List<MaquinariaDTO> maquinarias;
+    
+    /**
+     * Lista con los nombres de toda la maquinaria disponible. Facilita la
+     * búsqueda por nombre en la interfaz.
+     */
     List<String> nombresMaquinarias; 
 
     /**
-     * Creates new form RegistrarHyMForm
-     * @param coordinador
+     * Constructor del formulario de herramientas y maquinaria.
+     *
+     * Inicializa los componentes gráficos, configura las tablas, listas y
+     * modelo de datos, y establece la conexión con los coordinadores de la
+     * aplicación.
+     *
+     * @param coordinador Referencia al coordinador de aplicación
      */
     public HerramientasYMaquinariaForm(CoordinadorAplicacion coordinador) {
         initComponents();
@@ -356,34 +425,83 @@ public class HerramientasYMaquinariaForm extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    /**
+     * Maneja el evento de clic en el botón "Atrás". Regresa al formulario
+     * anterior del flujo de trabajo.
+     *
+     * @param evt Evento de acción que desencadenó este método
+     */
     private void btnAtrasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAtrasActionPerformed
         atras();
     }//GEN-LAST:event_btnAtrasActionPerformed
 
+    /**
+     * Maneja el evento de clic en el botón "Siguiente". Avanza al siguiente
+     * formulario del flujo de trabajo.
+     *
+     * @param evt Evento de acción que desencadenó este método
+     */
     private void btnSiguienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSiguienteActionPerformed
         siguiente();
     }//GEN-LAST:event_btnSiguienteActionPerformed
 
+    /**
+     * Maneja el evento de liberación de tecla en el campo de búsqueda de
+     * herramientas. Actualiza la lista de herramientas según el texto
+     * ingresado.
+     *
+     * @param evt Evento de teclado que desencadenó este método
+     */
     private void txtBuscadorListaHKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBuscadorListaHKeyReleased
         buscadorListaHerramientas();
     }//GEN-LAST:event_txtBuscadorListaHKeyReleased
 
+    /**
+     * Maneja el evento de cambio de selección en la lista de herramientas.
+     * Agrega la herramienta seleccionada a la tabla.
+     *
+     * @param evt Evento de selección que desencadenó este método
+     */
     private void listBuscadorHValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_listBuscadorHValueChanged
         seleccionarHerramientaLista(evt);
     }//GEN-LAST:event_listBuscadorHValueChanged
 
+    /**
+     * Maneja el evento de liberación de tecla en el campo de búsqueda de
+     * maquinaria. Actualiza la lista de maquinaria según el texto ingresado.
+     *
+     * @param evt Evento de teclado que desencadenó este método
+     */
     private void txtBuscadorListaMKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBuscadorListaMKeyReleased
         buscadorListaMaquinaria();
     }//GEN-LAST:event_txtBuscadorListaMKeyReleased
 
+    /**
+     * Maneja el evento de cambio de selección en la lista de maquinaria. Agrega
+     * la maquinaria seleccionada a la tabla.
+     *
+     * @param evt Evento de selección que desencadenó este método
+     */
     private void listBuscadorMValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_listBuscadorMValueChanged
         seleccionarMaquinariaLista(evt);
     }//GEN-LAST:event_listBuscadorMValueChanged
 
+    /**
+     * Maneja el evento de liberación de tecla en el campo de filtro de tabla de
+     * herramientas. Filtra las filas de la tabla según el texto ingresado.
+     *
+     * @param evt Evento de teclado que desencadenó este método
+     */
     private void txtFiltroTablaHKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtFiltroTablaHKeyReleased
         filtrarTablaHerramientas();
     }//GEN-LAST:event_txtFiltroTablaHKeyReleased
 
+    /**
+     * Maneja el evento de liberación de tecla en el campo de filtro de tabla de
+     * maquinaria. Filtra las filas de la tabla según el texto ingresado.
+     *
+     * @param evt Evento de teclado que desencadenó este método
+     */
     private void txtFiltroTablaMKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtFiltroTablaMKeyReleased
         filtrarTablaMaquinaria();
     }//GEN-LAST:event_txtFiltroTablaMKeyReleased
@@ -392,12 +510,27 @@ public class HerramientasYMaquinariaForm extends javax.swing.JFrame {
 
     }//GEN-LAST:event_formWindowActivated
 
+    /**
+     * Clase interna que implementa un renderizador personalizado para los
+     * botones en las tablas. Permite mostrar botones dentro de las celdas de
+     * tabla para incrementar o decrementar cantidades.
+     */
     class ButtonRenderer extends JButton implements javax.swing.table.TableCellRenderer {
 
+        /**
+         * Constructor del renderizador de botones. Configura las propiedades
+         * básicas del componente.
+         */
         public ButtonRenderer() {
             setOpaque(true); // que no sea transparente
         }
 
+        /**
+         * Implementación del método de la interfaz TableCellRenderer. Configura
+         * y devuelve el componente que se mostrará en la celda.
+         *
+         * @return El botón configurado para mostrarse en la celda
+         */
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             // Asigna el texto del botón, si es null asigna un texto vacío
@@ -407,14 +540,52 @@ public class HerramientasYMaquinariaForm extends javax.swing.JFrame {
         }
     }
     
+    /**
+     * Clase interna que implementa un editor personalizado para los botones en
+     * las tablas. Gestiona la interacción con los botones de
+     * incremento/decremento y eliminación.
+     */
     class ButtonEditor extends DefaultCellEditor {
 
+        
+        /**
+         * Botón que se mostrará en la celda.
+         */
         private JButton button;
+
+        /**
+         * Indica si el botón es para incrementar (true) o decrementar/eliminar
+         * (false).
+         */
         private boolean isIncrement;
+
+        /**
+         * Índice de la fila que contiene el botón.
+         */
         private int row;
+
+        /**
+         * Modelo de tabla al que pertenece el botón.
+         */
         private DefaultTableModel tableModel;
+
+        /**
+         * Indica si el botón pertenece a la tabla de herramientas (true) o
+         * maquinaria (false).
+         */
         private boolean esHerramienta;  // Para determinar qué lista actualizar
 
+        /**
+         * Constructor del editor de botones.
+         *
+         * @param checkBox Componente base para el editor (requerido por
+         * DefaultCellEditor)
+         * @param isIncrement Indica si el botón incrementa (true) o
+         * decrementa/elimina (false)
+         * @param tableModel Modelo de tabla al que pertenece
+         * @param esHerramienta Indica si es para tabla de herramientas o
+         * maquinaria
+         */
         public ButtonEditor(JCheckBox checkBox, boolean isIncrement, DefaultTableModel tableModel, boolean esHerramienta) {
             super(checkBox);
             this.isIncrement = isIncrement;
@@ -450,12 +621,22 @@ public class HerramientasYMaquinariaForm extends javax.swing.JFrame {
 
         }
 
+        /**
+         * Implementación del método para obtener el componente de edición.
+         *
+         * @return El botón configurado como componente de edición
+         */
         @Override
         public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
             this.row = row;
             return button; // Mostrar el JButton como el componente de edición
         }
 
+        /**
+         * Implementación del método para obtener el valor de la celda.
+         *
+         * @return El símbolo correspondiente al tipo de botón
+         */
         @Override
         public Object getCellEditorValue() {
             return isIncrement ? "+" : "-"; // Retornar el símbolo correcto
@@ -463,40 +644,85 @@ public class HerramientasYMaquinariaForm extends javax.swing.JFrame {
     }
     
     // Comportamiento del buscador de herramientas
+    /**
+     * Actualiza la lista de herramientas según el texto en el buscador. Utiliza
+     * la clase utilitaria para gestionar el filtrado.
+     */
     private void buscadorListaHerramientas() {
         Utilities.buscadorLista(txtBuscadorListaH, listModelHerramienta, jScrollPaneH, nombresHerramientas, listBuscadorH);
     }
     
     // Filtrar y actualizar la lista de materiales
+    /**
+     * Actualiza la lista de herramientas disponibles para la selección.
+     *
+     * @param textoBuscador Texto para filtrar la lista
+     */
     private void actualizarListaHerramientas(String textoBuscador) {
         Utilities.actualizarLista(listBuscadorH, listModelHerramienta, nombresHerramientas, textoBuscador, jScrollPaneH);
     }
     
+    /**
+     * Procesa la selección de una herramienta en la lista.
+     *
+     * @param evt Evento de selección que contiene la información de la
+     * herramienta seleccionada
+     */
     private void seleccionarHerramientaLista(ListSelectionEvent evt) {
         Utilities.seleccionarElementoLista(evt, listBuscadorH, tableModelHerramienta, false);
     }
     
+    /**
+     * Aplica un filtro a la tabla de herramientas. Muestra solo las filas que
+     * coinciden con el texto ingresado.
+     */
     private void filtrarTablaHerramientas() {
         Utilities.filtrarTabla(tblHerramientas, tableSorterHerramienta, txtFiltroTablaH);
     }
     
+    /**
+     * Actualiza la lista de maquinaria según el texto en el buscador. Utiliza
+     * la clase utilitaria para gestionar el filtrado.
+     */
     private void buscadorListaMaquinaria() {
         Utilities.buscadorLista(txtBuscadorListaM, listModelMaquinaria, jScrollPaneM, nombresMaquinarias, listBuscadorM);
     }
     
     // Filtrar y actualizar la lista de materiales
+    /**
+     * Actualiza la lista de maquinaria disponible para la selección.
+     *
+     * @param textoBuscador Texto para filtrar la lista
+     */
     private void actualizarListaMaquinaria(String textoBuscador) {
         Utilities.actualizarLista(listBuscadorM, listModelMaquinaria, nombresMaquinarias, textoBuscador, jScrollPaneM);
     }
     
+    /**
+     * Procesa la selección de una maquinaria en la lista.
+     *
+     * @param evt Evento de selección que contiene la información de la
+     * maquinaria seleccionada
+     */
     private void seleccionarMaquinariaLista(ListSelectionEvent evt) {
         Utilities.seleccionarElementoLista(evt, listBuscadorM, tableModelMaquinaria, true);
     }
     
+    /**
+     * Aplica un filtro a la tabla de maquinaria. Muestra solo las filas que
+     * coinciden con el texto ingresado.
+     */
     private void filtrarTablaMaquinaria() {
         Utilities.filtrarTabla(tblMaquinaria, tableSorterMaquinaria, txtFiltroTablaM);
     }
     
+    /**
+     * Recopila las herramientas seleccionadas en la tabla y crea los DTOs
+     * correspondientes.
+     *
+     * @return Lista de HerramientaIngresadaDTO con las herramientas y sus
+     * cantidades
+     */
     private List<HerramientaIngresadaDTO> obtenerHerramientasIngresadas() {
         List<HerramientaIngresadaDTO> herramientasIngresadas = new ArrayList<>();
 
@@ -520,6 +746,12 @@ public class HerramientasYMaquinariaForm extends javax.swing.JFrame {
         return herramientasIngresadas;
     }
     
+    /**
+     * Busca una herramienta en el catálogo por su nombre.
+     *
+     * @param nombre Nombre de la herramienta a buscar
+     * @return Objeto HerramientaDTO correspondiente o null si no se encuentra
+     */
     private HerramientaDTO buscarHerramientaPorNombre(String nombre) {
         for (HerramientaDTO herramienta : herramientas) {
             if (herramienta.getNombre().equalsIgnoreCase(nombre)) {
@@ -529,6 +761,12 @@ public class HerramientasYMaquinariaForm extends javax.swing.JFrame {
         return null; // Si no se encuentra, retorna null
     }
     
+    /**
+     * Recopila la maquinaria seleccionada en la tabla y crea los DTOs
+     * correspondientes.
+     *
+     * @return Lista de MaquinariaDTO con la maquinaria seleccionada
+     */
     private List<MaquinariaDTO> obtenerMaquinariaSeleccionada() {
         List<MaquinariaDTO> maquinariaIngresada = new ArrayList<>();
         
@@ -544,6 +782,12 @@ public class HerramientasYMaquinariaForm extends javax.swing.JFrame {
         return maquinariaIngresada;
     }
     
+    /**
+     * Busca una maquinaria en el catálogo por su nombre.
+     *
+     * @param nombre Nombre de la maquinaria a buscar
+     * @return Objeto MaquinariaDTO correspondiente o null si no se encuentra
+     */
     private MaquinariaDTO buscarMaquinariaPorNombre(String nombre) {
         for (MaquinariaDTO maquinaria :  maquinarias) {
             if (maquinaria.getNombre().equalsIgnoreCase(nombre)) {
@@ -553,6 +797,11 @@ public class HerramientasYMaquinariaForm extends javax.swing.JFrame {
         return null; // Si no se encuentra, retorna null
     }
     
+    /**
+     * Extrae los nombres de todas las herramientas disponibles.
+     *
+     * @return Lista con los nombres de las herramientas
+     */
     private List<String> obtenerNombresHerramientas() {
         List<String> nombres = new ArrayList<>();
         for (HerramientaDTO herramienta : herramientas) {
@@ -562,6 +811,11 @@ public class HerramientasYMaquinariaForm extends javax.swing.JFrame {
         return nombres;
     }
     
+    /**
+     * Extrae los nombres de toda la maquinaria disponible.
+     *
+     * @return Lista con los nombres de la maquinaria
+     */
     private List<String> obtenerNombresMaquinarias() {
         List<String> nombres = new ArrayList<>();
         for (MaquinariaDTO maquinaria : maquinarias) {
@@ -571,6 +825,10 @@ public class HerramientasYMaquinariaForm extends javax.swing.JFrame {
         return nombres;
     }
     
+    /**
+     * Carga las listas de herramientas y maquinaria desde el coordinador de
+     * negocio. Inicializa las listas de nombres para la búsqueda.
+     */
     private void cargarListas() {
         this.herramientas = coordinadorNegocio.obtenerHerramientas();
         this.maquinarias = coordinadorNegocio.obtenerMaquinaria();
@@ -578,6 +836,13 @@ public class HerramientasYMaquinariaForm extends javax.swing.JFrame {
         this.nombresMaquinarias = obtenerNombresMaquinarias();
     }
     
+    /**
+     * Gestiona la transición al siguiente formulario en el flujo de trabajo.
+     *
+     * Verifica que se haya seleccionado al menos una herramienta o maquinaria,
+     * registra formalmente las selecciones en el sistema y avanza al formulario
+     * de personal.
+     */
     private void siguiente() {
         if (tblHerramientas.getRowCount() == 0 || tblMaquinaria.getRowCount() == 0) {
             int opcion = JOptionPane.showConfirmDialog(this,
@@ -608,6 +873,10 @@ public class HerramientasYMaquinariaForm extends javax.swing.JFrame {
         coordinador.mostrarPersonal();
     }
     
+    /**
+     * Gestiona el retorno al formulario anterior en el flujo de trabajo. Cierra
+     * este formulario y muestra el de materiales.
+     */
     private void atras() {
         this.dispose();
         coordinador.mostrarMateriales();

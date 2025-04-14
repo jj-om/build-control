@@ -5,24 +5,9 @@
 package presentacion;
 
 import validadores.Validaciones;
-import admActividades.FAdmActividades;
-import admActividades.FAdmMateriales;
-import admActividades.IAdmActividades;
-import admActividades.IAdmMateriales;
-import admObraSeleccionada.FAdmObraSeleccionada;
-import admObraSeleccionada.IAdmObraSeleccionada;
-import dto.ActividadDTO;
-import dto.AsistenciaPersonalDTO;
-import dto.BitacoraDTO;
-import dto.DetallesBitacoraDTO;
-import dto.HerramientaDTO;
-import dto.HerramientaIngresadaDTO;
-import dto.ListaAsistenciaDTO;
-import dto.MaquinariaDTO;
-import dto.MaterialDTO;
-import dto.MaterialIngresadoDTO;
-import dto.ObraDTO;
-import dto.RecursoDTO;
+import admActividades.*;
+import admObraSeleccionada.*;
+import dto.*;
 import excepciones.AdmActividadesException;
 import excepciones.AdmMaterialesException;
 import excepciones.AdmObraSeleccionadaException;
@@ -32,49 +17,106 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
+ * Clase CoordinadorNegocio
  *
- * @author Ximena
+ * Coordina la lógica de negocio del sistema, actuando como intermediario entre
+ * la capa de presentación y los subsistemas especializados. Implementa el
+ * patrón Singleton para garantizar una única instancia en toda la aplicación.
+ *
+ * @author Alejandra García 252444
+ * @author Isabel Valenzuela 253301
+ * @author Ximena Rosales 253088
+ * @author Dario Cortez 252267
+ * @author Jesús Osuna 240549
  */
 public class CoordinadorNegocio {
+
+    /**
+     * Instancia única del coordinador de negocio (patrón Singleton).
+     */
     private static CoordinadorNegocio coordinadorNegocio;
-    
-    // Crear lista para guardar las actividades
+
+    /**
+     * Lista de actividades registradas para la bitácora actual.
+     */
     private List<ActividadDTO> actividades;
-    // Crear lista para guardar los recursos con los que cuenta la obra
+
+    /**
+     * Lista de recursos disponibles para la obra seleccionada.
+     */
     private List<RecursoDTO> recursos;
-    // Crear lista de los materiales dentro del coordinador
+
+    /**
+     * Lista de materiales ingresados en la bitácora actual. Almacena los
+     * materiales que se han registrado como utilizados.
+     */
     private List<MaterialIngresadoDTO> materialesIngresados;
-    // Crear lista para guardar las herramientas dentro de la obra
+
+    /**
+     * Lista de herramientas disponibles para la obra. Catálogo de todas las
+     * herramientas que pueden ser asignadas.
+     */
     private List<HerramientaDTO> herramientas;
-    // Crear lista para guardar las herramientas
+
+    /**
+     * Lista de herramientas ingresadas en la bitácora actual. Almacena las
+     * herramientas que se han registrado como utilizadas.
+     */
     private List<HerramientaIngresadaDTO> herramientasIngresadas;
-    // Crear lista para guardar la maquinaria
+
+    /**
+     * Lista de maquinaria disponible para la empresa. Catálogo de toda la
+     * maquinaria que puede ser asignada a los proyectos.
+     */
     private List<MaquinariaDTO> maquinaria;
-    // Crear lista para guardar la maquinaria que se ingresó
+
+    /**
+     * Lista de maquinaria ingresada en la bitácora actual. Almacena la
+     * maquinaria que se ha registrado como utilizada.
+     */
     private List<MaquinariaDTO> maquinariaIngresada;
-    // Objeto para guardar la lista de asistencia
+
+    /**
+     * Registro de asistencia del personal para la bitácora actual. 
+     */
     private ListaAsistenciaDTO asistencia;
     // private DetallesBitacoraDTO detallesBitacora;
-    
-    //TEMPORAL LISTA DE OBRAS
+
+    /**
+     * Lista temporal de obras disponibles en el sistema. 
+     */
     private List<ObraDTO> obras;
-    // Instancia del subsistema de obra seleccionada
+
+    /**
+     * Interfaz del subsistema de administración de obra seleccionada. Gestiona
+     * la sesión activa y la información de la obra actual.
+     */
     private IAdmObraSeleccionada admObraSeleccionada;
-    // Instancia del subsistema de actividades
+
+    /**
+     * Interfaz del subsistema de administración de actividades. Gestiona las
+     * operaciones relacionadas con las actividades de obra.
+     */
     private IAdmActividades admActividades;
-    // Instancia del subsistema de materiales
+
+    /**
+     * Interfaz del subsistema de administración de materiales. Gestiona las
+     * operaciones relacionadas con los materiales de obra.
+     */
     private IAdmMateriales admMateriales;
 
+    /**
+     * Constructor privado (patrón Singleton). Inicializa los subsistemas y las
+     * estructuras de datos necesarias.
+     */
     private CoordinadorNegocio() {
         // Inicializar fachada desde el coordinador
         this.admActividades = new FAdmActividades();
         this.admObraSeleccionada = new FAdmObraSeleccionada();
         this.admMateriales = new FAdmMateriales();
-        
+
         // Iniciar listas
         this.actividades = new ArrayList<>();
         this.recursos = new ArrayList<>();
@@ -84,43 +126,65 @@ public class CoordinadorNegocio {
         this.maquinaria = new ArrayList<>();
         this.maquinariaIngresada = new ArrayList<>();
         this.obras = new ArrayList<>();
-        
+
         this.asistencia = new ListaAsistenciaDTO();
     }
-    
-    // Método para obtener la instancia
+
+    /**
+     * Obtiene la instancia única del coordinador de negocio (patrón Singleton).
+     *
+     * @return La instancia del CoordinadorNegocio
+     */
     public static CoordinadorNegocio getInstance() {
         if (coordinadorNegocio == null) {
             coordinadorNegocio = new CoordinadorNegocio();
         }
         return coordinadorNegocio;
     }
-    
-    // MÉTODOS PARA EL FORMULARIO DE ACTIVIDADES
-    // Método para registrar una actividad en la lista
+
+    /**
+     * Registra una actividad en la bitácora actual. Valida los datos de la
+     * actividad antes de agregarla a la lista.
+     *
+     * @param titulo Título de la actividad a registrar
+     * @param descripcion Descripción detallada de la actividad
+     * @throws PresentacionException Si los datos de la actividad no son válidos
+     */
     public void registrarActividad(String titulo, String descripcion) throws PresentacionException {
         // Validar antes de agregar la actividad
         String mensajeError = Validaciones.validarActividad(titulo, descripcion);
-        
+
         if (mensajeError != null) {
             throw new PresentacionException(mensajeError);
         }
-        
+
         // Agregar actividad después de validar
         actividades.add(new ActividadDTO(titulo, descripcion));
     }
-    
-    // Devuelve la lista de actividades
+
+    /**
+     * Obtiene la lista de actividades registradas en la bitácora actual.
+     *
+     * @return Lista de actividades registradas
+     */
     public List<ActividadDTO> obtenerActividades() {
         return actividades;
     }
-    
-    // Elimina las actividades dentro de la lista
+
+    /**
+     * Cancela el registro de actividades, eliminando todas las actividades de
+     * la bitácora en proceso.
+     */
     public void cancelarActividades() {
         actividades.clear();
     }
-    
-    // Guarda la lista de actividades, enviando la lista a la fachada admActividades en la capa de negocio
+
+    /**
+     * Registra formalmente las actividades en el subsistema correspondiente.
+     *
+     * @return true si el registro fue exitoso, false en caso contrario
+     * @throws PresentacionException Si ocurre un error durante el registro
+     */
     public boolean registrarActividades() throws PresentacionException {
         try {
             return admActividades.registrarActividades(actividades);
@@ -128,23 +192,36 @@ public class CoordinadorNegocio {
             throw new PresentacionException("Error al registrar actividad: " + e.getMessage());
         }
     }
-    
-    // MÉTODOS PARA EL FORMULARIO DE MATERIALES
-    // Regresa la lista de materiales
+
+    /**
+     * Obtiene la lista de materiales disponibles para la obra seleccionada.
+     *
+     * @return Lista de recursos (materiales) asignados a la obra
+     */
     public List<RecursoDTO> obtenerMateriales() {
         return admMateriales.obtenerRecursosObra();
     }
-    
-    // Registrar los materiales mediante el subsistema
+
+    /**
+     * Registra los materiales utilizados en la bitácora actual. Valida que las
+     * cantidades sean coherentes con el inventario disponible.
+     *
+     * @param materialIngresado Lista de materiales a registrar con sus
+     * cantidades
+     * @return true si el registro fue exitoso, false en caso contrario
+     * @throws PresentacionException Si ocurre un error durante el registro o
+     * validación
+     * @throws AdmMaterialesException Si ocurre un error en el subsistema de
+     * materiales
+     */
     public boolean registrarMateriales(List<MaterialIngresadoDTO> materialIngresado) throws PresentacionException, AdmMaterialesException {
         try {
             // Validar que el recurso sea suficiente
             validarRecursos(materialIngresado);
-            
+
 //            // Prueba para forzar a que lance la excepción.
 //            this.materialesIngresados = null;
 //            throw new AdmMaterialesException("Error de al registrar materiales en bitácora.");
-            
             // Asignarlo a la lista
             this.materialesIngresados = materialIngresado;
             // Registrar los materiales
@@ -153,8 +230,15 @@ public class CoordinadorNegocio {
             throw new PresentacionException("Error al registrar materiales en la bitácora.", e);
         }
     }
-    
-    // Valida que los recursos asignados a la obra y las cantidades ingresadas sean coherentes (no se haya excedido de material)
+
+    /**
+     * Valida que los recursos asignados a la obra sean suficientes para las
+     * cantidades ingresadas.
+     *
+     * @param materialIngresado Lista de materiales a validar
+     * @throws PresentacionException Si algún material excede la cantidad
+     * disponible
+     */
     private void validarRecursos(List<MaterialIngresadoDTO> materialIngresado) throws PresentacionException {
         try {
             admMateriales.validarRecurso(materialIngresado);
@@ -163,9 +247,12 @@ public class CoordinadorNegocio {
             throw new PresentacionException(e.getMessage(), e);
         }
     }
-    
-    // MÉTODOS PARA EL FORMULARIO DE HERRAMIENTAS Y MAQUINARIA
-    // Regresar lista de las herramientas
+
+    /**
+     * Obtiene la lista de herramientas disponibles para la obra.
+     *
+     * @return Lista de herramientas que pueden ser asignadas al proyecto
+     */
     public List<HerramientaDTO> obtenerHerramientas() {
         // Crear lista y agregar herramientas directamente en la inicialización
         return new ArrayList<>(List.of(
@@ -181,8 +268,15 @@ public class CoordinadorNegocio {
                 new HerramientaDTO("Compresor de Aire", "Kobalt", "XC802000")
         ));
     }
-    
-    // Guardar herramientas dentro de la lista del coordinador
+
+    /**
+     * Registra las herramientas utilizadas en la bitácora actual.
+     *
+     * @param herramientasIngresadas Lista de herramientas a registrar con sus
+     * cantidades
+     * @return true si el registro fue exitoso, false en caso contrario
+     * @throws PresentacionException Si ocurre un error durante el registro
+     */
     public boolean registrarHerramientas(List<HerramientaIngresadaDTO> herramientasIngresadas) throws PresentacionException {
         if (herramientasIngresadas != null) {
             this.herramientasIngresadas = herramientasIngresadas;
@@ -193,7 +287,12 @@ public class CoordinadorNegocio {
 //        herramientasIngresadas.isEmpty();
 //        return true;
     }
-    
+
+    /**
+     * Obtiene la lista de maquinaria disponible para la empresa.
+     *
+     * @return Lista de maquinaria que puede ser asignada a los proyectos
+     */
     public List<MaquinariaDTO> obtenerMaquinaria() {
         // Crear instancias de maquinarias
         MaquinariaDTO maquinaria1 = new MaquinariaDTO("Excavadora", "Caterpillar", "CAT-EXC-001");
@@ -217,11 +316,17 @@ public class CoordinadorNegocio {
         maquinaria.add(maquinaria8);
         maquinaria.add(maquinaria9);
         maquinaria.add(maquinaria10);
-        
+
         return maquinaria;
     }
-    
-    // Guardar la maquinaria ingresada
+
+    /**
+     * Registra la maquinaria utilizada en la bitácora actual.
+     *
+     * @param maquinarias Lista de maquinaria a registrar
+     * @return true si el registro fue exitoso, false en caso contrario
+     * @throws PresentacionException Si ocurre un error durante el registro
+     */
     public boolean registrarMaquinaria(List<MaquinariaDTO> maquinarias) throws PresentacionException {
         if (maquinarias != null) {
             this.maquinariaIngresada = maquinarias;
@@ -232,20 +337,28 @@ public class CoordinadorNegocio {
 //        maquinariaIngresada.isEmpty();
 //        return true;
     }
-   
+
     // MÉTODOS PARA LA ASISTENCIA DEL PERSONAL. Aún no se manejan porque aún no se ha registrado personal
-    
-    // Método para guardar la lista de asistencias personal a asistencia
+    /**
+     * Registra la asistencia del personal en la bitácora actual.
+     *
+     * @param asistenciaPersonal Lista de registros de asistencia individual
+     * @return true si el registro fue exitoso, false en caso contrario
+     */
     public boolean registrarAsistencia(List<AsistenciaPersonalDTO> asistenciaPersonal) {
         if (asistenciaPersonal != null) {
             this.asistencia.setFecha(LocalDate.now());
             this.asistencia.setAsistencias(asistenciaPersonal);
         }
-        
+
         return true;
     }
-    
-    // Método para obtener la lista de asistencia del personal
+
+    /**
+     * Obtiene la lista del personal disponible para la obra.
+     *
+     * @return Lista con los nombres del personal asignado al proyecto
+     */
     public List<String> obtenerPersonal() {
         List<String> personal = new ArrayList<>();
 
@@ -260,21 +373,39 @@ public class CoordinadorNegocio {
         return personal;
     }
 
+    /**
+     * Valida las horas de entrada y salida del personal.
+     *
+     * @param horaEntrada Hora de entrada del trabajador
+     * @param horaSalida Hora de salida del trabajador
+     * @param nombre Nombre del trabajador
+     * @throws PresentacionException Si las horas no son válidas
+     */
     public void validarHoras(LocalTime horaEntrada, LocalTime horaSalida, String nombre) throws PresentacionException {
         // Validar antes de agregar la asistencia
         String mensajeError = Validaciones.validarHorasPersonal(horaEntrada, horaSalida, nombre);
-        
+
         if (mensajeError != null) {
             throw new PresentacionException("Error: " + mensajeError);
         }
     }
-    
-    // Para saber si la obra ya tiene una bitácora
+
+    /**
+     * Verifica si la obra ya tiene una bitácora registrada para la fecha
+     * actual.
+     *
+     * @return true si ya existe una bitácora, false en caso contrario
+     */
     public boolean validarBitacoraRegistrada() {
         return false; // Cambiar para pruebas
     }
-    
-    // Método para agregar la bitácora. Da error porque no la estoy guardando en ningún lado, debe de tener el subsistema de bitácora
+
+    /**
+     * Registra formalmente la bitácora completa con todos sus componentes.
+     *
+     * @return true si el registro fue exitoso, false en caso contrario
+     * @throws PresentacionException Si ocurre un error durante el registro
+     */
     public boolean registrarBitacora() throws PresentacionException {
         try {
             DetallesBitacoraDTO detallesBitacora = new DetallesBitacoraDTO();
@@ -295,20 +426,49 @@ public class CoordinadorNegocio {
             throw new PresentacionException(e.getMessage(), e);
         }
     }
-    
+
+    /**
+     * Reinicia el estado del coordinador, limpiando todas las listas y
+     * registros temporales de la bitácora en proceso.
+     */
     public void reset() {
-        if (actividades != null) actividades.clear();
-        if (recursos != null) recursos.clear();
-        if (herramientas != null) herramientas.clear();
-        if (maquinaria != null) maquinaria.clear();
-        if (asistencia != null) asistencia.setAsistencias(null);
-        if (asistencia != null) asistencia.setFecha(null);
-        if (materialesIngresados != null) materialesIngresados.clear();
-        if (herramientasIngresadas != null) herramientasIngresadas.clear();
-        if (maquinariaIngresada != null) maquinariaIngresada.clear();
-    } 
-    
-    public boolean iniciarSesion(Long idObra){
+        if (actividades != null) {
+            actividades.clear();
+        }
+        if (recursos != null) {
+            recursos.clear();
+        }
+        if (herramientas != null) {
+            herramientas.clear();
+        }
+        if (maquinaria != null) {
+            maquinaria.clear();
+        }
+        if (asistencia != null) {
+            asistencia.setAsistencias(null);
+        }
+        if (asistencia != null) {
+            asistencia.setFecha(null);
+        }
+        if (materialesIngresados != null) {
+            materialesIngresados.clear();
+        }
+        if (herramientasIngresadas != null) {
+            herramientasIngresadas.clear();
+        }
+        if (maquinariaIngresada != null) {
+            maquinariaIngresada.clear();
+        }
+    }
+
+    /**
+     * Inicia una sesión con la obra especificada.
+     *
+     * @param idObra Identificador de la obra a seleccionar
+     * @return true si la sesión se inició correctamente, false en caso
+     * contrario
+     */
+    public boolean iniciarSesion(Long idObra) {
         try {
             admObraSeleccionada.activarSesionObra(idObra);
         } catch (AdmObraSeleccionadaException ex) {
@@ -316,8 +476,13 @@ public class CoordinadorNegocio {
         }
         return true;
     }
-    
-    public boolean cerrarSesion(){
+
+    /**
+     * Cierra la sesión activa de la obra.
+     *
+     * @return true si la sesión se cerró correctamente, false en caso contrario
+     */
+    public boolean cerrarSesion() {
         try {
             admObraSeleccionada.cerrarSesionObra();
         } catch (AdmObraSeleccionadaException ex) {
@@ -325,7 +490,13 @@ public class CoordinadorNegocio {
         }
         return true;
     }
-    
+
+    /**
+     * Obtiene el identificador de la obra actualmente seleccionada.
+     *
+     * @return El ID de la obra actual
+     * @throws PresentacionException Si no hay una sesión activa
+     */
     public Long obtenerIdObra() throws PresentacionException {
         try {
             return admObraSeleccionada.obtenerIdObra();
@@ -333,17 +504,31 @@ public class CoordinadorNegocio {
             throw new PresentacionException(ex.getMessage());
         }
     }
-    
-    public ObraDTO obtenerObraSeleccionada(){
+
+    /**
+     * Obtiene la información completa de la obra actualmente seleccionada.
+     *
+     * @return Objeto ObraDTO con los datos de la obra, o null si no hay sesión
+     * activa
+     */
+    public ObraDTO obtenerObraSeleccionada() {
         try {
             return obtenerObraPorId(admObraSeleccionada.obtenerIdObra());
         } catch (AdmObraSeleccionadaException ex) {
             return null;
         }
     }
-    
+
     //SIMULACION DE BASE DE DATOS
-    public ObraDTO obtenerObraPorId(Long idObra){
+    /**
+     * Obtiene información de una obra específica por su identificador.
+     * Simulación de consulta a base de datos.
+     *
+     * @param idObra Identificador de la obra a buscar
+     * @return Objeto ObraDTO con los datos de la obra, o null si no se
+     * encuentra
+     */
+    public ObraDTO obtenerObraPorId(Long idObra) {
         for (ObraDTO obra : obras) {
             if (Objects.equals(obra.getIdObra(), idObra)) {
                 return obra;
@@ -351,9 +536,13 @@ public class CoordinadorNegocio {
         }
         return null;
     }
-    
-    public void obtenerObra(){
+
+    /**
+     * Carga datos de prueba de obras. Simulación de obtención de datos de la
+     * base de datos.
+     */
+    public void obtenerObra() {
         ObraDTO obra = new ObraDTO(1L, "Camino de los Mayos #716 ", 20L);
         this.obras.add(obra);
-    }    
+    }
 }

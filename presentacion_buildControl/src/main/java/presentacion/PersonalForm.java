@@ -18,7 +18,6 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 import javax.swing.BorderFactory;
@@ -34,22 +33,65 @@ import javax.swing.JTextPane;
 import utilities.Utilities;
 
 /**
+ * Clase PersonalForm
  *
- * @author alega
+ * Formulario de la capa de presentación para el registro de asistencia del
+ * personal en el sistema.
+ * 
+ * @author Alejandra García 252444
+ * @author Isabel Valenzuela 253301
+ * @author Ximena Rosales 253088
+ * @author Dario Cortez 252267
+ * @author Jesús Osuna 240549
  */
 public class PersonalForm extends JFrame {
-    private JPanel panelContenedor;  // Panel donde se agregarán los trabajadores
-    private JScrollPane scrollPanel; // Panel con barra de desplazamiento
-    private List<String> trabajadores; // Lista de trabajadores
     
+    /**
+     * Panel donde se agregarán dinámicamente los componentes para cada
+     * trabajador. Contiene los elementos de interfaz para cada empleado
+     * (checkbox, horas, notas).
+     */
+    private JPanel panelContenedor;
+
+    /**
+     * Panel con barra de desplazamiento para permitir visualizar todos los
+     * trabajadores. Facilita la navegación cuando hay muchos empleados en la
+     * lista.
+     */
+    private JScrollPane scrollPanel;
+
+    /**
+     * Lista de nombres de trabajadores disponibles para registrar asistencia.
+     * Obtenida del coordinador de negocio.
+     */
+    private List<String> trabajadores;
+
+    /**
+     * Referencia al coordinador de aplicación. Permite la navegación entre los
+     * distintos formularios del sistema.
+     */
     private CoordinadorAplicacion coordinador;
+
+    /**
+     * Referencia al coordinador de negocio. Proporciona acceso a la lógica de
+     * negocio para el registro de asistencia.
+     */
     private CoordinadorNegocio coordinadorNegocio;
-    
+
+    /**
+     * Logger para registro de eventos y errores en la clase.
+     */
     private static final Logger logger = Logger.getLogger(PersonalForm.class.getName());
     
     /**
-     * Creates new form AsistenciaForm
-     * @param coordinador
+     * Constructor del formulario de personal.
+     *
+     * Inicializa los componentes gráficos, configura la apariencia y establece
+     * la conexión con los coordinadores de la aplicación. También carga la
+     * lista de trabajadores y construye dinámicamente la interfaz para el
+     * registro de asistencia.
+     *
+     * @param coordinador Referencia al coordinador de aplicación
      */
     public PersonalForm(CoordinadorAplicacion coordinador) {
         initComponents();
@@ -260,18 +302,44 @@ public class PersonalForm extends JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    /**
+     * Maneja el evento de clic en el botón "Atrás". Regresa al formulario
+     * anterior del flujo de trabajo.
+     *
+     * @param evt Evento de acción que desencadenó este método
+     */
     private void btnAtrasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAtrasActionPerformed
         atras();
     }//GEN-LAST:event_btnAtrasActionPerformed
 
+    /**
+     * Maneja el evento de clic en el botón "Registrar bitácora". Registra la
+     * asistencia y finaliza el proceso completo de creación de bitácora.
+     *
+     * @param evt Evento de acción que desencadenó este método
+     */
     private void btnSiguienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSiguienteActionPerformed
         siguiente();
     }//GEN-LAST:event_btnSiguienteActionPerformed
 
+    /**
+     * Maneja el evento de liberación de tecla en el campo de filtro de
+     * personal. Filtra la lista de trabajadores según el texto ingresado.
+     *
+     * @param evt Evento de teclado que desencadenó este método
+     */
     private void txtFiltroPersonalKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtFiltroPersonalKeyReleased
         filtrarPersonal();
     }//GEN-LAST:event_txtFiltroPersonalKeyReleased
 
+    /**
+     * Crea y configura el panel principal de asistencia con todos los
+     * trabajadores.
+     *
+     * Inicializa el panel contenedor con un BoxLayout vertical, agrega los
+     * paneles individuales para cada trabajador y lo incorpora en un
+     * JScrollPane para permitir el desplazamiento cuando hay muchos empleados.
+     */
     private void crearPanelAsistencia() {
         // Crear el panel contenedor con BoxLayout (apilado vertical)
         panelContenedor = new JPanel();
@@ -299,6 +367,13 @@ public class PersonalForm extends JFrame {
     }
 
     // Método principal para agregar los paneles de cada trabajador
+    /**
+     * Crea y agrega un panel individual para cada trabajador en la lista.
+     *
+     * Para cada trabajador, genera un panel con sus controles correspondientes
+     * (checkbox, selectores de hora, campo de notas) y lo agrega al panel
+     * contenedor.
+     */
     private void agregarPanelesPersonal() {
         Font fuentePanelTrabajador = new Font("Segoe UI", Font.PLAIN, 14);
 
@@ -312,6 +387,17 @@ public class PersonalForm extends JFrame {
         actualizarInterfaz();
     }
 
+    /**
+     * Crea un panel personalizado para un trabajador específico.
+     *
+     * Construye un panel con GridBagLayout que incluye un checkbox con el
+     * nombre del trabajador, selectores de hora para entrada y salida, y un
+     * campo de texto para notas. Los componentes se ocultan inicialmente y se
+     * muestran solo cuando se selecciona el checkbox.
+     *
+     * @param trabajador Nombre del trabajador para el cual se crea el panel
+     * @return Panel configurado con todos los componentes necesarios
+     */
     private JPanel crearPanelPorPersonal(String trabajador) {
         JPanel panel = new JPanel(new GridBagLayout());
         panel.setBackground(Color.WHITE);
@@ -368,6 +454,12 @@ public class PersonalForm extends JFrame {
     }
 
 // Crear un JCheckBox con nombre
+    /**
+     * Crea un checkbox personalizado con un nombre específico.
+     *
+     * @param texto Texto a mostrar en el checkbox (nombre del trabajador)
+     * @return Checkbox configurado
+     */
     private JCheckBox crearCheckBox(String texto) {
         JCheckBox checkbox = new JCheckBox(texto);
         checkbox.setBackground(Color.WHITE);
@@ -376,6 +468,12 @@ public class PersonalForm extends JFrame {
     }
 
 // Crear un TimePicker con nombre
+    /**
+     * Crea un selector de hora (TimePicker) personalizado.
+     *
+     * @param nombre Nombre identificador para el componente
+     * @return TimePicker configurado
+     */
     private TimePicker crearTimePicker(String nombre) {
         TimePicker timePicker = new TimePicker();
         timePicker.setName(nombre);
@@ -383,19 +481,40 @@ public class PersonalForm extends JFrame {
     }
 
     // Crear un JTextPane con nombre
+    /**
+     * Crea un campo de texto (JTextPane) personalizado.
+     *
+     * @param nombre Nombre identificador para el componente
+     * @return JTextPane configurado
+     */
     private JTextPane crearTextPane(String nombre) {
         JTextPane textPane = new JTextPane();
         textPane.setPreferredSize(new Dimension(150, 25));
         textPane.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         textPane.setName(nombre);
-        
+
         return textPane;
     }
 
     // Controlar la visibilidad de los componentes según el checkbox
+    /**
+     * Controla la visibilidad de los componentes en función del estado del
+     * checkbox.
+     *
+     * Cuando se selecciona el checkbox, muestra los campos para registrar hora
+     * de entrada, salida y notas. Cuando se deselecciona, oculta estos campos.
+     *
+     * @param checkbox Checkbox que controla la visibilidad
+     * @param lbEntrada Etiqueta de entrada
+     * @param lbSalida Etiqueta de salida
+     * @param lbNotas Etiqueta de notas
+     * @param timePickerEntrada Selector de hora de entrada
+     * @param timePickerSalida Selector de hora de salida
+     * @param textPaneNotas Campo de notas
+     */
     private void panelComponentesVisibilidad(JCheckBox checkbox, JLabel lbEntrada, JLabel lbSalida, JLabel lbNotas, TimePicker timePickerEntrada, TimePicker timePickerSalida, JTextPane textPaneNotas) {
         boolean seleccionado = checkbox.isSelected();
-        
+
         lbEntrada.setVisible(seleccionado);
         lbSalida.setVisible(seleccionado);
         lbNotas.setVisible(seleccionado);
@@ -409,12 +528,22 @@ public class PersonalForm extends JFrame {
     }
 
     // Actualizar la interfaz después de agregar los paneles, para que no haya errores al mostrarse
+    /**
+     * Actualiza la interfaz gráfica después de modificar componentes. Asegura
+     * que los cambios sean visibles correctamente.
+     */
     private void actualizarInterfaz() {
         panelContenedor.revalidate();
         panelContenedor.repaint();
     }
 
     // Buscar los paneles de personal seleccionados
+    /**
+     * Busca los paneles de personal que tienen el checkbox seleccionado.
+     *
+     * @return Lista de componentes (paneles) correspondientes a los
+     * trabajadores seleccionados
+     */
     private List<Component> buscarPersonalSeleccionados() {
         List<Component> panelesPersonal = new ArrayList<>();
 
@@ -429,12 +558,23 @@ public class PersonalForm extends JFrame {
     }
 
     // Verificar si el checkbox está seleccionado en el panel
+    /**
+     * Verifica si el checkbox en un panel está seleccionado.
+     *
+     * @param panel Panel que contiene el checkbox a verificar
+     * @return true si el checkbox está seleccionado, false en caso contrario
+     */
     private boolean isCheckboxSeleccionado(JPanel panel) {
         JCheckBox checkbox = obtenerCheckBoxEmpleado(panel);
         return checkbox != null && checkbox.isSelected();
     }
 
     // Mostrar paneles según el filtro ingresado
+    /**
+     * Filtra los paneles de personal según el texto ingresado en el campo de
+     * búsqueda. Muestra solo los trabajadores cuyo nombre coincide con el
+     * filtro.
+     */
     public void filtrarPersonal() {
         String filtro = txtFiltroPersonal.getText().trim().toLowerCase(); // Obtener texto de búsqueda
 
@@ -451,6 +591,12 @@ public class PersonalForm extends JFrame {
     }
 
     // Obtener el JCheckBox del panel
+    /**
+     * Obtiene el checkbox dentro de un panel de trabajador.
+     *
+     * @param panel Panel que contiene el checkbox a obtener
+     * @return El objeto JCheckBox encontrado, o null si no existe
+     */
     private JCheckBox obtenerCheckBoxEmpleado(JPanel panel) {
         for (Component comp : panel.getComponents()) {
             if (comp instanceof JCheckBox jCheckBox) {
@@ -461,6 +607,16 @@ public class PersonalForm extends JFrame {
     }
 
     // Registrar la asistencia de los empleados seleccionados
+    /**
+     * Registra la asistencia de los empleados seleccionados.
+     *
+     * Recorre los paneles de los trabajadores seleccionados, extrae la
+     * información de horas y notas, y crea los DTOs correspondientes para cada
+     * uno. También valida que las horas sean coherentes.
+     *
+     * @return Lista de AsistenciaPersonalDTO con los registros de asistencia
+     * @throws PresentacionException Si hay errores en los datos ingresados
+     */
     private List<AsistenciaPersonalDTO> registrarAsistenciaPorPersonal() throws PresentacionException {
         List<Component> panelesPersonalSeleccionados = buscarPersonalSeleccionados();
         List<AsistenciaPersonalDTO> listaAsistenciaPersonal = new ArrayList<>();
@@ -502,7 +658,15 @@ public class PersonalForm extends JFrame {
 
         return listaAsistenciaPersonal;
     }
- 
+
+    /**
+     * Gestiona la finalización del proceso completo de registro de bitácora.
+     *
+     * Registra la asistencia, solicita confirmación al usuario y, si es
+     * aceptada, completa el registro de la bitácora y retorna a la pantalla de
+     * obra seleccionada. También maneja los posibles errores durante el
+     * proceso.
+     */
     private void siguiente() {
         // Intentar registrar la bitacora
         try {
@@ -529,11 +693,15 @@ public class PersonalForm extends JFrame {
 
     }
 
+    /**
+     * Gestiona el retorno al formulario anterior en el flujo de trabajo. Cierra
+     * este formulario y muestra el de herramientas y maquinaria.
+     */
     private void atras() {
         this.dispose();
         coordinador.mostrarHerramientasYMaquinaria();
     }
-    
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAtras;
     private javax.swing.JButton btnSiguiente;

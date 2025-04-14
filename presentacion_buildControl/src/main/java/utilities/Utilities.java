@@ -4,7 +4,6 @@
  */
 package utilities;
 
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 import java.util.List;
@@ -20,11 +19,36 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 
 /**
+ * Clase Utilities
  *
- * @author rocha
+ * Clase utilitaria que proporciona métodos estáticos para facilitar operaciones
+ * comunes en la interfaz de usuario del sistema. Centraliza funcionalidades
+ * reutilizables relacionadas con componentes gráficos Swing.
+ *
+ * @author Alejandra García 252444
+ * @author Isabel Valenzuela 253301
+ * @author Ximena Rosales 253088
+ * @author Dario Cortez 252267
+ * @author Jesús Osuna 240549
  */
 public class Utilities {
 
+    /**
+     * Actualiza una lista de elementos según el texto introducido en un
+     * buscador.
+     *
+     * Este método filtra y muestra los elementos de una lista que coinciden con
+     * el texto ingresado en un campo de búsqueda, actualizando la visibilidad
+     * del componente según haya o no resultados.
+     *
+     * @param txtBuscador Campo de texto donde el usuario ingresa el criterio de
+     * búsqueda
+     * @param listModel Modelo de lista que contiene los elementos a mostrar
+     * @param scrollPane Panel de desplazamiento que contiene la lista
+     * @param elementosLista Lista completa de elementos disponibles para
+     * filtrar
+     * @param list Componente JList que muestra los elementos
+     */
     public static void buscadorLista(JTextField txtBuscador, DefaultListModel<String> listModel, JScrollPane scrollPane, List<String> elementosLista, JList<String> list) {
         String textoBuscador = txtBuscador.getText().trim(); // Obtener el texto sin espacios al inicio y al final
 
@@ -32,7 +56,20 @@ public class Utilities {
         actualizarLista(list, listModel, elementosLista, textoBuscador, scrollPane);
     }
 
-    // Método generalizado para actualizar la lista de cualquier tipo de elemento (herramientas, maquinaria, materiales)
+    /**
+     * Actualiza una lista de elementos basado en un criterio de búsqueda.
+     *
+     * Método generalizado que puede ser utilizado para filtrar cualquier tipo
+     * de lista (herramientas, maquinaria, materiales) según un texto de
+     * búsqueda, controlando también la visibilidad del componente contenedor.
+     *
+     * @param list Componente JList que muestra los elementos
+     * @param listModel Modelo de lista a actualizar
+     * @param elementos Lista completa de elementos disponibles para filtrar
+     * @param textoBuscador Texto ingresado como criterio de búsqueda
+     * @param scrollPane Panel de desplazamiento cuya visibilidad será
+     * controlada
+     */
     public static void actualizarLista(JList<String> list, DefaultListModel<String> listModel, List<String> elementos, String textoBuscador, JScrollPane scrollPane) {
         listModel.clear(); // Limpiar la lista
 
@@ -59,6 +96,22 @@ public class Utilities {
         }
     }
 
+    /**
+     * Gestiona la selección de un elemento en una lista para agregarlo a una
+     * tabla.
+     *
+     * Este método se utiliza cuando el usuario selecciona un elemento de una
+     * lista desplegable (como herramientas, materiales o maquinaria) para
+     * agregarlo a la tabla de elementos seleccionados, verificando que no
+     * exista duplicidad.
+     *
+     * @param evt Evento de selección en la lista
+     * @param lista Lista donde se realiza la selección
+     * @param tableModel Modelo de tabla donde se agregará el elemento
+     * seleccionado
+     * @param esMaquinaria Bandera que indica si se trata de maquinaria (con
+     * comportamiento específico)
+     */
     public static void seleccionarElementoLista(ListSelectionEvent evt, JList<String> lista, DefaultTableModel tableModel, boolean esMaquinaria) {
         if (evt.getValueIsAdjusting()) {
             return;
@@ -85,6 +138,18 @@ public class Utilities {
         }
     }
 
+    /**
+     * Filtra las filas de una tabla según el texto ingresado en un campo de
+     * búsqueda.
+     *
+     * Este método aplica un filtro de expresión regular a las filas de una
+     * tabla, mostrando solo aquellas que coinciden con el criterio de búsqueda
+     * en la primera columna.
+     *
+     * @param tabla Tabla a filtrar
+     * @param tableSorter Ordenador de filas de la tabla que aplicará el filtro
+     * @param txtFiltro Campo de texto con el criterio de filtrado
+     */
     public static void filtrarTabla(JTable tabla, TableRowSorter tableSorter, JTextField txtFiltro) {
         String texto = txtFiltro.getText().trim();  // Obtener el texto del filtro
 
@@ -96,11 +161,11 @@ public class Utilities {
             tableSorter.setRowFilter(RowFilter.regexFilter("(?i)" + texto, 0));
         }
     }
-    
+
     /**
-     * Cambia las fuentes de cada panel.
-     * Hace que el aspecto sea uniforme con respecto al resto de la presentación.
-     * 
+     * Cambia las fuentes de cada panel. Hace que el aspecto sea uniforme con
+     * respecto al resto de la presentación.
+     *
      * @param panel Panel a editar el aspecto.
      * @param fuente Fuente para editar el panel.
      */

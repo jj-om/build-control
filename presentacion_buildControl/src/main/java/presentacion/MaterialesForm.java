@@ -4,7 +4,6 @@
  */
 package presentacion;
 
-import dto.MaterialDTO;
 import utilities.Utilities;
 import dto.MaterialIngresadoDTO;
 import dto.ObraDTO;
@@ -28,23 +27,69 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableRowSorter;
 
 /**
+ * Clase MaterialesForm
  *
- * @author alega
+ * Formulario de la capa de presentación para el registro de materiales en el
+ * sistema.
+ * 
+ * @author Alejandra García 252444
+ * @author Isabel Valenzuela 253301
+ * @author Ximena Rosales 253088
+ * @author Dario Cortez 252267
+ * @author Jesús Osuna 240549
  */
 public class MaterialesForm extends javax.swing.JFrame {
     
+    /**
+     * Referencia al coordinador de aplicación. Permite la navegación entre los
+     * distintos formularios del sistema.
+     */
     private CoordinadorAplicacion coordinador;
+
+    /**
+     * Referencia al coordinador de negocio. Proporciona acceso a la lógica de
+     * negocio para el registro de materiales.
+     */
     private CoordinadorNegocio coordinadorNegocio;
-    
+
+    /**
+     * Modelo de tabla para los materiales seleccionados. Almacena los
+     * materiales elegidos con sus cantidades.
+     */
     private DefaultTableModel tableModel;
-    private TableRowSorter<DefaultTableModel> tableSorter; // Filtro para la tabla
-    private DefaultListModel<String> listModel; // Modelo para la lista
+
+    /**
+     * Ordenador de filas para la tabla de materiales. Proporciona capacidades
+     * de filtrado para la tabla.
+     */
+    private TableRowSorter<DefaultTableModel> tableSorter;
+
+    /**
+     * Modelo de lista para la búsqueda de materiales. Gestiona la lista
+     * desplegable con los materiales disponibles.
+     */
+    private DefaultListModel<String> listModel;
+
+    /**
+     * Lista de recursos disponibles para la obra seleccionada. Contiene los
+     * materiales que pueden ser utilizados en la bitácora.
+     */
     private List<RecursoDTO> recursos;
+
+    /**
+     * Lista con los nombres de todos los materiales disponibles. Facilita la
+     * búsqueda por nombre en la interfaz.
+     */
     private List<String> nombresMateriales;
 
     /**
-     * Creates new form RegistrarMaterialForm
-     * @param coordinador
+     * Constructor del formulario de materiales.
+     *
+     * Inicializa los componentes gráficos, configura la tabla y lista de
+     * materiales, y establece la conexión con los coordinadores de la
+     * aplicación.
+     *
+     * @param coordinador Referencia al coordinador de aplicación
      */
     public MaterialesForm(CoordinadorAplicacion coordinador) {
         initComponents();
@@ -296,10 +341,22 @@ public class MaterialesForm extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    /**
+     * Maneja el evento de clic en el botón "Atrás".
+     * Regresa al formulario anterior del flujo de trabajo.
+     * 
+     * @param evt Evento de acción que desencadenó este método
+     */
     private void btnAtrasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAtrasActionPerformed
         atras();
     }//GEN-LAST:event_btnAtrasActionPerformed
 
+    /**
+     * Maneja el evento de clic en el botón "Siguiente". Valida y registra los
+     * materiales seleccionados, y avanza al siguiente formulario.
+     *
+     * @param evt Evento de acción que desencadenó este método
+     */
     private void btnSiguienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSiguienteActionPerformed
         try {
             siguiente();
@@ -308,14 +365,32 @@ public class MaterialesForm extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnSiguienteActionPerformed
 
+    /**
+     * Maneja el evento de liberación de tecla en el campo de búsqueda.
+     * Actualiza la lista de materiales según el texto ingresado.
+     *
+     * @param evt Evento de teclado que desencadenó este método
+     */
     private void txtBuscadorListaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBuscadorListaKeyReleased
         buscadorListaMateriales();
     }//GEN-LAST:event_txtBuscadorListaKeyReleased
 
+    /**
+     * Maneja el evento de cambio de selección en la lista de materiales. Agrega
+     * el material seleccionado a la tabla.
+     *
+     * @param evt Evento de selección que desencadenó este método
+     */
     private void listBuscadorValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_listBuscadorValueChanged
         seleccionarMaterialLista(evt);
     }//GEN-LAST:event_listBuscadorValueChanged
 
+    /**
+     * Maneja el evento de liberación de tecla en el campo de filtro de tabla.
+     * Filtra las filas de la tabla según el texto ingresado.
+     *
+     * @param evt Evento de teclado que desencadenó este método
+     */
     private void txtFiltroTablaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtFiltroTablaKeyReleased
         filtrarTabla();
     }//GEN-LAST:event_txtFiltroTablaKeyReleased
@@ -325,12 +400,27 @@ public class MaterialesForm extends javax.swing.JFrame {
     }//GEN-LAST:event_formWindowActivated
 
     // Renderizador para el botón en la tabla (solo apariencia)
+    /**
+     * Clase interna que implementa un renderizador personalizado para los
+     * botones en la tabla. Permite mostrar botones dentro de las celdas de
+     * tabla para incrementar o decrementar cantidades.
+     */
     class ButtonRenderer extends JButton implements TableCellRenderer {
 
+        /**
+         * Constructor del renderizador de botones. Configura las propiedades
+         * básicas del componente.
+         */
         public ButtonRenderer() {
             setOpaque(true); // Hacer el botón no transparente
         }
 
+        /**
+         * Implementación del método de la interfaz TableCellRenderer. Configura
+         * y devuelve el componente que se mostrará en la celda.
+         *
+         * @return El botón configurado para mostrarse en la celda
+         */
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             setText(value == null ? "" : value.toString());
@@ -339,12 +429,35 @@ public class MaterialesForm extends javax.swing.JFrame {
     }
 
     // Editor de botones para manejar incremento y decremento
+    /**
+     * Clase interna que implementa un editor personalizado para los botones en la tabla.
+     * Gestiona la interacción con los botones de incremento/decremento de cantidades.
+     */
     class ButtonEditor extends DefaultCellEditor {
 
+        /**
+         * Botón que se mostrará en la celda.
+         */
         private JButton button;
-        private boolean isIncrement; // Determina si el botón es para incrementar o decrementar
+
+        /**
+         * Indica si el botón es para incrementar (true) o decrementar (false).
+         */
+        private boolean isIncrement;
+
+        /**
+         * Índice de la fila que contiene el botón.
+         */
         private int row;
 
+        /**
+         * Constructor del editor de botones.
+         *
+         * @param checkBox Componente base para el editor (requerido por
+         * DefaultCellEditor)
+         * @param isIncrement Indica si el botón incrementa (true) o decrementa
+         * (false)
+         */
         public ButtonEditor(JCheckBox checkBox, boolean isIncrement) {
             super(checkBox);
             this.isIncrement = isIncrement;
@@ -356,6 +469,11 @@ public class MaterialesForm extends javax.swing.JFrame {
         }
 
         // Lógica común para incrementar o decrementar la cantidad
+        /**
+         * Método para gestionar el incremento o decremento de la cantidad.
+         * Actualiza el valor en la tabla o elimina la fila si la cantidad llega
+         * a cero.
+         */
         private void manejarCantidad() {
             int cantidad = (int) tableModel.getValueAt(row, 2);  // Obtener la cantidad
             if (isIncrement) {
@@ -372,35 +490,70 @@ public class MaterialesForm extends javax.swing.JFrame {
             fireEditingStopped();  // Detener la edición después de hacer clic
         }
 
+        /**
+         * Implementación del método para obtener el componente de edición.
+         *
+         * @return El botón configurado como componente de edición
+         */
         @Override
         public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
             this.row = row;
             return button; // Mostrar el botón como componente de edición
         }
 
+        /**
+         * Implementación del método para obtener el valor de la celda.
+         *
+         * @return El símbolo correspondiente al tipo de botón
+         */
         @Override
         public Object getCellEditorValue() {
             return isIncrement ? "+" : "-"; // Retornar el símbolo adecuado
         }
     }
 
+    /**
+     * Procesa la selección de un material en la lista.
+     *
+     * @param evt Evento de selección que contiene la información del material
+     * seleccionado
+     */
     private void seleccionarMaterialLista(ListSelectionEvent evt) {
         Utilities.seleccionarElementoLista(evt, listBuscador, tableModel, false);
     }
     
+    /**
+     * Actualiza la lista de materiales según el texto en el buscador. Utiliza
+     * la clase utilitaria para gestionar el filtrado.
+     */
     private void buscadorListaMateriales() {
         Utilities.buscadorLista(txtBuscadorLista, listModel, jScrollPaneBuscador, nombresMateriales, listBuscador);
     }
 
     // Filtrar y actualizar la lista de materiales
+    /**
+     * Actualiza la lista de materiales disponibles para la selección.
+     *
+     * @param textoBuscador Texto para filtrar la lista
+     */
     private void actualizarListaMateriales(String textoBuscador) {
         Utilities.actualizarLista(listBuscador, listModel, nombresMateriales, textoBuscador, jScrollPaneBuscador);
     }
     
+    /**
+     * Aplica un filtro a la tabla de materiales. Muestra solo las filas que
+     * coinciden con el texto ingresado.
+     */
     private void filtrarTabla() {
         Utilities.filtrarTabla(jTable1, tableSorter, txtFiltroTabla);
     }
     
+    /**
+     * Recopila los materiales seleccionados en la tabla y crea los DTOs
+     * correspondientes.
+     *
+     * @return Lista de MaterialIngresadoDTO con los materiales y sus cantidades
+     */
     private List<MaterialIngresadoDTO> obtenerMaterialesIngresados() {
         List<MaterialIngresadoDTO> materialesIngresados = new ArrayList<>();
 
@@ -426,6 +579,12 @@ public class MaterialesForm extends javax.swing.JFrame {
     }
 
     // Obtiene el material del recurso mediante su nombre
+    /**
+     * Busca un recurso en el catálogo por el nombre del material.
+     * 
+     * @param nombreMaterial Nombre del material a buscar
+     * @return Objeto RecursoDTO correspondiente o null si no se encuentra
+     */
     private RecursoDTO buscarRecursoDeMaterial(String nombreMaterial) {
         for (RecursoDTO recurso : recursos) {
             if (recurso.getMaterial().getNombre().equalsIgnoreCase(nombreMaterial)) {
@@ -435,6 +594,11 @@ public class MaterialesForm extends javax.swing.JFrame {
         return null;  // Si no se encuentra, retorna null
     }
     
+    /**
+     * Extrae los nombres de todos los materiales disponibles.
+     *
+     * @return Lista con los nombres de los materiales
+     */
     private List<String> obtenerNombresMateriales() {
         List<String> nombres = new ArrayList<>();
         
@@ -445,12 +609,24 @@ public class MaterialesForm extends javax.swing.JFrame {
         return nombres;
     }
     
+    /**
+     * Carga las listas de recursos y nombres de materiales desde el coordinador de negocio.
+     */
     private void cargarListas() {
         this.recursos = coordinadorNegocio.obtenerMateriales();
         this.nombresMateriales = obtenerNombresMateriales();
     }
 
     // Confirmación y procesamiento de los datos para continuar
+    /**
+     * Gestiona la transición al siguiente formulario en el flujo de trabajo.
+     *
+     * Verifica que se hayan seleccionado materiales, los registra formalmente
+     * en el sistema y avanza al formulario de herramientas y maquinaria.
+     *
+     * @throws AdmMaterialesException Si ocurre un error en el subsistema de
+     * materiales
+     */
     private void siguiente() throws AdmMaterialesException {
         if (tblMateriales.getRowCount() == 0) {
             int opcion = JOptionPane.showConfirmDialog(this,
@@ -476,6 +652,10 @@ public class MaterialesForm extends javax.swing.JFrame {
         coordinador.mostrarHerramientasYMaquinaria();
     }
     
+    /**
+     * Gestiona el retorno al formulario anterior en el flujo de trabajo. Cierra
+     * este formulario y muestra el de actividades.
+     */
     private void atras() {
         this.dispose();
         coordinador.mostrarActividades();

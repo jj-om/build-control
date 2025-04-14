@@ -11,18 +11,40 @@ import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 /**
+ * Clase ActividadesForm
  *
- * @author alega
+ * Formulario de la capa de presentación para el registro de actividades dentro
+ * del sistema. 
+ * 
+ * @author Alejandra García 252444
+ * @author Isabel Valenzuela 253301
+ * @author Ximena Rosales 253088
+ * @author Dario Cortez 252267
+ * @author Jesús Osuna 240549
  */
 public class ActividadesForm extends javax.swing.JFrame {
     
+    /**
+     * Referencia al coordinador de aplicación. Permite la navegación entre los
+     * distintos formularios del sistema.
+     */
     private CoordinadorAplicacion coordinador;
+    
+    /**
+     * Referencia al coordinador de negocio. Proporciona acceso a la lógica de
+     * negocio para el registro de actividades.
+     */
     private CoordinadorNegocio coordinadorNegocio;
 
 
     /**
-     * Creates new form ActividadesRealizadasForm
-     * @param coordinador
+     * Constructor del formulario de actividades.
+     *
+     * Inicializa los componentes gráficos, configura la apariencia y establece
+     * la conexión con los coordinadores de la aplicación. También obtiene y
+     * muestra la información de la obra seleccionada.
+     *
+     * @param coordinador Referencia al coordinador de aplicación
      */
     public ActividadesForm(CoordinadorAplicacion coordinador) {
         initComponents();
@@ -156,6 +178,12 @@ public class ActividadesForm extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    /**
+     * Maneja el evento de clic en el botón "Siguiente". Intenta avanzar al
+     * siguiente formulario del flujo de trabajo.
+     *
+     * @param evt Evento de acción que desencadenó este método
+     */
     private void btnSiguienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSiguienteActionPerformed
         try {
             siguiente();
@@ -164,14 +192,34 @@ public class ActividadesForm extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnSiguienteActionPerformed
 
+    /**
+     * Maneja el evento de clic en el botón "Atrás". Regresa al formulario
+     * anterior del flujo de trabajo.
+     *
+     * @param evt Evento de acción que desencadenó este método
+     */
     private void btnAtrasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAtrasActionPerformed
         atras();
     }//GEN-LAST:event_btnAtrasActionPerformed
 
+    /**
+     * Maneja el evento de clic en el botón "Agregar actividad". Inicia el
+     * proceso de agregar una nueva actividad a la bitácora.
+     *
+     * @param evt Evento de acción que desencadenó este método
+     */
     private void btnAgregarActividadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActividadActionPerformed
         agregarActividad();
     }//GEN-LAST:event_btnAgregarActividadActionPerformed
 
+    /**
+     * Procesa los datos ingresados en los campos del formulario para agregar
+     * una nueva actividad a la bitácora actual.
+     *
+     * Obtiene el título y descripción de la actividad, valida los datos y los
+     * registra en el coordinador de negocio. Luego, limpia los campos y muestra
+     * un mensaje de éxito o error según corresponda.
+     */
     private void agregarActividad() {
         String titulo = campoActividad.getText().trim();
         String descripcion = campoDescripcion.getText().trim();
@@ -188,6 +236,14 @@ public class ActividadesForm extends javax.swing.JFrame {
         }  
     }
 
+    /**
+     * Registra formalmente todas las actividades agregadas en la bitácora
+     * actual a través del coordinador de negocio.
+     *
+     * Este método se invoca cuando el usuario decide avanzar al siguiente paso
+     * del flujo de trabajo, confirmando así la finalización de la entrada de
+     * actividades.
+     */
     private void registrarActividades() {
         try {
             coordinadorNegocio.registrarActividades();
@@ -197,6 +253,15 @@ public class ActividadesForm extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Gestiona la transición al siguiente formulario en el flujo de trabajo.
+     *
+     * Verifica que se hayan registrado al menos una actividad, registra
+     * formalmente las actividades en el sistema y avanza al formulario de
+     * materiales.
+     *
+     * @throws PresentacionException Si ocurre un error durante el proceso
+     */
     private void siguiente() throws PresentacionException {
         // Validar que se hayan registrado actividades
         if (coordinadorNegocio.obtenerActividades().isEmpty()) {
@@ -211,6 +276,14 @@ public class ActividadesForm extends javax.swing.JFrame {
         coordinador.mostrarMateriales();
     }
     
+    /**
+     * Gestiona el retorno al formulario anterior en el flujo de trabajo.
+     *
+     * Si se han registrado actividades, solicita confirmación al usuario para
+     * evitar la pérdida accidental de datos. Si se confirma, cancela las
+     * actividades registradas, reinicia el estado del coordinador y regresa al
+     * formulario de selección de obra.
+     */
     private void atras() {
         // Si se registró al menos una actividad
         if (!coordinadorNegocio.obtenerActividades().isEmpty()) {
