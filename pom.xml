@@ -11,6 +11,7 @@
         <module>negocios_admBitacora</module>
         <module>negocios_admObraSeleccionada</module>
         <module>bo_negocios</module>
+        <module>datos_dominio</module>
     </modules>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
