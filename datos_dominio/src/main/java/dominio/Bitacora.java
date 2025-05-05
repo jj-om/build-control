@@ -9,50 +9,120 @@ import org.bson.codecs.pojo.annotations.BsonId;
 import org.bson.types.ObjectId;
 
 /**
- *
- * @author Ximena
+ * Clase Bitacora
+ * 
+ * Clase constructora de una bitácora asociada a una obra de construcción. Esta
+ * clase está diseñada para ser almacenada en una base de datos MongoDB,
+ * contiene información sobre una fecha específica y la obra correspondiente.
+ * 
+ * @author Alejandra García 252444
+ * @author Isabel Valenzuela 253301
+ * @author Ximena Rosales 253088
+ * @author Dario Cortez 252267
+ * @author Jesús Osuna 240549
  */
 public class Bitacora {
+    
+    /**
+     * Identificador único de la bitácora (clave primaria en MongoDB).
+     */
     @BsonId
     private ObjectId id;
+    
+    /**
+     * Fecha en la que se registró la bitácora.
+     */
     private Date fecha;
+    
+    /**
+     * Obra a la que está asociada la bitácora.
+     */
     private Obra obra;
 
+    /**
+     * Constructor vacío requerido para deserialización o frameworks como
+     * MongoDB POJO codec.
+     */
     public Bitacora() {
     }
 
+    /**
+     * Constructor que inicializa la fecha y la obra asociada a la bitácora.
+     *
+     * @param fecha Fecha del registro de la bitácora.
+     * @param obra Obra a la que pertenece la bitácora.
+     */
     public Bitacora(Date fecha, Obra obra) {
         this.fecha = fecha;
         this.obra = obra;
     }
 
+    /**
+     * Obtiene el identificador único de la bitácora.
+     *
+     * @return El {@code ObjectId} de la bitácora.
+     */
     public ObjectId getId() {
         return id;
     }
 
+    /**
+     * Establece el identificador único de la bitácora.
+     *
+     * @param id El {@code ObjectId} que se asignará.
+     */
     public void setId(ObjectId id) {
         this.id = id;
     }
 
+    /**
+     * Obtiene la fecha de la bitácora.
+     *
+     * @return La fecha registrada en la bitácora.
+     */
     public Date getFecha() {
         return fecha;
     }
 
+    /**
+     * Establece la fecha de la bitácora.
+     *
+     * @param fecha La fecha a asignar.
+     */
     public void setFecha(Date fecha) {
         this.fecha = fecha;
     }
 
+    /**
+     * Obtiene la obra asociada a la bitácora.
+     *
+     * @return La obra correspondiente a esta bitácora.
+     */
     public Obra getObra() {
         return obra;
     }
 
+    /**
+     * Establece la obra asociada a la bitácora.
+     *
+     * @param obra La obra a asignar.
+     */
     public void setObra(Obra obra) {
         this.obra = obra;
     }
 
+    /**
+     * Devuelve una representación en forma de cadena del objeto Bitacora.
+     *
+     * @return Cadena con los atributos de la bitácora.
+     */
     @Override
     public String toString() {
-        return "Bitacora{" + "id=" + id + ", fecha=" + fecha + ", obra=" + obra + '}';
+        return "Bitacora{" +
+                "id=" + id +
+                ", fecha=" + fecha +
+                ", obra=" + obra +
+                '}';
     }
 
 }
