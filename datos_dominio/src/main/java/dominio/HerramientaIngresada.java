@@ -4,9 +4,6 @@
  */
 package dominio;
 
-import org.bson.codecs.pojo.annotations.BsonId;
-import org.bson.types.ObjectId;
-
 /**
  * Clase HerramientaIngresada
  * 
@@ -25,8 +22,7 @@ public class HerramientaIngresada {
     /**
      * Identificador único de la actividad (clave primaria en MongoDB).
      */
-    @BsonId
-    private ObjectId id;
+    private Long id;
     
     /**
      * Herramienta a la que pertenece el ingreso.
@@ -60,7 +56,7 @@ public class HerramientaIngresada {
      *
      * @return El identificador.
      */
-    public ObjectId getId() {
+    public Long getId() {
         return id;
     }
 
@@ -69,7 +65,7 @@ public class HerramientaIngresada {
      *
      * @param id El nuevo identificador.
      */
-    public void setId(ObjectId id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

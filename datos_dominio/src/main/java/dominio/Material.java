@@ -4,9 +4,6 @@
  */
 package dominio;
 
-import org.bson.codecs.pojo.annotations.BsonId;
-import org.bson.types.ObjectId;
-
 /**
  * Clase Material
  * 
@@ -25,8 +22,7 @@ public class Material {
     /**
      * Identificador único de la actividad (clave primaria en MongoDB).
      */
-    @BsonId
-    private ObjectId id;
+    private Long id;
     
     /**
      * Nombre del material.
@@ -74,7 +70,7 @@ public class Material {
      *
      * @return El identificador único del material.
      */
-    public ObjectId getId() {
+    public Long getId() {
         return id;
     }
 
@@ -83,7 +79,7 @@ public class Material {
      *
      * @param id El nuevo identificador del material.
      */
-    public void setIdMaterial(ObjectId id) {
+    public void setIdMaterial(Long id) {
         this.id = id;
     }
 

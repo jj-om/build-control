@@ -4,9 +4,6 @@
  */
 package dominio;
 
-import org.bson.codecs.pojo.annotations.BsonId;
-import org.bson.types.ObjectId;
-
 /**
  * Clase Maquinaria
  * 
@@ -25,8 +22,7 @@ public class Maquinaria {
     /**
      * Identificador único de la actividad (clave primaria en MongoDB).
      */
-    @BsonId
-    private ObjectId id;
+    private Long id;
     
     /**
      * Nombre de la maquinaria.
@@ -67,7 +63,7 @@ public class Maquinaria {
      *
      * @return El identificador de la maquinaria.
      */
-    public ObjectId getId() {
+    public Long getId() {
         return id;
     }
 
@@ -76,7 +72,7 @@ public class Maquinaria {
      *
      * @param id El nuevo identificador.
      */
-    public void setId(ObjectId id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

@@ -5,8 +5,6 @@
 package dominio;
 
 import java.util.List;
-import org.bson.codecs.pojo.annotations.BsonId;
-import org.bson.types.ObjectId;
 
 /**
  * Clase DetallesBitacora
@@ -27,8 +25,7 @@ public class DetallesBitacora {
     /**
      * Identificador único de la actividad (clave primaria en MongoDB).
      */
-    @BsonId
-    private ObjectId id;
+    private Long id;
     
     /**
      * Lista de actividades.
@@ -90,7 +87,7 @@ public class DetallesBitacora {
      * 
      * @return ID del detalle.
      */
-    public ObjectId getId() {
+    public Long getId() {
         return id;
     }
 
@@ -99,7 +96,7 @@ public class DetallesBitacora {
      * 
      * @param id ID del detalle.
      */
-    public void setId(ObjectId id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

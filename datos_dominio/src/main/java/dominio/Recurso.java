@@ -4,9 +4,6 @@
  */
 package dominio;
 
-import org.bson.codecs.pojo.annotations.BsonId;
-import org.bson.types.ObjectId;
-
 /**
  * Clase Recurso 
  * 
@@ -25,8 +22,7 @@ public class Recurso {
     /**
      * Identificador único de la actividad (clave primaria en MongoDB).
      */
-    @BsonId
-    private ObjectId id;
+    private Long id;
     
     /**
      * Material utilizado como parte del recurso.
@@ -67,7 +63,7 @@ public class Recurso {
      *
      * @return El identificador único del recurso.
      */
-    public ObjectId getId() {
+    public Long getId() {
         return id;
     }
 
@@ -76,7 +72,7 @@ public class Recurso {
      *
      * @param id El nuevo identificador del recurso.
      */
-    public void setId(ObjectId id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

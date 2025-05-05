@@ -6,8 +6,6 @@ package dominio;
 
 import java.util.Date;
 import java.util.List;
-import org.bson.codecs.pojo.annotations.BsonId;
-import org.bson.types.ObjectId;
 
 /**
  * Clase Asistencia
@@ -27,8 +25,7 @@ public class Asistencia {
     /**
      * Identificador único de la actividad (clave primaria en MongoDB).
      */
-    @BsonId
-    private ObjectId id;
+    private Long id;
     
     /**
      * Fecha de la asistencia.
@@ -62,7 +59,7 @@ public class Asistencia {
      * 
      * @return ID del registro.
      */
-    public ObjectId getId() {
+    public Long getId() {
         return id;
     }
 
@@ -71,7 +68,7 @@ public class Asistencia {
      * 
      * @param id ID a establecer.
      */
-    public void setId(ObjectId id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

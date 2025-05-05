@@ -5,8 +5,6 @@
 package dominio;
 
 import java.util.Date;
-import org.bson.codecs.pojo.annotations.BsonId;
-import org.bson.types.ObjectId;
 
 /**
  * Clase AsistenciaPersonal
@@ -27,8 +25,7 @@ public class AsistenciaPersonal {
     /**
      * Identificador único de la actividad (clave primaria en MongoDB).
      */
-    @BsonId
-    private ObjectId id;
+    private Long id;
     
     /**
      * Nombre del empleado.
@@ -76,7 +73,7 @@ public class AsistenciaPersonal {
      * 
      * @return ID del registro.
      */
-    public ObjectId getId() {
+    public Long getId() {
         return id;
     }
 
@@ -85,7 +82,7 @@ public class AsistenciaPersonal {
      * 
      * @param id ID a establecer.
      */
-    public void setId(ObjectId id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

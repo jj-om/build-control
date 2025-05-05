@@ -4,9 +4,6 @@
  */
 package dominio;
 
-import org.bson.codecs.pojo.annotations.BsonId;
-import org.bson.types.ObjectId;
-
 /**
  * Clase Obra
  * 
@@ -26,8 +23,7 @@ public class Obra {
     /**
      * Identificador único de la obra (clave primaria en MongoDB).
      */
-    @BsonId
-    private ObjectId idObra;
+    private Long idObra;
     
     /**
      * Número de la obra.
@@ -67,18 +63,18 @@ public class Obra {
     /**
      * Obtiene el identificador único de la obra.
      *
-     * @return El {@code ObjectId} de la obra.
+     * @return El ID de la obra.
      */
-    public ObjectId getIdObra() {
+    public Long getIdObra() {
         return idObra;
     }
 
     /**
      * Establece el identificador único de la obra.
      *
-     * @param idObra El {@code ObjectId} que se asignará.
+     * @param idObra El ID que se asignará.
      */
-    public void setIdObra(ObjectId idObra) {
+    public void setIdObra(Long idObra) {
         this.idObra = idObra;
     }
 

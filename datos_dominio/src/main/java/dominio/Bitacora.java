@@ -5,8 +5,6 @@
 package dominio;
 
 import java.util.Date;
-import org.bson.codecs.pojo.annotations.BsonId;
-import org.bson.types.ObjectId;
 
 /**
  * Clase Bitacora
@@ -26,8 +24,7 @@ public class Bitacora {
     /**
      * Identificador único de la bitácora (clave primaria en MongoDB).
      */
-    @BsonId
-    private ObjectId id;
+    private Long id;
     
     /**
      * Fecha en la que se registró la bitácora.
@@ -60,18 +57,18 @@ public class Bitacora {
     /**
      * Obtiene el identificador único de la bitácora.
      *
-     * @return El {@code ObjectId} de la bitácora.
+     * @return El ID de la bitácora.
      */
-    public ObjectId getId() {
+    public Long getId() {
         return id;
     }
 
     /**
      * Establece el identificador único de la bitácora.
      *
-     * @param id El {@code ObjectId} que se asignará.
+     * @param id El ID que se asignará.
      */
-    public void setId(ObjectId id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

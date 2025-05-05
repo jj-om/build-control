@@ -4,9 +4,6 @@
  */
 package dominio;
 
-import org.bson.codecs.pojo.annotations.BsonId;
-import org.bson.types.ObjectId;
-
 /**
  * Clase Atividad
  * 
@@ -25,8 +22,7 @@ public class Actividad {
     /**
      * Identificador único de la actividad (clave primaria en MongoDB).
      */
-    @BsonId
-    private ObjectId id;
+    private Long id;
     
     /**
      * Título o nombre breve que describe la actividad.
@@ -59,18 +55,18 @@ public class Actividad {
     /**
      * Obtiene el identificador único de la actividad.
      *
-     * @return El {@code ObjectId} de la actividad.
+     * @return El ID de la actividad.
      */
-    public ObjectId getId() {
+    public Long getId() {
         return id;
     }
 
     /**
      * Establece el identificador único de la actividad.
      *
-     * @param id El {@code ObjectId} que se asignará.
+     * @param id El ID que se asignará.
      */
-    public void setId(ObjectId id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

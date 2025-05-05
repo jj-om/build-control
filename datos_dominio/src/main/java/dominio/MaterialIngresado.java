@@ -4,9 +4,6 @@
  */
 package dominio;
 
-import org.bson.codecs.pojo.annotations.BsonId;
-import org.bson.types.ObjectId;
-
 /**
  * Clase MaterialIngresado 
  * 
@@ -26,8 +23,7 @@ public class MaterialIngresado {
     /**
      * Identificador único de la actividad (clave primaria en MongoDB).
      */
-    @BsonId
-    private ObjectId id;
+    private Long id;
     
     /**
      * Recurso al que pertenece el ingreso.
@@ -61,7 +57,7 @@ public class MaterialIngresado {
      *
      * @return El identificador único del material ingresado.
      */
-    public ObjectId getId() {
+    public Long getId() {
         return id;
     }
 
@@ -70,7 +66,7 @@ public class MaterialIngresado {
      *
      * @param id El nuevo identificador del material ingresado.
      */
-    public void setId(ObjectId id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
