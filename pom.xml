@@ -13,6 +13,7 @@
         <module>bo_negocios</module>
         <module>datos_dominio</module>
         <module>dao_datos</module>
+        <module>modulo_empleados</module>
     </modules>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
