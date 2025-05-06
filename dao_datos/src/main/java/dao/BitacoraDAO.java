@@ -100,7 +100,7 @@ public class BitacoraDAO {
 
         // Verificar si existe una bitácora para la obra en la fecha actual
         for (Bitacora bitacora : bitacoras) {
-            if (bitacora.getObra().getNumero().equals(idObra) && validarFecha(bitacora.getFecha(), fechaActual)) {
+            if (bitacora.getIdObra().equals(idObra) && validarFecha(bitacora.getFecha(), fechaActual)) {
                 return true;
             }
         }

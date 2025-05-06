@@ -18,7 +18,7 @@ public class ObraDTO {
     /**
      * Identificador único de la obra. 
      */
-    private Long idObra;
+    private Long numero;
     
     /**
      * Dirección física donde se ubica la obra. 
@@ -46,7 +46,7 @@ public class ObraDTO {
      * @param metrosCubicos El volumen en metros cúbicos
      */
     public ObraDTO(Long idObra, String direccion, Double metrosCubicos) {
-        this.idObra = idObra;
+        this.numero = idObra;
         this.direccion = direccion;
         this.metrosCubicos = metrosCubicos;
     }
@@ -67,17 +67,17 @@ public class ObraDTO {
      *
      * @return El ID único de la obra
      */
-    public Long getIdObra() {
-        return idObra;
+    public Long getNumero() {
+        return numero;
     }
 
     /**
      * Establece el identificador de la obra.
      *
-     * @param idObra El nuevo ID para la obra
+     * @param numero El nuevo ID para la obra
      */
-    public void setIdObra(Long idObra) {
-        this.idObra = idObra;
+    public void setNumero(Long numero) {
+        this.numero = numero;
     }
 
     /**
@@ -123,7 +123,7 @@ public class ObraDTO {
      */
     @Override
     public String toString() {
-        return "ObraDTO{" + "idObra=" + idObra + ", direccion=" + direccion + ", metrosCubicos=" + metrosCubicos + '}';
+        return "ObraDTO{" + "idObra=" + numero + ", direccion=" + direccion + ", metrosCubicos=" + metrosCubicos + '}';
     }
     
 }

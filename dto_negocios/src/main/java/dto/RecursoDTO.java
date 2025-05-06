@@ -30,6 +30,8 @@ public class RecursoDTO {
      * Cantidad del material. 
      */
     private Integer cantidad;
+    
+    private Long idObra;
 
     /**
      * Constructor por defecto. 
@@ -44,9 +46,10 @@ public class RecursoDTO {
      * @param material El material específico (objeto MaterialDTO)
      * @param cantidad La cantidad de unidades o medida
      */
-    public RecursoDTO(MaterialDTO material, Integer cantidad) {
+    public RecursoDTO(MaterialDTO material, Integer cantidad, Long idObra) {    
         this.material = material;
         this.cantidad = cantidad;
+        this.idObra = idObra;
     }
 
     /**
@@ -85,6 +88,14 @@ public class RecursoDTO {
         this.cantidad = cantidad;
     }
 
+    public Long getIdObra() {
+        return idObra;
+    }
+
+    public void setIdObra(Long idObra) {
+        this.idObra = idObra;
+    }
+
     /**
      * Genera una representación en cadena de texto del objeto RecursoDTO. 
      *
@@ -92,6 +103,6 @@ public class RecursoDTO {
      */
     @Override
     public String toString() {
-        return "RecursoDTO{" + "material=" + material + ", cantidad=" + cantidad + '}';
+        return "RecursoDTO{" + "material=" + material + ", cantidad=" + cantidad + ", idObra=" + idObra + '}';
     }
 }

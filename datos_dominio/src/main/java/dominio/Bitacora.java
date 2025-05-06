@@ -34,7 +34,7 @@ public class Bitacora {
     /**
      * Obra a la que está asociada la bitácora.
      */
-    private Obra obra;
+    private Long idObra;
 
     /**
      * Constructor vacío requerido para deserialización o frameworks como
@@ -49,9 +49,9 @@ public class Bitacora {
      * @param fecha Fecha del registro de la bitácora.
      * @param obra Obra a la que pertenece la bitácora.
      */
-    public Bitacora(Date fecha, Obra obra) {
+    public Bitacora(Date fecha, Long idObra) {
         this.fecha = fecha;
-        this.obra = obra;
+        this.idObra = idObra;
     }
 
     /**
@@ -95,8 +95,8 @@ public class Bitacora {
      *
      * @return La obra correspondiente a esta bitácora.
      */
-    public Obra getObra() {
-        return obra;
+    public Long getIdObra() {
+        return idObra;
     }
 
     /**
@@ -104,8 +104,8 @@ public class Bitacora {
      *
      * @param obra La obra a asignar.
      */
-    public void setObra(Obra obra) {
-        this.obra = obra;
+    public void setIdObra(Long idObra) {
+        this.idObra = idObra;
     }
 
     /**
@@ -118,7 +118,7 @@ public class Bitacora {
         return "Bitacora{" +
                 "id=" + id +
                 ", fecha=" + fecha +
-                ", obra=" + obra +
+                ", idObra=" + idObra +
                 '}';
     }
 

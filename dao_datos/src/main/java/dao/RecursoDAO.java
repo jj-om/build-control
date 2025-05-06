@@ -91,35 +91,35 @@ public class RecursoDAO {
         obra.setIdObra(1L); 
 
         // Crear recursos y asignarles los materiales y la obra
-        Recurso recurso1 = new Recurso(material1, 100, obra);
+        Recurso recurso1 = new Recurso(material1, 100, obra.getIdObra());
         recurso1.setId(1L);
         recursos.add(recurso1);
 
-        Recurso recurso2 = new Recurso(material2, 50, obra);
+        Recurso recurso2 = new Recurso(material2, 50, obra.getIdObra());
         recurso2.setId(2L);
         recursos.add(recurso2);
 
-        Recurso recurso3 = new Recurso(material3, 200, obra);
+        Recurso recurso3 = new Recurso(material3, 200, obra.getIdObra());
         recurso3.setId(3L);
         recursos.add(recurso3);
 
-        Recurso recurso4 = new Recurso(material4, 10, obra);
+        Recurso recurso4 = new Recurso(material4, 10, obra.getIdObra());
         recurso4.setId(4L);
         recursos.add(recurso4);
 
-        Recurso recurso5 = new Recurso(material5, 75, obra);
+        Recurso recurso5 = new Recurso(material5, 75, obra.getIdObra());
         recurso5.setId(5L);
         recursos.add(recurso5);
 
-        Recurso recurso6 = new Recurso(material6, 500, obra);
+        Recurso recurso6 = new Recurso(material6, 500, obra.getIdObra());
         recurso6.setId(6L);
         recursos.add(recurso6);
 
-        Recurso recurso7 = new Recurso(material7, 150, obra);
+        Recurso recurso7 = new Recurso(material7, 150, obra.getIdObra());
         recurso7.setId(7L);
         recursos.add(recurso7);
 
-        Recurso recurso8 = new Recurso(material8, 25, obra);
+        Recurso recurso8 = new Recurso(material8, 25, obra.getIdObra());
         recurso8.setId(8L);
         recursos.add(recurso8);
     }
@@ -136,7 +136,7 @@ public class RecursoDAO {
     public List<Recurso> obtenerRecursosObra(Long numero) throws Exception {
         // Filtrar los recursos que pertenecen a la obra específica
         return recursos.stream()
-                .filter(recurso -> recurso.getObra().getNumero().equals(numero))
+                .filter(recurso -> recurso.getIdObra().equals(numero))
                 .collect(Collectors.toList());
     }
     
@@ -153,7 +153,7 @@ public class RecursoDAO {
     public boolean actualizarCantidadRecurso(Long idObra, String nombreMaterial, String unidadPeso, Integer cantidad) throws Exception {
         // Buscar el recurso que coincida con los criterios
         for (Recurso recurso : recursos) {
-            if (recurso.getObra().getNumero().equals(idObra)
+            if (recurso.getIdObra().equals(idObra)
                     && recurso.getMaterial().getNombre().equals(nombreMaterial)
                     && recurso.getMaterial().getUnidadPeso().equals(unidadPeso)) {
 

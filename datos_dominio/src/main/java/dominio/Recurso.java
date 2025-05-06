@@ -37,7 +37,7 @@ public class Recurso {
     /**
      * Obra en la cual se utilizará el recurso.
      */
-    private Obra obra;
+    private Long idObra;
 
     /**
      * Constructor vacío para fines de deserialización.
@@ -52,10 +52,10 @@ public class Recurso {
      * @param cantidad Cantidad requerida del material.
      * @param obra Obra asociada al recurso.
      */
-    public Recurso(Material material, Integer cantidad, Obra obra) {
+    public Recurso(Material material, Integer cantidad, Long idObra) {
         this.material = material;
         this.cantidad = cantidad;
-        this.obra = obra;
+        this.idObra = idObra;
     }
 
     /**
@@ -117,8 +117,8 @@ public class Recurso {
      *
      * @return La obra correspondiente.
      */
-    public Obra getObra() {
-        return obra;
+    public Long getIdObra() {
+        return idObra;
     }
 
     /**
@@ -126,8 +126,8 @@ public class Recurso {
      *
      * @param obra La nueva obra.
      */
-    public void setObra(Obra obra) {
-        this.obra = obra;
+    public void setIdObra(Long idObra) {
+        this.idObra = idObra;
     }
 
     /**
@@ -141,7 +141,7 @@ public class Recurso {
                 "id=" + id +
                 ", material=" + material + 
                 ", cantidad=" + cantidad +
-                ", obra=" + obra +
+                ", idObra=" + idObra +
                 '}';
     }
  
