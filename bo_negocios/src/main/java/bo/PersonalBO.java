@@ -5,8 +5,14 @@
 package bo;
 
 import excepciones.BOException;
+import excepciones.InfraestructuraEmpleadosException;
+import excepciones.ObraSinPersonalException;
+import infraestructura.FEmpleados;
+import infraestructura.IEmpleados;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Clase PersonalBO
@@ -28,12 +34,14 @@ public class PersonalBO {
      * una instancia en toda la aplicación.
      */
     private static PersonalBO instance;
+    private IEmpleados sistemaEmpleados;
 
     /**
      * Constructor privado (patrón Singleton). Previene la creación de múltiples
      * instancias desde fuera de la clase.
      */
     private PersonalBO() {
+        this.sistemaEmpleados = new FEmpleados();
     }
 
     /**
@@ -61,20 +69,13 @@ public class PersonalBO {
      * @return Lista de nombres del personal asignado a la obra
      * @throws BOException Si ocurre un error durante la obtención de datos del
      * personal
+     * @throws excepciones.ObraSinPersonalException
      */
-    public List<String> obtenerPersonalObra(Long idObra) throws BOException { // Cuando esté infraestructura va a tirar la excepckión
-        // Lista mock de personal disponible
-        List<String> personal = new ArrayList<>();
-        
-        personal.add("Juan Pérez López");
-        personal.add("María García Sánchez");
-        personal.add("Carlos Martínez Rodríguez");
-        personal.add("Ana López González");
-        personal.add("Pedro Hernández Ramírez");
-        personal.add("Laura Díaz Fernández");
-        personal.add("Jorge Álvarez Gómez");
-        personal.add("Sofía Ruiz Jiménez");
-        
-        return personal;
+    public List<String> obtenerPersonalObra(Long idObra) throws BOException, ObraSinPersonalException {
+        try {
+            return sistemaEmpleados.obtenerPersonalObra(idObra);
+        } catch (InfraestructuraEmpleadosException e) {
+            throw new BOException("Error al intentar obtener el personal de la obra.", e);
+        }
     }
 }

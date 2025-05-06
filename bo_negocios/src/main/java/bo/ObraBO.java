@@ -63,7 +63,7 @@ public class ObraBO {
      * @return true si la obra existe, false en caso contrario
      * @throws BOException Si ocurre un error durante la verificación
      */
-    public boolean validarObraExiste(Long numero) throws BOException {
+    public boolean validarObraExiste(Long numero) throws BOException, Exception {
         try {
             return obraDAO.obraExiste(numero);
         } catch (DAOException ex) {
@@ -83,7 +83,7 @@ public class ObraBO {
      * @return El ID interno de la obra en el sistema
      * @throws BOException Si ocurre un error durante la consulta
      */
-    public Long obtenerIdPorNumero(Long numero) throws BOException{
+    public Long obtenerIdPorNumero(Long numero) throws BOException, Exception{
         try {
             return obraDAO.obtenerIdPorNumero(numero);
         } catch (DAOException ex) {
@@ -101,7 +101,7 @@ public class ObraBO {
      * @return La dirección física de la obra
      * @throws BOException Si ocurre un error durante la consulta
      */
-    public String obtenerDireccionObra(Long id) throws BOException {
+    public String obtenerDireccionObra(Long id) throws BOException, Exception {
         try {
             return obraDAO.obtenerDireccionObra(id);
         } catch (DAOException ex) {

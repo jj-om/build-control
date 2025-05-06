@@ -70,7 +70,7 @@ public class RecursoBO {
      * @throws BOException Si ocurre un error durante la obtención de datos de
      * recursos
      */
-    public List<RecursoDTO> obtenerRecursosObra(Long idObra) throws BOException {
+    public List<RecursoDTO> obtenerRecursosObra(Long idObra) throws BOException, Exception {
         try {
             // Obtener los recursos de la capa de persistencia
             return recursoDAO.obtenerRecursosObra(idObra).stream()
@@ -97,7 +97,7 @@ public class RecursoBO {
      * @return true si la actualización fue exitosa, false en caso contrario
      * @throws BOException Si ocurre un error durante la actualización
      */
-    public boolean actualizarCantidadRecurso(Long idObra, String nombreMaterial, String unidadPeso, Integer cantidad) throws BOException {
+    public boolean actualizarCantidadRecurso(Long idObra, String nombreMaterial, String unidadPeso, Integer cantidad) throws BOException, Exception {
         try {
             return recursoDAO.actualizarCantidadRecurso(idObra, nombreMaterial, unidadPeso, cantidad);
         } catch (DAOException ex) {
