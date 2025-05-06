@@ -6,11 +6,25 @@
         <artifactId>build-control</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
-    <artifactId>modulo_empleados</artifactId>
+    <artifactId>infraestructura_empleados</artifactId>
     <packaging>jar</packaging>
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
         <exec.mainClass>com.mycompany.modulo_empleados.Modulo_empleados</exec.mainClass>
     </properties>
+    <name>infraestructura_empleados</name>
+    <dependencies>
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>okhttp</artifactId>
+            <version>4.9.1</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.json/json -->
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20250107</version>
+        </dependency>
+    </dependencies>
 </project>
