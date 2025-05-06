@@ -6,6 +6,7 @@ package presentacion;
 
 import com.github.lgooddatepicker.components.TimePicker;
 import dto.AsistenciaPersonalDTO;
+import excepciones.ObraSinPersonalException;
 import exception.DatosInvalidosException;
 import exception.PresentacionException;
 import java.awt.BorderLayout;
@@ -19,6 +20,8 @@ import java.awt.Insets;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -77,6 +80,8 @@ public class PersonalForm extends JFrame {
      */
     private CoordinadorNegocio coordinadorNegocio;
     
+    private boolean inicializacionExitosa = false;
+    
     /**
      * Constructor del formulario de personal.
      *
@@ -94,8 +99,21 @@ public class PersonalForm extends JFrame {
         this.coordinadorNegocio = CoordinadorNegocio.getInstance();
         campoNombreObra.setText(coordinadorNegocio.obtenerDireccionObra());
         
-        obtenerPersonal();
+        if (!obtenerPersonal()) {
+            // Regresar a ventana ObraSeleccionada
+            coordinadorNegocio.reset();
+            this.dispose();
+            coordinador.reset();
+            coordinador.mostrarObraSeleccionada();
+            return;
+        }
+
         crearPanelAsistencia();
+        inicializacionExitosa = true;
+    }
+
+    public boolean isInicializacionExitosa() {
+        return inicializacionExitosa;
     }
 
     /**
@@ -310,7 +328,11 @@ public class PersonalForm extends JFrame {
      * @param evt Evento de acción que desencadenó este método
      */
     private void btnSiguienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSiguienteActionPerformed
+        try {
             siguiente();
+        } catch (Exception ex) {
+            Logger.getLogger(PersonalForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_btnSiguienteActionPerformed
 
     /**
@@ -331,19 +353,34 @@ public class PersonalForm extends JFrame {
      * paneles individuales para cada trabajador y lo incorpora en un
      * JScrollPane para permitir el desplazamiento cuando hay muchos empleados.
      */
-    private void obtenerPersonal() {
+    private boolean obtenerPersonal() {
         try {
             // Inicializar lista de trabajadores
             trabajadores = coordinadorNegocio.obtenerPersonal();
-        } catch (PresentacionException e) {
-            JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            this.dispose();
-            coordinador.mostrarObraSeleccionada();
-            coordinadorNegocio.reset();
-            coordinador.reset();
+            return true;
+        } catch (ObraSinPersonalException e) {
+            int opcion = JOptionPane.showConfirmDialog(this,
+                    "No se ha encontrado personal asignado a la obra, ¿Desea registrar la bitácora sin personal?",
+                    "Advertencia: No hay personal", JOptionPane.YES_NO_OPTION);
+            if (opcion == JOptionPane.YES_OPTION) {
+                coordinadorNegocio.registrarAsistencia(null);
+                try {
+                    if (coordinadorNegocio.registrarBitacora()) {
+                        JOptionPane.showMessageDialog(this, "Bitácora registrada exitosamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                    }
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(this, "Fallo al registrar la bitacora.", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "Se ha cancelado el registro. Asigne personal a la obra manualmente.", "Registro cancelado", JOptionPane.INFORMATION_MESSAGE);
+            }
+        } catch (PresentacionException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
+        
+        return false;
     }
-    
+
     /**
      * Crea y configura dinámicamente el panel de asistencia para mostrar una
      * lista de trabajadores dentro de un contenedor con scroll.
@@ -676,7 +713,7 @@ public class PersonalForm extends JFrame {
      * obra seleccionada. También maneja los posibles errores durante el
      * proceso.
      */
-    private void siguiente(){
+    private void siguiente() throws Exception{
         // Intentar registrar la bitacora
         try {
             coordinadorNegocio.registrarAsistencia(registrarAsistenciaPorPersonal());

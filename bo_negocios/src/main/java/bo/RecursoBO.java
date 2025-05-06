@@ -55,7 +55,7 @@ public class RecursoBO {
         }
         return instance;
     }
-
+ 
     /**
      * Obtiene la lista de recursos disponibles para una obra específica.
      *

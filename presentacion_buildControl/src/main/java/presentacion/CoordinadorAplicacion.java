@@ -125,9 +125,17 @@ public class CoordinadorAplicacion {
      */
     public void mostrarPersonal() {
         if (personalForm == null) {
-            personalForm = new PersonalForm();
+            PersonalForm nuevaVentana = new PersonalForm();
+            if (nuevaVentana.isInicializacionExitosa()) {
+                personalForm = nuevaVentana;
+                personalForm.setVisible(true);
+            } else {
+                // No guardar la referencia si falló
+                personalForm = null;
+            }
+        } else {
+            personalForm.setVisible(true);
         }
-        personalForm.setVisible(true);
     }
 
     /**

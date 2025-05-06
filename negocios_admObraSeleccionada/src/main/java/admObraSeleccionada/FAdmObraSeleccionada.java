@@ -45,7 +45,7 @@ public class FAdmObraSeleccionada implements IAdmObraSeleccionada {
      * sesión.
      */
     @Override
-    public boolean activarSesionObra(Long numero) throws AdmObraSeleccionadaException {
+    public boolean activarSesionObra(Long numero) throws AdmObraSeleccionadaException, Exception {
         return controlAdmObraSeleccionada.iniciarSesion(numero);
     }
 

@@ -21,6 +21,7 @@ import dto.ObraDTO;
 import dto.RecursoDTO;
 import excepciones.AdmBitacoraException;
 import excepciones.AdmObraSeleccionadaException;
+import excepciones.ObraSinPersonalException;
 import exception.DatosInvalidosException;
 import exception.PresentacionException;
 import java.time.LocalDate;
@@ -155,6 +156,7 @@ public class CoordinadorNegocio {
      * @param titulo Título de la actividad a registrar
      * @param descripcion Descripción detallada de la actividad
      * @throws PresentacionException Si los datos de la actividad no son válidos
+     * @throws exception.DatosInvalidosException
      */
     public void registrarActividad(String titulo, String descripcion) throws PresentacionException, DatosInvalidosException {
         // Validar antes de agregar la actividad
@@ -172,28 +174,6 @@ public class CoordinadorNegocio {
     public List<ActividadDTO> obtenerActividades() {
         return actividades;
     }
-//
-//    /**
-//     * Cancela el registro de actividades, eliminando todas las actividades de
-//     * la bitácora en proceso.
-//     */
-//    public void cancelarActividades() {
-//        actividades.clear();
-//    }
-//
-//    /**
-//     * Registra formalmente las actividades en el subsistema correspondiente.
-//     *
-//     * @return true si el registro fue exitoso, false en caso contrario
-//     * @throws PresentacionException Si ocurre un error durante el registro
-//     */
-//    public boolean registrarActividades() throws PresentacionException {
-//        try {
-//            return admActividades.registrarActividades(actividades);
-//        } catch (AdmActividadesException e) {
-//            throw new PresentacionException("Error al registrar actividad: " + e.getMessage());
-//        }
-//    }
 
     // MÉTODOS PARA EL FORMULARIO DE MATERIALES
     // Regresa la lista de materiales
@@ -201,10 +181,14 @@ public class CoordinadorNegocio {
      * Obtiene la lista de materiales disponibles para la obra seleccionada.
      *
      * @return Lista de recursos (materiales) asignados a la obra
-     * @throws excepciones.AdmBitacoraException
+     * @throws exception.PresentacionException
      */
-    public List<RecursoDTO> obtenerMateriales() throws AdmBitacoraException {
-        return admBitacora.obtenerRecursosObra();
+    public List<RecursoDTO> obtenerMateriales() throws PresentacionException {
+        try {
+            return admBitacora.obtenerRecursosObra();
+        } catch (Exception e) {
+            throw new PresentacionException("Error al obtener los recursos de la obra.", e);
+        }   
     }
 
     /**
@@ -238,7 +222,7 @@ public class CoordinadorNegocio {
     private void validarRecursos(List<MaterialIngresadoDTO> materialIngresado) throws PresentacionException {
         try {
             admBitacora.validarRecurso(materialIngresado);
-        } catch (Exception e) { // Cambiar a AdmMaterialesException
+        } catch (AdmBitacoraException e) { // Cambiar a AdmMaterialesException
             // Si al menos un material no fue válido
             throw new PresentacionException(e.getMessage(), e);
         }
@@ -311,13 +295,14 @@ public class CoordinadorNegocio {
      *
      * @return Lista con los nombres del personal de la obra.
      * @throws PresentacionException Si hubo un error al obtener el personal.
+     * @throws excepciones.ObraSinPersonalException
      */
-    public List<String> obtenerPersonal() throws PresentacionException {
+    public List<String> obtenerPersonal() throws PresentacionException, ObraSinPersonalException {
         try {
             return admBitacora.obtenerPersonalObra();
         } catch (AdmBitacoraException e) {
             throw new PresentacionException(e.getMessage(), e);
-        }
+        } 
     }
 
     /**
@@ -326,6 +311,7 @@ public class CoordinadorNegocio {
      * @param horaEntrada Hora de entrada del trabajador
      * @param horaSalida Hora de salida del trabajador
      * @param nombre Nombre del trabajador
+     * @throws exception.DatosInvalidosException
      */
     public void validarHoras(LocalTime horaEntrada, LocalTime horaSalida, String nombre) throws DatosInvalidosException {
         // Validar antes de agregar la asistencia
@@ -354,7 +340,7 @@ public class CoordinadorNegocio {
      * @return true si el registro fue exitoso, false en caso contrario
      * @throws PresentacionException Si ocurre un error durante el registro
      */
-    public boolean registrarBitacora() throws PresentacionException {
+    public boolean registrarBitacora() throws PresentacionException, Exception {
         try {
             DetallesBitacoraDTO detallesBitacora = new DetallesBitacoraDTO();
 
@@ -402,6 +388,7 @@ public class CoordinadorNegocio {
         if (maquinariaIngresada != null) {
             maquinariaIngresada.clear();
         }
+
     }
 
     /**
@@ -411,7 +398,7 @@ public class CoordinadorNegocio {
      * @return true si la sesión se inició correctamente, false en caso
      * contrario
      */
-    public boolean iniciarSesion(Long idObra) {
+    public boolean iniciarSesion(Long idObra) throws Exception {
         try {
             admObraSeleccionada.activarSesionObra(idObra);
         } catch (AdmObraSeleccionadaException ex) {

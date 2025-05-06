@@ -5,6 +5,8 @@
 package presentacion;
 
 import exception.PresentacionException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 /**
@@ -190,8 +192,12 @@ public class ObraSeleccionadaForm extends javax.swing.JFrame {
 
     //ESTO ES MOMENTANEO, VA EN LA PANTALLA ANTERIOR DONDE SE SELECCIONAN LAS OBRAS
     private void iniciarSesion() {
-        if (!this.coordinadorNegocio.iniciarSesion(1L)) {
-            JOptionPane.showMessageDialog(this, "Ocurrió un error al seleccionar la obra.", "Error", JOptionPane.ERROR_MESSAGE);
+        try {
+            if (!this.coordinadorNegocio.iniciarSesion(1L)) {
+                JOptionPane.showMessageDialog(this, "Ocurrió un error al seleccionar la obra.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Ocurrió un error al seleccionar la obra.", "Error", JOptionPane.ERROR_MESSAGE); // ESTE TRY-CATCH SE VA A QUITAR
         }
     }
     

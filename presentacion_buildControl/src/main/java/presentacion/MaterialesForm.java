@@ -608,7 +608,7 @@ public class MaterialesForm extends javax.swing.JFrame {
         try {
             this.recursos = coordinadorNegocio.obtenerMateriales();
             this.nombresMateriales = obtenerNombresMateriales();
-        } catch (AdmBitacoraException ex) {
+        } catch (PresentacionException ex) {
             Logger.getLogger(MaterialesForm.class.getName()).log(Level.SEVERE, null, ex);
         }
     }

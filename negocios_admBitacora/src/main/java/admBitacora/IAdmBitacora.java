@@ -10,6 +10,7 @@ import dto.MaquinariaDTO;
 import dto.MaterialIngresadoDTO;
 import dto.RecursoDTO;
 import excepciones.AdmBitacoraException;
+import excepciones.ObraSinPersonalException;
 import java.util.List;
 
 /**
@@ -51,8 +52,9 @@ public interface IAdmBitacora {
      * @return Lista con los nombres del personal asignado
      * @throws AdmBitacoraException Si ocurre un error durante la obtención de
      * los datos
+     * @throws excepciones.ObraSinPersonalException
      */
-    public List<String> obtenerPersonalObra() throws AdmBitacoraException;
+    public List<String> obtenerPersonalObra() throws AdmBitacoraException, ObraSinPersonalException;
 
     /**
      * Registra una nueva bitácora completa en el sistema.
@@ -63,7 +65,7 @@ public interface IAdmBitacora {
      * @throws AdmBitacoraException Si ocurre un error durante el proceso de
      * registro
      */
-    public boolean registrarBitacora(DetallesBitacoraDTO detallesBitacora) throws AdmBitacoraException;
+    public boolean registrarBitacora(DetallesBitacoraDTO detallesBitacora) throws AdmBitacoraException, Exception;
 
     /**
      * Verifica si ya existe una bitácora registrada para la obra seleccionada
@@ -83,7 +85,7 @@ public interface IAdmBitacora {
      * @throws AdmBitacoraException Si ocurre un error durante la obtención de
      * los datos
      */
-    public List<RecursoDTO> obtenerRecursosObra() throws AdmBitacoraException;
+    public List<RecursoDTO> obtenerRecursosObra() throws AdmBitacoraException, Exception;
 
     /**
      * Valida que los materiales seleccionados para registrar en la bitácora
@@ -95,5 +97,4 @@ public interface IAdmBitacora {
      * @throws AdmBitacoraException Si ocurre un error durante la validación
      */
     public boolean validarRecurso(List<MaterialIngresadoDTO> materialIngresado) throws AdmBitacoraException;
-    
 }

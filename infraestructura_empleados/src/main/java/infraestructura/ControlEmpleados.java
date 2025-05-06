@@ -86,7 +86,6 @@ public class ControlEmpleados {
             }
 
             return nombres;
-
         } catch (IOException e) {
             // Problemas de red o al ejecutar la solicitud
             throw new InfraestructuraEmpleadosException("Problema de red al obtener el personal.", e);

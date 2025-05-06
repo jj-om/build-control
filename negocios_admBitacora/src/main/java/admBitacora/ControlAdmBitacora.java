@@ -20,6 +20,7 @@ import dto.RecursoDTO;
 import excepciones.AdmBitacoraException;
 import excepciones.AdmObraSeleccionadaException;
 import excepciones.BOException;
+import excepciones.ObraSinPersonalException;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -99,7 +100,7 @@ public class ControlAdmBitacora {
      * @throws AdmBitacoraException Si ocurre un error durante el proceso de
      * registro
      */
-    public boolean registrarBitacora(DetallesBitacoraDTO detallesBitacoraDTO) throws AdmBitacoraException {
+    public boolean registrarBitacora(DetallesBitacoraDTO detallesBitacoraDTO) throws AdmBitacoraException, Exception {
         try {
             Long idObra = null;
             
@@ -182,7 +183,7 @@ public class ControlAdmBitacora {
      * @throws AdmBitacoraException Si ocurre un error durante la obtención de
      * los datos
      */
-    public List<RecursoDTO> obtenerRecursosObra() throws AdmBitacoraException {
+    public List<RecursoDTO> obtenerRecursosObra() throws AdmBitacoraException, Exception {
         try {
             // Obtiene el id mediante el subsistema
             Long idObra = admObraSeleccionada.obtenerSesion();
@@ -229,7 +230,7 @@ public class ControlAdmBitacora {
      * cantidades
      * @throws AdmBitacoraException Si ocurre un error durante la actualización
      */
-    private void restarRecursos(List<MaterialIngresadoDTO> materialIngresado) throws AdmBitacoraException {
+    private void restarRecursos(List<MaterialIngresadoDTO> materialIngresado) throws AdmBitacoraException, Exception {
         try {
             // Obtener lista de los recursos de la obra
             List<RecursoDTO> recursosObra = obtenerRecursosObra();
@@ -315,8 +316,9 @@ public class ControlAdmBitacora {
      * @return Lista con los nombres del personal asignado
      * @throws AdmBitacoraException Si ocurre un error durante la obtención de
      * los datos
+     * @throws excepciones.ObraSinPersonalException
      */
-    public List<String> obtenerPersonalObra() throws AdmBitacoraException {
+    public List<String> obtenerPersonalObra() throws AdmBitacoraException, ObraSinPersonalException {
         try {
             // Obtiene el id mediante el subsistema
             Long idObra = admObraSeleccionada.obtenerSesion();

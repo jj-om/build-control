@@ -10,6 +10,7 @@ import dto.MaquinariaDTO;
 import dto.MaterialIngresadoDTO;
 import dto.RecursoDTO;
 import excepciones.AdmBitacoraException;
+import excepciones.ObraSinPersonalException;
 import java.util.List;
 
 /**
@@ -59,7 +60,7 @@ public class FAdmBitacora implements IAdmBitacora {
      * registro
      */
     @Override
-    public boolean registrarBitacora(DetallesBitacoraDTO detallesBitacora) throws AdmBitacoraException {
+    public boolean registrarBitacora(DetallesBitacoraDTO detallesBitacora) throws AdmBitacoraException, Exception {
         return controlAdmBitacora.registrarBitacora(detallesBitacora);
     }
 
@@ -86,7 +87,7 @@ public class FAdmBitacora implements IAdmBitacora {
      * los datos
      */
     @Override
-    public List<RecursoDTO> obtenerRecursosObra() throws AdmBitacoraException {
+    public List<RecursoDTO> obtenerRecursosObra() throws AdmBitacoraException, Exception {
         return controlAdmBitacora.obtenerRecursosObra();
     }
 
@@ -144,7 +145,7 @@ public class FAdmBitacora implements IAdmBitacora {
      * los datos
      */
     @Override
-    public List<String> obtenerPersonalObra() throws AdmBitacoraException {
+    public List<String> obtenerPersonalObra() throws AdmBitacoraException, ObraSinPersonalException {
         return controlAdmBitacora.obtenerPersonalObra();
     }
 

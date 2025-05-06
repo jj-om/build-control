@@ -9,10 +9,7 @@ import excepciones.InfraestructuraEmpleadosException;
 import excepciones.ObraSinPersonalException;
 import infraestructura.FEmpleados;
 import infraestructura.IEmpleados;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Clase PersonalBO

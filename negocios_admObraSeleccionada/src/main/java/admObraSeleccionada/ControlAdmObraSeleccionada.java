@@ -57,7 +57,7 @@ public class ControlAdmObraSeleccionada {
      * @throws AdmObraSeleccionadaException si la obra no existe o hay un error
      * al iniciar sesión.
      */
-    public boolean iniciarSesion(Long numero) throws AdmObraSeleccionadaException {
+    public boolean iniciarSesion(Long numero) throws AdmObraSeleccionadaException, Exception {
         try {
             if (!obraBO.validarObraExiste(numero)) {
                 throw new AdmObraSeleccionadaException("No se encontró obra con número " + numero + ".");
@@ -95,7 +95,7 @@ public class ControlAdmObraSeleccionada {
      * @throws AdmObraSeleccionadaException si ocurre un error durante la
      * validación.
      */
-    public boolean validarObraExiste(Long numero) throws AdmObraSeleccionadaException {
+    public boolean validarObraExiste(Long numero) throws AdmObraSeleccionadaException, Exception {
         try {
             return obraBO.validarObraExiste(numero);
         } catch (BOException e) {

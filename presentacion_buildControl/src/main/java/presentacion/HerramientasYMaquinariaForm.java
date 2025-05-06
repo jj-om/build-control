@@ -859,8 +859,6 @@ public class HerramientasYMaquinariaForm extends javax.swing.JFrame {
                 coordinadorNegocio.registrarHerramientas(herramientaIngresada);
                 coordinadorNegocio.registrarMaquinaria(maquinariaIngresada);
             } catch (PresentacionException e) {
-                // Mensaje para probar la excepción forzada
-                // JOptionPane.showMessageDialog(this, "Error al registrar: Herramientas y maquinaria nulas.", "Error", JOptionPane.ERROR_MESSAGE);
                 JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 this.dispose();
                 coordinadorNegocio.reset();
