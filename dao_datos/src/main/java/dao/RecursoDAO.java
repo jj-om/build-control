@@ -10,7 +10,6 @@ import dominio.Recurso;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.bson.types.ObjectId;
 
 /**
  * Implementación del DAO para gestionar los recursos en la base de datos.
@@ -64,27 +63,65 @@ public class RecursoDAO {
     private void inicializarRecursosMock() {
         // Crear algunos materiales de ejemplo
         Material material1 = new Material("Cemento", 50.0f, "Holcim", "kg");
+        material1.setIdMaterial(1L); 
+
         Material material2 = new Material("Arena", 100.0f, "Cemex", "kg");
+        material2.setIdMaterial(2L);
+
         Material material3 = new Material("Varilla", 20.5f, "Ternium", "kg");
+        material3.setIdMaterial(3L);
+
         Material material4 = new Material("Pintura Blanca", 4.0f, "Comex", "litros");
+        material4.setIdMaterial(4L);
+
         Material material5 = new Material("Yeso", 25.0f, "Knauf", "kg");
+        material5.setIdMaterial(5L);
+
         Material material6 = new Material("Clavos", 2.0f, "Truper", "kg");
+        material6.setIdMaterial(6L);
+
         Material material7 = new Material("Madera", 30.0f, "Finsa", "kg");
+        material7.setIdMaterial(7L);
+
         Material material8 = new Material("Adhesivo", 1.5f, "Resistol", "litros");
+        material8.setIdMaterial(8L);
 
         // Crear una obra ejemplo
         Obra obra = new Obra(1L, "Camino de los Mayos #716", 500.0);
-        obra.setIdObra(new ObjectId());
+        obra.setIdObra(1L); 
 
         // Crear recursos y asignarles los materiales y la obra
-        recursos.add(new Recurso(material1, 100, obra));
-        recursos.add(new Recurso(material2, 50, obra));
-        recursos.add(new Recurso(material3, 200, obra));
-        recursos.add(new Recurso(material4, 10, obra));
-        recursos.add(new Recurso(material5, 75, obra));
-        recursos.add(new Recurso(material6, 500, obra));
-        recursos.add(new Recurso(material7, 150, obra));
-        recursos.add(new Recurso(material8, 25, obra));
+        Recurso recurso1 = new Recurso(material1, 100, obra);
+        recurso1.setId(1L);
+        recursos.add(recurso1);
+
+        Recurso recurso2 = new Recurso(material2, 50, obra);
+        recurso2.setId(2L);
+        recursos.add(recurso2);
+
+        Recurso recurso3 = new Recurso(material3, 200, obra);
+        recurso3.setId(3L);
+        recursos.add(recurso3);
+
+        Recurso recurso4 = new Recurso(material4, 10, obra);
+        recurso4.setId(4L);
+        recursos.add(recurso4);
+
+        Recurso recurso5 = new Recurso(material5, 75, obra);
+        recurso5.setId(5L);
+        recursos.add(recurso5);
+
+        Recurso recurso6 = new Recurso(material6, 500, obra);
+        recurso6.setId(6L);
+        recursos.add(recurso6);
+
+        Recurso recurso7 = new Recurso(material7, 150, obra);
+        recurso7.setId(7L);
+        recursos.add(recurso7);
+
+        Recurso recurso8 = new Recurso(material8, 25, obra);
+        recurso8.setId(8L);
+        recursos.add(recurso8);
     }
     
     /**

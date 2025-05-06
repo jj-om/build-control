@@ -7,7 +7,6 @@ package dao;
 import dominio.Maquinaria;
 import java.util.ArrayList;
 import java.util.List;
-import org.bson.types.ObjectId;
 
 /**
  * Implementación del DAO para gestionar la maquinaria en la base de datos.
@@ -59,28 +58,28 @@ public class MaquinariaDAO {
      */
     private void inicializarMaquinariaMock() {
         Maquinaria maq1 = new Maquinaria("Excavadora", "Caterpillar", "CAT-320");
-        maq1.setId(new ObjectId());
+        maq1.setId(1L); 
 
         Maquinaria maq2 = new Maquinaria("Retroexcavadora", "John Deere", "JD-310");
-        maq2.setId(new ObjectId());
+        maq2.setId(2L);
 
         Maquinaria maq3 = new Maquinaria("Compactadora", "Wacker Neuson", "VPG-155");
-        maq3.setId(new ObjectId());
+        maq3.setId(3L);
 
         Maquinaria maq4 = new Maquinaria("Generador", "Honda", "EU70is");
-        maq4.setId(new ObjectId());
+        maq4.setId(4L);
 
         Maquinaria maq5 = new Maquinaria("Planta de luz", "Cummins", "C1500D5");
-        maq5.setId(new ObjectId());
+        maq5.setId(5L);
 
         Maquinaria maq6 = new Maquinaria("Montacargas", "Toyota", "8FGCU25");
-        maq6.setId(new ObjectId());
+        maq6.setId(6L);
 
         Maquinaria maq7 = new Maquinaria("Vibrador de concreto", "Wacker", "IREN-38");
-        maq7.setId(new ObjectId());
+        maq7.setId(7L);
 
         Maquinaria maq8 = new Maquinaria("Cortadora de concreto", "Husqvarna", "K-760");
-        maq8.setId(new ObjectId());
+        maq8.setId(8L);
 
         maquinarias.add(maq1);
         maquinarias.add(maq2);

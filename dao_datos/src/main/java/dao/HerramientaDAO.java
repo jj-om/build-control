@@ -7,7 +7,6 @@ package dao;
 import dominio.Herramienta;
 import java.util.ArrayList;
 import java.util.List;
-import org.bson.types.ObjectId;
 
 /**
  * Implementación del DAO para gestionar las herramientas en la base de datos.
@@ -59,28 +58,28 @@ public class HerramientaDAO {
      */
     private void inicializarHerramientasMock() {
         Herramienta h1 = new Herramienta("Martillo", "Truper", "M-20");
-        h1.setId(new ObjectId());
+        h1.setId(1L); 
 
         Herramienta h2 = new Herramienta("Desarmador", "Stanley", "Phillips #2");
-        h2.setId(new ObjectId());
+        h2.setId(2L);
 
         Herramienta h3 = new Herramienta("Pinzas", "DeWalt", "Corte diagonal");
-        h3.setId(new ObjectId());
+        h3.setId(3L);
 
         Herramienta h4 = new Herramienta("Llave inglesa", "Irwin", "Ajustable 10\"");
-        h4.setId(new ObjectId());
+        h4.setId(4L);
 
         Herramienta h5 = new Herramienta("Nivel", "Stabila", "Láser 360°");
-        h5.setId(new ObjectId());
+        h5.setId(5L);
 
         Herramienta h6 = new Herramienta("Cinta métrica", "Milwaukee", "25 pies");
-        h6.setId(new ObjectId());
+        h6.setId(6L);
 
         Herramienta h7 = new Herramienta("Serrucho", "Bahco", "Dientes finos");
-        h7.setId(new ObjectId());
+        h7.setId(7L);
 
         Herramienta h8 = new Herramienta("Taladro", "Bosch", "PSB 1800");
-        h8.setId(new ObjectId());
+        h8.setId(8L);
 
         herramientas.add(h1);
         herramientas.add(h2);

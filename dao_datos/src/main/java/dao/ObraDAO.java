@@ -7,7 +7,6 @@ package dao;
 import dominio.Obra;
 import java.util.ArrayList;
 import java.util.List;
-import org.bson.types.ObjectId;
 
 /**
  * Implementación del DAO para gestionar las obras en la base de datos.
@@ -58,13 +57,13 @@ public class ObraDAO {
      */
     private void inicializarObrasMock() {
         Obra obra1 = new Obra(1L, "Camino de los Mayos #716", 500.0);
-        obra1.setIdObra(new ObjectId());
-
+        obra1.setIdObra(1L); 
+        
         Obra obra2 = new Obra(2L, "Camino de los Yaquis #623", 750.0);
-        obra2.setIdObra(new ObjectId());
-
+        obra2.setIdObra(2L);
+        
         Obra obra3 = new Obra(3L, "Vícam #314", 600.0);
-        obra3.setIdObra(new ObjectId());
+        obra3.setIdObra(3L);
 
         obras.add(obra1);
         obras.add(obra2);

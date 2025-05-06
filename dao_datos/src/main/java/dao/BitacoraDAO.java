@@ -9,7 +9,6 @@ import dominio.DetallesBitacora;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import org.bson.types.ObjectId;
 
 /**
  * Implementación del DAO para gestionar las bitácoras en la base de datos.
@@ -73,8 +72,13 @@ public class BitacoraDAO {
     public Bitacora registrarBitacora(DetallesBitacora detallesBitacora) throws Exception {
         // Asignar ID a la bitácora y a detalles bitácora
         Bitacora bitacora = detallesBitacora.getBitacora();
-        bitacora.setId(new ObjectId());
-        detallesBitacora.setId(new ObjectId());
+
+        // Generar IDs
+        Long sigIdBitacora = (long) (bitacoras.size() + 1);
+        Long sigIdDetalle = (long) (detallesBitacoras.size() + 1);
+
+        bitacora.setId(sigIdBitacora);
+        detallesBitacora.setId(sigIdDetalle);
 
         // Agregar a  las listas
         bitacoras.add(bitacora);
