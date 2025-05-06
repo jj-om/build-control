@@ -1,10 +1,12 @@
 package bo;
 
-import dto.MaterialDTO;
+import dao.RecursoDAO;
 import dto.RecursoDTO;
 import excepciones.BOException;
-import java.util.ArrayList;
+import excepciones.DAOException;
 import java.util.List;
+import java.util.stream.Collectors;
+import mappers.RecursoMapper;
 
 /**
  * Clase RecursoBO
@@ -26,19 +28,18 @@ public class RecursoBO {
      * una instancia en toda la aplicación.
      */
     public static RecursoBO instance;
-
+    
     /**
-     * Lista de recursos disponibles en el sistema. Almacena los materiales con
-     * sus cantidades correspondientes.
+     * DAO para acceder a los datos de los recursos.
      */
-    private List<RecursoDTO> recursos;
+    private RecursoDAO recursoDAO;
 
     /**
      * Constructor privado (patrón Singleton). Inicializa la lista de recursos y
      * previene la creación de múltiples instancias desde fuera de la clase.
      */
     private RecursoBO() {
-        this.recursos = new ArrayList<>();
+        this.recursoDAO = RecursoDAO.getInstance();
     }
 
     /**
@@ -70,26 +71,14 @@ public class RecursoBO {
      * recursos
      */
     public List<RecursoDTO> obtenerRecursosObra(Long idObra) throws BOException {
-        MaterialDTO material1 = new MaterialDTO("Cemento", 50.0f, "Holcim", "kg");
-        MaterialDTO material2 = new MaterialDTO("Arena", 100.0f, "Cemex", "kg");
-        MaterialDTO material3 = new MaterialDTO("Varilla", 20.5f, "Ternium", "kg");
-        MaterialDTO material4 = new MaterialDTO("Pintura Blanca", 4.0f, "Comex", "litros");
-        MaterialDTO material5 = new MaterialDTO("Yeso", 25.0f, "Knauf", "kg");
-        MaterialDTO material6 = new MaterialDTO("Clavos", 2.0f, "Truper", "kg");
-        MaterialDTO material7 = new MaterialDTO("Madera", 30.0f, "Finsa", "kg");
-        MaterialDTO material8 = new MaterialDTO("Adhesivo", 1.5f, "Resistol", "litros");
-        
-        // Instancias de RecursoDTO y añadiéndolas a la lista
-        recursos.add(new RecursoDTO(material1, 100, 1L));  // 100 unidades de cemento
-        recursos.add(new RecursoDTO(material2, 50, 1L));   // 50 unidades de arena
-        recursos.add(new RecursoDTO(material3, 200, 1L));  // 200 unidades de varilla
-        recursos.add(new RecursoDTO(material4, 10, 1L));   // 10 unidades de pintura blanca
-        recursos.add(new RecursoDTO(material5, 75, 1L));   // 75 unidades de yeso
-        recursos.add(new RecursoDTO(material6, 500, 1L));  // 500 unidades de clavos
-        recursos.add(new RecursoDTO(material7, 150, 1L));  // 150 unidades de madera
-        recursos.add(new RecursoDTO(material8, 25, 1L));   // 25 unidades de adhesivo
-        
-        return recursos;
+        try {
+            // Obtener los recursos de la capa de persistencia
+            return recursoDAO.obtenerRecursosObra(idObra).stream()
+                    .map(RecursoMapper::toDTO)
+                    .collect(Collectors.toList());
+        } catch (DAOException ex) {
+            throw new BOException("Error al obtener los recursos de la obra: " + ex.getMessage());
+        }
     }
     
     // Checar con el que esta en coordinador negocio en presentacion
@@ -109,14 +98,11 @@ public class RecursoBO {
      * @throws BOException Si ocurre un error durante la actualización
      */
     public boolean actualizarCantidadRecurso(Long idObra, String nombreMaterial, String unidadPeso, Integer cantidad) throws BOException {
-        List<RecursoDTO> recursosObra = obtenerRecursosObra(idObra);
-        // Si el material se encuentra registrado, se actualiza la cantidad de stock
-        for (RecursoDTO recurso : recursosObra) {
-            if (recurso.getMaterial().getNombre().equals(nombreMaterial) || recurso.getMaterial().getUnidadPeso().equals(unidadPeso)) {
-                recurso.setCantidad(cantidad);
-            }
+        try {
+            return recursoDAO.actualizarCantidadRecurso(idObra, nombreMaterial, unidadPeso, cantidad);
+        } catch (DAOException ex) {
+            throw new BOException("Error al actualizar la cantidad del recurso: " + ex.getMessage());
         }
-        return true;
     }
     
 }

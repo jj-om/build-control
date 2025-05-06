@@ -1,8 +1,14 @@
 package bo;
 
+import dao.BitacoraDAO;
+import dominio.Bitacora;
+import dominio.DetallesBitacora;
 import dto.BitacoraDTO;
 import dto.DetallesBitacoraDTO;
 import excepciones.BOException;
+import excepciones.DAOException;
+import mappers.BitacoraMapper;
+import mappers.DetallesBitacoraMapper;
 
 /**
  * Clase BitacoraBO
@@ -24,12 +30,20 @@ public class BitacoraBO {
      * una instancia en toda la aplicación.
      */
     private static BitacoraBO instance;
+    
+    /**
+     * DAO para bitácoras. Gestiona el acceso a los datos de
+     * bitácoras en la persistencia.
+     */
+    private BitacoraDAO bitacoraDAO;
+
 
     /**
      * Constructor privado (patrón Singleton). Previene la creación de múltiples
      * instancias desde fuera de la clase.
      */
     private BitacoraBO() {
+        this.bitacoraDAO = BitacoraDAO.getInstance();
     }
 
     /**
@@ -56,7 +70,16 @@ public class BitacoraBO {
      * @throws BOException Si ocurre un error durante el proceso de registro
      */
     public BitacoraDTO registrarBitacora(DetallesBitacoraDTO detallesBitacoraDTO) throws BOException {
-        return detallesBitacoraDTO.getBitacora();
+        try {
+            // Convertir DTO a entidad de dominio
+            DetallesBitacora detallesBitacoraEntidad = DetallesBitacoraMapper.toEntity(detallesBitacoraDTO);
+            
+            Bitacora bitacoraRegistrada = bitacoraDAO.registrarBitacora(detallesBitacoraEntidad);
+            
+            return BitacoraMapper.toDTO(bitacoraRegistrada);
+        } catch (DAOException ex) {
+            throw new BOException("Error al registrar la bitácora: " + ex.getMessage());
+        }
     }
     
     /**
@@ -67,7 +90,7 @@ public class BitacoraBO {
      * @return true si ya existe una bitácora para hoy, false en caso contrario
      */
     public boolean validarBitacoraRegistrada(Long idObra) {
-        // Cambiar valor para probar error de bitácora ya registrada
-        return false;
+        return bitacoraDAO.validarBitacoraRegistrada(idObra);
     }
 }
+

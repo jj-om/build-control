@@ -7,6 +7,7 @@ package dao;
 import dominio.Material;
 import dominio.Obra;
 import dominio.Recurso;
+import excepciones.DAOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -131,9 +132,9 @@ public class RecursoDAO {
      * recursos
      * @return Lista de objetos Recurso con los materiales disponibles, sus
      * cantidades y la obra
-     * @throws Exception Si ocurre un error durante la operación
+     * @throws DAOException Si ocurre un error durante la operación
      */
-    public List<Recurso> obtenerRecursosObra(Long numero) throws Exception {
+    public List<Recurso> obtenerRecursosObra(Long numero) throws DAOException {
         // Filtrar los recursos que pertenecen a la obra específica
         return recursos.stream()
                 .filter(recurso -> recurso.getIdObra().equals(numero))
@@ -148,9 +149,9 @@ public class RecursoDAO {
      * @param unidadPeso Unidad de medida del peso
      * @param cantidad Nueva cantidad disponible
      * @return true si la actualización fue exitosa, false en caso contrario
-     * @throws Exception Si ocurre un error durante la actualización
+     * @throws DAOException Si ocurre un error durante la actualización
      */
-    public boolean actualizarCantidadRecurso(Long idObra, String nombreMaterial, String unidadPeso, Integer cantidad) throws Exception {
+    public boolean actualizarCantidadRecurso(Long idObra, String nombreMaterial, String unidadPeso, Integer cantidad) throws DAOException {
         // Buscar el recurso que coincida con los criterios
         for (Recurso recurso : recursos) {
             if (recurso.getIdObra().equals(idObra)

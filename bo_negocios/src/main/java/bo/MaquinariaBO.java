@@ -1,8 +1,10 @@
 package bo;
 
+import dao.MaquinariaDAO;
 import dto.MaquinariaDTO;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import mappers.MaquinariaMapper;
 
 /**
  * Clase MaquinariaBO
@@ -24,12 +26,20 @@ public class MaquinariaBO {
      * una instancia en toda la aplicación.
      */
     public static MaquinariaBO instance;
+    
+    /**
+     * DAO para maquinaria. Gestiona el acceso a los datos de
+     * maquinaria en la persistencia.
+     */
+    private MaquinariaDAO maquinariaDAO;
+
 
     /**
      * Constructor privado (patrón Singleton). Previene la creación de múltiples
      * instancias desde fuera de la clase.
      */
     private MaquinariaBO() {
+        this.maquinariaDAO = MaquinariaDAO.getInstance();
     }
 
     /**
@@ -58,18 +68,9 @@ public class MaquinariaBO {
      * @return Lista de objetos MaquinariaDTO con la maquinaria disponible
      */
     public List<MaquinariaDTO> obtenerMaquinariaObra(Long idObra) {
-        // Lista mock de maquinaria disponible
-        List<MaquinariaDTO> maquinaria = new ArrayList<>();
-        
-        maquinaria.add(new MaquinariaDTO("Excavadora", "Caterpillar", "CAT-320"));
-        maquinaria.add(new MaquinariaDTO("Retroexcavadora", "John Deere", "JD-310"));
-        maquinaria.add(new MaquinariaDTO("Compactadora", "Wacker Neuson", "VPG-155"));
-        maquinaria.add(new MaquinariaDTO("Generador", "Honda", "EU70is"));
-        maquinaria.add(new MaquinariaDTO("Planta de luz", "Cummins", "C1500D5"));
-        maquinaria.add(new MaquinariaDTO("Montacargas", "Toyota", "8FGCU25"));
-        maquinaria.add(new MaquinariaDTO("Vibrador de concreto", "Wacker", "IREN-38"));
-        maquinaria.add(new MaquinariaDTO("Cortadora de concreto", "Husqvarna", "K-760"));
-        
-        return maquinaria;
+        // Obtener la maquinaria de la capa de persistencia y convertirla a DTOs
+        return maquinariaDAO.obtenerMaquinariaObra(idObra).stream()
+                .map(MaquinariaMapper::toDTO)
+                .collect(Collectors.toList());
     }
 }

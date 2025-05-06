@@ -1,6 +1,8 @@
 package bo;
 
+import dao.ObraDAO;
 import excepciones.BOException;
+import excepciones.DAOException;
 
 /**
  * Clase ObraBO
@@ -23,12 +25,19 @@ public class ObraBO {
      * una instancia en toda la aplicación.
      */
     public static ObraBO instance;
+    
+    /**
+     * DAO para obras. Gestiona el acceso a los datos de obras en
+     * la persistencia.
+     */
+    private ObraDAO obraDAO;
 
     /**
      * Constructor privado (patrón Singleton). Previene la creación de múltiples
      * instancias desde fuera de la clase.
      */
     private ObraBO() {
+        this.obraDAO = ObraDAO.getInstance();
     }
 
     /**
@@ -55,7 +64,11 @@ public class ObraBO {
      * @throws BOException Si ocurre un error durante la verificación
      */
     public boolean validarObraExiste(Long numero) throws BOException {
-        return true;
+        try {
+            return obraDAO.obraExiste(numero);
+        } catch (DAOException ex) {
+            throw new BOException("Error al validar si la obra existe: " + ex.getMessage());
+        }
     }
     
     /**
@@ -68,10 +81,14 @@ public class ObraBO {
      *
      * @param numero Número externo o de referencia de la obra
      * @return El ID interno de la obra en el sistema
-     * @throws Exception Si ocurre un error durante la consulta
+     * @throws BOException Si ocurre un error durante la consulta
      */
-    public Long obtenerIdPorNumero(Long numero) throws Exception{
-        return numero;
+    public Long obtenerIdPorNumero(Long numero) throws BOException{
+        try {
+            return obraDAO.obtenerIdPorNumero(numero);
+        } catch (DAOException ex) {
+            throw new BOException("Error al obtener el ID de la obra: " + ex.getMessage());
+        }
     }
     
     /**
@@ -82,9 +99,13 @@ public class ObraBO {
      *
      * @param id Identificador interno de la obra
      * @return La dirección física de la obra
-     * @throws Exception Si ocurre un error durante la consulta
+     * @throws BOException Si ocurre un error durante la consulta
      */
-    public String obtenerDireccionObra(Long id) throws Exception{
-        return "Camino de los Mayos #716";
+    public String obtenerDireccionObra(Long id) throws BOException {
+        try {
+            return obraDAO.obtenerDireccionObra(id);
+        } catch (DAOException ex) {
+            throw new BOException("Error al obtener la dirección de la obra: " + ex.getMessage());
+        }
     } 
 }

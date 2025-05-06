@@ -6,6 +6,7 @@ package dao;
 
 import dominio.Bitacora;
 import dominio.DetallesBitacora;
+import excepciones.DAOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -67,9 +68,9 @@ public class BitacoraDAO {
      * bitácora
      * @return El objeto Bitacora con la información básica de la bitácora
      * registrada
-     * @throws Exception Si ocurre un error durante el registro
+     * @throws DAOException Si ocurre un error durante el registro
      */
-    public Bitacora registrarBitacora(DetallesBitacora detallesBitacora) throws Exception {
+    public Bitacora registrarBitacora(DetallesBitacora detallesBitacora) throws DAOException {
         // Asignar ID a la bitácora y a detalles bitácora
         Bitacora bitacora = detallesBitacora.getBitacora();
 

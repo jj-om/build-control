@@ -5,6 +5,7 @@
 package dao;
 
 import dominio.Obra;
+import excepciones.DAOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -75,9 +76,9 @@ public class ObraDAO {
      *
      * @param numero Número identificador de la obra a verificar
      * @return true si la obra existe, false en caso contrario
-     * @throws Exception Si ocurre un error durante la verificación
+     * @throws DAOException Si ocurre un error durante la verificación
      */
-    public boolean obraExiste(Long numero) throws Exception {
+    public boolean obraExiste(Long numero) throws DAOException {
         // Verificar si existe una obra con el número especificado
         for (Obra obra : obras) {
             if (obra.getNumero().equals(numero)) {
@@ -97,9 +98,9 @@ public class ObraDAO {
      *
      * @param numero Número externo o de referencia de la obra
      * @return El ID interno de la obra en el sistema
-     * @throws Exception Si ocurre un error durante la consulta
+     * @throws DAOException Si ocurre un error durante la consulta
      */
-    public Long obtenerIdPorNumero(Long numero) throws Exception {
+    public Long obtenerIdPorNumero(Long numero) throws DAOException {
         // En esta implementación mock, simplemente devolvemos el mismo número
         // En la implementación real, se buscaría en la base de datos y se devuelve el ID 
         return numero;
@@ -110,9 +111,9 @@ public class ObraDAO {
      *
      * @param id Identificador interno de la obra
      * @return La dirección física de la obra
-     * @throws Exception Si ocurre un error durante la consulta
+     * @throws DAOException Si ocurre un error durante la consulta
      */
-    public String obtenerDireccionObra(Long id) throws Exception {
+    public String obtenerDireccionObra(Long id) throws DAOException {
         // Buscar la obra por ID y retornar su dirección
         for (Obra obra : obras) {
             if (obra.getNumero().equals(id)) {
