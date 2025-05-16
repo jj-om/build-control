@@ -1,6 +1,7 @@
 bo\HerramientaBO.class
 bo\RecursoBO.class
 mappers\HerramientaMapper.class
+mappers\UnidadContenidoMapper.class
 mappers\HerramientaIngresadaMapper.class
 mappers\ListaAsistenciaMapper.class
 excepciones\BOException.class

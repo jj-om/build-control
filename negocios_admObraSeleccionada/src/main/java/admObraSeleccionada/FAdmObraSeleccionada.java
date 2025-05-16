@@ -4,6 +4,7 @@
  */
 package admObraSeleccionada;
 
+import dto.ObraDTO;
 import excepciones.AdmObraSeleccionadaException;
 
 /**
@@ -45,7 +46,7 @@ public class FAdmObraSeleccionada implements IAdmObraSeleccionada {
      * sesión.
      */
     @Override
-    public boolean activarSesionObra(Long numero) throws AdmObraSeleccionadaException, Exception {
+    public boolean activarSesionObra(Long numero) throws AdmObraSeleccionadaException {
         return controlAdmObraSeleccionada.iniciarSesion(numero);
     }
 
@@ -85,4 +86,8 @@ public class FAdmObraSeleccionada implements IAdmObraSeleccionada {
         return controlAdmObraSeleccionada.obtenerDireccionObra();
     }
     
+    @Override
+    public ObraDTO obtenerObra() throws AdmObraSeleccionadaException {
+        return controlAdmObraSeleccionada.obtenerObra();
+    }
 }

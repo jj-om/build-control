@@ -39,7 +39,7 @@ public class RecursoBO {
      * previene la creación de múltiples instancias desde fuera de la clase.
      */
     private RecursoBO() {
-        this.recursoDAO = RecursoDAO.getInstance();
+        this.recursoDAO = new RecursoDAO();
     }
 
     /**
@@ -70,14 +70,14 @@ public class RecursoBO {
      * @throws BOException Si ocurre un error durante la obtención de datos de
      * recursos
      */
-    public List<RecursoDTO> obtenerRecursosObra(Long idObra) throws BOException, Exception {
+    public List<RecursoDTO> obtenerRecursosObra(Long idObra) throws BOException {
         try {
             // Obtener los recursos de la capa de persistencia
             return recursoDAO.obtenerRecursosObra(idObra).stream()
                     .map(RecursoMapper::toDTO)
                     .collect(Collectors.toList());
         } catch (DAOException ex) {
-            throw new BOException("Error al obtener los recursos de la obra: " + ex.getMessage());
+            throw new BOException("Error al obtener los recursos de la obra: " + ex.getMessage(), ex);
         }
     }
     
@@ -91,17 +91,16 @@ public class RecursoBO {
      * bitácora, para ajustar el inventario disponible.
      *
      * @param idObra Identificador de la obra a la que pertenece el recurso
-     * @param nombreMaterial Nombre del material a actualizar
-     * @param unidadPeso Unidad de medida del material
+     * @param codigo
      * @param cantidad Nueva cantidad disponible del recurso
      * @return true si la actualización fue exitosa, false en caso contrario
      * @throws BOException Si ocurre un error durante la actualización
      */
-    public boolean actualizarCantidadRecurso(Long idObra, String nombreMaterial, String unidadPeso, Integer cantidad) throws BOException, Exception {
+    public boolean actualizarCantidadRecurso(Long idObra, String codigo, Integer cantidad) throws BOException {
         try {
-            return recursoDAO.actualizarCantidadRecurso(idObra, nombreMaterial, unidadPeso, cantidad);
+            return recursoDAO.actualizarCantidadRecurso(idObra, codigo, cantidad);
         } catch (DAOException ex) {
-            throw new BOException("Error al actualizar la cantidad del recurso: " + ex.getMessage());
+            throw new BOException("Error al actualizar la cantidad del recurso: " + ex.getMessage(), ex);
         }
     }
     

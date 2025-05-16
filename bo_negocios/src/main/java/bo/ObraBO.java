@@ -1,8 +1,10 @@
 package bo;
 
 import dao.ObraDAO;
+import dto.ObraDTO;
 import excepciones.BOException;
 import excepciones.DAOException;
+import mappers.ObraMapper;
 
 /**
  * Clase ObraBO
@@ -37,7 +39,7 @@ public class ObraBO {
      * instancias desde fuera de la clase.
      */
     private ObraBO() {
-        this.obraDAO = ObraDAO.getInstance();
+        this.obraDAO = new ObraDAO();
     }
 
     /**
@@ -63,7 +65,7 @@ public class ObraBO {
      * @return true si la obra existe, false en caso contrario
      * @throws BOException Si ocurre un error durante la verificación
      */
-    public boolean validarObraExiste(Long numero) throws BOException, Exception {
+    public boolean validarObraExiste(Long numero) throws BOException {
         try {
             return obraDAO.obraExiste(numero);
         } catch (DAOException ex) {
@@ -107,5 +109,13 @@ public class ObraBO {
         } catch (DAOException ex) {
             throw new BOException("Error al obtener la dirección de la obra: " + ex.getMessage());
         }
-    } 
+    }
+    
+    public ObraDTO obtenerObra(Long id) throws BOException {
+        try {
+            return ObraMapper.toDTO(obraDAO.obtenerObra(id));
+        } catch (DAOException e) {
+            throw new BOException("Error al obtener la obra.", e);
+        }
+    }
 }

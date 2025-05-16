@@ -68,10 +68,10 @@ public class ObraSeleccionadaForm extends javax.swing.JFrame {
 
         nombreEmpresa = new javax.swing.JLabel();
         btnAtras = new javax.swing.JButton();
-        btnRegistroManual = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         campoNombreObra = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
+        btnRealizarPedido = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
@@ -90,13 +90,6 @@ public class ObraSeleccionadaForm extends javax.swing.JFrame {
                 btnAtrasActionPerformed(evt);
             }
         });
-
-        btnRegistroManual.setBackground(new java.awt.Color(95, 168, 211));
-        btnRegistroManual.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        btnRegistroManual.setForeground(new java.awt.Color(255, 255, 255));
-        btnRegistroManual.setText("Registrar material manualmente");
-        btnRegistroManual.setBorderPainted(false);
-        btnRegistroManual.setEnabled(false);
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
         jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
@@ -138,6 +131,17 @@ public class ObraSeleccionadaForm extends javax.swing.JFrame {
                 .addContainerGap(48, Short.MAX_VALUE))
         );
 
+        btnRealizarPedido.setBackground(new java.awt.Color(95, 168, 211));
+        btnRealizarPedido.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        btnRealizarPedido.setForeground(new java.awt.Color(255, 255, 255));
+        btnRealizarPedido.setText("Realizar pedido");
+        btnRealizarPedido.setBorderPainted(false);
+        btnRealizarPedido.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRealizarPedidoActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -145,13 +149,16 @@ public class ObraSeleccionadaForm extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(35, 35, 35)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(nombreEmpresa, javax.swing.GroupLayout.PREFERRED_SIZE, 271, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(nombreEmpresa, javax.swing.GroupLayout.PREFERRED_SIZE, 271, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap(241, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(btnAtras, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(43, 43, 43)
-                        .addComponent(btnRegistroManual)))
-                .addContainerGap(241, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnRealizarPedido)
+                        .addGap(35, 35, 35))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -163,7 +170,7 @@ public class ObraSeleccionadaForm extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 46, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnAtras, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnRegistroManual, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnRealizarPedido, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(28, 28, 28))
         );
 
@@ -189,6 +196,10 @@ public class ObraSeleccionadaForm extends javax.swing.JFrame {
     private void btnRegistrarBitacoraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarBitacoraActionPerformed
         registrarBitacora();
     }//GEN-LAST:event_btnRegistrarBitacoraActionPerformed
+
+    private void btnRealizarPedidoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRealizarPedidoActionPerformed
+        realizarPedido();
+    }//GEN-LAST:event_btnRealizarPedidoActionPerformed
 
     //ESTO ES MOMENTANEO, VA EN LA PANTALLA ANTERIOR DONDE SE SELECCIONAN LAS OBRAS
     private void iniciarSesion() {
@@ -235,9 +246,14 @@ public class ObraSeleccionadaForm extends javax.swing.JFrame {
         }
     }
     
+    private void realizarPedido() {
+//        this.dispose();
+//        coordinador.mostrarSeleccionMaterial();
+    }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAtras;
-    private javax.swing.JButton btnRegistroManual;
+    private javax.swing.JButton btnRealizarPedido;
     private javax.swing.JTextField campoNombreObra;
     private javax.swing.JButton jButton1;
     private javax.swing.JPanel jPanel1;

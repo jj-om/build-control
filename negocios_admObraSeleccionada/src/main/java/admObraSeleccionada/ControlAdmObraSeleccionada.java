@@ -5,6 +5,7 @@
 package admObraSeleccionada;
 
 import bo.ObraBO;
+import dto.ObraDTO;
 import excepciones.AdmObraSeleccionadaException;
 import excepciones.BOException;
 
@@ -57,7 +58,7 @@ public class ControlAdmObraSeleccionada {
      * @throws AdmObraSeleccionadaException si la obra no existe o hay un error
      * al iniciar sesión.
      */
-    public boolean iniciarSesion(Long numero) throws AdmObraSeleccionadaException, Exception {
+    public boolean iniciarSesion(Long numero) throws AdmObraSeleccionadaException {
         try {
             if (!obraBO.validarObraExiste(numero)) {
                 throw new AdmObraSeleccionadaException("No se encontró obra con número " + numero + ".");
@@ -95,7 +96,7 @@ public class ControlAdmObraSeleccionada {
      * @throws AdmObraSeleccionadaException si ocurre un error durante la
      * validación.
      */
-    public boolean validarObraExiste(Long numero) throws AdmObraSeleccionadaException, Exception {
+    public boolean validarObraExiste(Long numero) throws AdmObraSeleccionadaException {
         try {
             return obraBO.validarObraExiste(numero);
         } catch (BOException e) {
@@ -131,6 +132,15 @@ public class ControlAdmObraSeleccionada {
             return obraBO.obtenerDireccionObra(idObra);
         } catch (Exception e) {
             throw new AdmObraSeleccionadaException("No se pudo obtener la direccion de la obra.", e);
+        }
+    }
+    
+    public ObraDTO obtenerObra() throws AdmObraSeleccionadaException {
+        try {
+            Long idObra = obtenerIdPorNumero(sesionManager.getIdObra());
+            return obraBO.obtenerObra(idObra);
+        } catch (AdmObraSeleccionadaException | BOException e) {
+            throw new AdmObraSeleccionadaException("No se pudo obtener la obra.", e);
         }
     }
 

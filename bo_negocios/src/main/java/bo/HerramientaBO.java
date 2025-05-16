@@ -38,7 +38,7 @@ public class HerramientaBO {
      * instancias desde fuera de la clase.
      */
     private HerramientaBO() {
-        this.herramientaDAO = HerramientaDAO.getInstance();
+        this.herramientaDAO = new HerramientaDAO();
     }
 
     /**

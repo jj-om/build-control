@@ -4,6 +4,7 @@
  */
 package admObraSeleccionada;
 
+import dto.ObraDTO;
 import excepciones.AdmObraSeleccionadaException;
 
 /**
@@ -28,7 +29,7 @@ public interface IAdmObraSeleccionada {
      * @throws AdmObraSeleccionadaException Si ocurre un error al activar la
      * sesión.
      */
-    public boolean activarSesionObra(Long numero) throws AdmObraSeleccionadaException, Exception;
+    public boolean activarSesionObra(Long numero) throws AdmObraSeleccionadaException;
 
     /**
      * Cierra la sesión de la obra actual. Si hay una sesión activa, la finaliza
@@ -56,5 +57,7 @@ public interface IAdmObraSeleccionada {
      * dirección.
      */
     public String obtenerDireccionObra() throws AdmObraSeleccionadaException;
+    
+    public ObraDTO obtenerObra() throws AdmObraSeleccionadaException;
     
 }

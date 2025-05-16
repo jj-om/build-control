@@ -20,12 +20,6 @@ import java.util.List;
 public class MaquinariaDAO {
     
     /**
-     * Instancia única de la clase (patrón Singleton). Garantiza que solo exista
-     * una instancia en toda la aplicación.
-     */
-    public static MaquinariaDAO instance;
-    
-    /**
      * Lista mock de maquinaria disponible.
      */
     private final List<Maquinaria> maquinarias;
@@ -34,23 +28,9 @@ public class MaquinariaDAO {
      * Constructor privado (patrón Singleton). Previene la creación de múltiples
      * instancias desde fuera de la clase.
      */
-    private MaquinariaDAO() {
+    public MaquinariaDAO() {
         this.maquinarias = new ArrayList<>();
         inicializarMaquinariaMock();
-    }
-
-    /**
-     * Método para obtener la instancia única de MaquinariaDAO (patrón
-     * Singleton). Si no existe una instancia, la crea; de lo contrario,
-     * devuelve la existente.
-     *
-     * @return La instancia única de MaquinariaDAO
-     */
-    public static MaquinariaDAO getInstance() {
-        if (instance == null) {
-            instance = new MaquinariaDAO();
-        }
-        return instance;
     }
     
     /**

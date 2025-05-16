@@ -65,7 +65,7 @@ public interface IAdmBitacora {
      * @throws AdmBitacoraException Si ocurre un error durante el proceso de
      * registro
      */
-    public boolean registrarBitacora(DetallesBitacoraDTO detallesBitacora) throws AdmBitacoraException, Exception;
+    public boolean registrarBitacora(DetallesBitacoraDTO detallesBitacora) throws AdmBitacoraException;
 
     /**
      * Verifica si ya existe una bitácora registrada para la obra seleccionada
@@ -85,7 +85,7 @@ public interface IAdmBitacora {
      * @throws AdmBitacoraException Si ocurre un error durante la obtención de
      * los datos
      */
-    public List<RecursoDTO> obtenerRecursosObra() throws AdmBitacoraException, Exception;
+    public List<RecursoDTO> obtenerRecursosObra() throws AdmBitacoraException;
 
     /**
      * Valida que los materiales seleccionados para registrar en la bitácora

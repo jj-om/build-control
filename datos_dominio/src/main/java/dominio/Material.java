@@ -4,6 +4,8 @@
  */
 package dominio;
 
+import dominio_enums.TipoMaterialDatos;
+
 /**
  * Clase Material
  * 
@@ -24,25 +26,20 @@ public class Material {
      */
     private Long id;
     
+    private String codigo;
+    
     /**
      * Nombre del material.
      */
     private String nombre;
     
     /**
-     * Peso del material.
-     */
-    private Float peso;
-    
-    /**
      * Marca del material.
      */
     private String marca;
     
-    /**
-     * Unidad de medida del peso del material.
-     */
-    private String unidadPeso;
+    private TipoMaterialDatos tipo;
+    private UnidadContenido unidadPresentacion;
 
     /** 
      * Constructor vacío requerido para frameworks de persistencia. 
@@ -58,11 +55,12 @@ public class Material {
      * @param marca Marca del material.
      * @param unidadPeso Unidad de medida del peso.
      */
-    public Material(String nombre, Float peso, String marca, String unidadPeso) {
+    public Material(String codigo, String nombre, String marca, TipoMaterialDatos tipo, UnidadContenido unidadPresentacion) {    
+        this.codigo = codigo;
         this.nombre = nombre;
-        this.peso = peso;
         this.marca = marca;
-        this.unidadPeso = unidadPeso;
+        this.tipo = tipo;
+        this.unidadPresentacion = unidadPresentacion;
     }
 
     /**
@@ -81,6 +79,14 @@ public class Material {
      */
     public void setIdMaterial(Long id) {
         this.id = id;
+    }
+
+    public String getCodigo() {
+        return codigo;
+    }
+
+    public void setCodigo(String codigo) {
+        this.codigo = codigo;
     }
 
     /**
@@ -102,24 +108,6 @@ public class Material {
     }
 
     /**
-     * Obtiene el peso del material.
-     *
-     * @return El peso del material.
-     */
-    public float getPeso() {
-        return peso;
-    }
-
-    /**
-     * Establece el peso del material.
-     *
-     * @param peso El nuevo peso del material.
-     */
-    public void setPeso(Float peso) {
-        this.peso = peso;
-    }
-
-    /**
      * Obtiene la marca del material.
      *
      * @return La marca del material.
@@ -137,22 +125,20 @@ public class Material {
         this.marca = marca;
     }
 
-    /**
-     * Obtiene la unidad de peso del material.
-     *
-     * @return La unidad de peso (ej. "kg", "g").
-     */
-    public String getUnidadPeso() {
-        return unidadPeso;
+    public TipoMaterialDatos getTipo() {
+        return tipo;
     }
 
-    /**
-     * Establece la unidad de peso del material.
-     *
-     * @param unidadPeso La nueva unidad de peso.
-     */
-    public void setUnidadPeso(String unidadPeso) {
-        this.unidadPeso = unidadPeso;
+    public void setTipo(TipoMaterialDatos tipo) {
+        this.tipo = tipo;
+    }
+
+    public UnidadContenido getUnidadPresentacion() {
+        return unidadPresentacion;
+    }
+
+    public void setUnidadPresentacion(UnidadContenido unidadPresentacion) {
+        this.unidadPresentacion = unidadPresentacion;
     }
 
     /**
@@ -162,13 +148,6 @@ public class Material {
      */
     @Override
     public String toString() {
-        return "Material{" +
-                "id=" + id +
-                ", nombre=" + nombre +
-                ", peso=" + peso +
-                ", marca=" + marca +
-                ", unidadPeso=" + unidadPeso +
-                '}';
+        return "Material{" + "id=" + id + ", codigo=" + codigo + ", nombre=" + nombre + ", marca=" + marca + ", tipo=" + tipo + ", unidadPresentacion=" + unidadPresentacion + '}';
     }
- 
 }

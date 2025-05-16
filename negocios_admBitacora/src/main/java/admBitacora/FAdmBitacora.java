@@ -60,7 +60,7 @@ public class FAdmBitacora implements IAdmBitacora {
      * registro
      */
     @Override
-    public boolean registrarBitacora(DetallesBitacoraDTO detallesBitacora) throws AdmBitacoraException, Exception {
+    public boolean registrarBitacora(DetallesBitacoraDTO detallesBitacora) throws AdmBitacoraException {
         return controlAdmBitacora.registrarBitacora(detallesBitacora);
     }
 
@@ -87,7 +87,7 @@ public class FAdmBitacora implements IAdmBitacora {
      * los datos
      */
     @Override
-    public List<RecursoDTO> obtenerRecursosObra() throws AdmBitacoraException, Exception {
+    public List<RecursoDTO> obtenerRecursosObra() throws AdmBitacoraException {
         return controlAdmBitacora.obtenerRecursosObra();
     }
 

@@ -43,7 +43,7 @@ public class BitacoraBO {
      * instancias desde fuera de la clase.
      */
     private BitacoraBO() {
-        this.bitacoraDAO = BitacoraDAO.getInstance();
+        this.bitacoraDAO = new BitacoraDAO();
     }
 
     /**

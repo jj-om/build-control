@@ -23,12 +23,6 @@ import java.util.List;
 public class BitacoraDAO {
     
     /**
-     * Instancia única de la clase (patrón Singleton). Garantiza que solo exista
-     * una instancia en toda la aplicación.
-     */
-    private static BitacoraDAO instance;
-    
-    /**
      * Lista mock de bitácoras.
      */
     private final List<Bitacora> bitacoras;
@@ -42,23 +36,9 @@ public class BitacoraDAO {
      * Constructor privado (patrón Singleton). Previene la creación de múltiples
      * instancias desde fuera de la clase.
      */
-    private BitacoraDAO() {
+    public BitacoraDAO() {
         this.bitacoras = new ArrayList<>();
         this.detallesBitacoras = new ArrayList<>();
-    }
-
-    /**
-     * Método para obtener la instancia única de BitacoraDAO (patrón Singleton).
-     * Si no existe una instancia, la crea; de lo contrario, devuelve la
-     * existente.
-     *
-     * @return La instancia única de BitacoraDAO
-     */
-    public static BitacoraDAO getInstance() {
-        if (instance == null) {
-            instance = new BitacoraDAO();
-        }
-        return instance;
     }
     
     /**

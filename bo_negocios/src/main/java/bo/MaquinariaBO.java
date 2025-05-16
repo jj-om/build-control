@@ -39,7 +39,7 @@ public class MaquinariaBO {
      * instancias desde fuera de la clase.
      */
     private MaquinariaBO() {
-        this.maquinariaDAO = MaquinariaDAO.getInstance();
+        this.maquinariaDAO = new MaquinariaDAO();
     }
 
     /**

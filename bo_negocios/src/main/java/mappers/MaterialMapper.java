@@ -1,7 +1,9 @@
 package mappers;
 
 import dominio.Material;
+import dominio_enums.TipoMaterialDatos;
 import dto.MaterialDTO;
+import negocio_enums.TipoMaterialNegocio;
 
 /**
  * @author Alejandra García 252444
@@ -15,18 +17,21 @@ public class MaterialMapper {
 
     public static MaterialDTO toDTO(Material material){
         return new MaterialDTO(
+                material.getCodigo(),
                 material.getNombre(),
-                material.getPeso(),
                 material.getMarca(),
-                material.getUnidadPeso());
+                TipoMaterialNegocio.valueOf(material.getTipo().name()),
+                UnidadContenidoMapper.toDTO(material.getUnidadPresentacion())
+        );
     }
     
     public static Material toEntity(MaterialDTO materialDTO){
         return new Material(
+                materialDTO.getCodigo(),
                 materialDTO.getNombre(),
-                materialDTO.getPeso(),
                 materialDTO.getMarca(),
-                materialDTO.getUnidadPeso()
+                TipoMaterialDatos.valueOf(materialDTO.getTipo().name()),
+                UnidadContenidoMapper.toEntity(materialDTO.getUnidadPresentacion())
         );
     }
     

@@ -4,6 +4,8 @@
  */
 package dto;
 
+import negocio_enums.TipoMaterialNegocio;
+
 /**
  * Clase MaterialDTO
  *
@@ -19,25 +21,20 @@ package dto;
  */
 public class MaterialDTO {
     
+    private String codigo;
+    
     /**
      * Nombre del material. 
      */
     private String nombre;
     
     /**
-     * Peso estándar del material. 
-     */
-    private Float peso;
-    
-    /**
      * Marca del material. 
      */
     private String marca;
     
-    /**
-     * Unidad de medida del peso.
-     */
-    private String unidadPeso;
+    private TipoMaterialNegocio tipo;
+    private UnidadContenidoNegocioDTO unidadPresentacion;
 
     /**
      * Constructor por defecto. 
@@ -50,16 +47,26 @@ public class MaterialDTO {
      * Constructor parametrizado. 
      * Crea una instancia de MaterialDTO con todos sus atributos.
      *
+     * @param codigo
      * @param nombre El nombre del material
-     * @param peso El peso estándar del material
      * @param marca La marca del material
-     * @param unidadPeso La unidad de medida del peso
+     * @param tipo
+     * @param unidadPresentacion
      */
-    public MaterialDTO(String nombre, Float peso, String marca, String unidadPeso) {
+    public MaterialDTO(String codigo, String nombre, String marca, TipoMaterialNegocio tipo, UnidadContenidoNegocioDTO unidadPresentacion) {
+        this.codigo = codigo;
         this.nombre = nombre;
-        this.peso = peso;
         this.marca = marca;
-        this.unidadPeso = unidadPeso;
+        this.tipo = tipo;
+        this.unidadPresentacion = unidadPresentacion;
+    }
+
+    public String getCodigo() {
+        return codigo;
+    }
+
+    public void setCodigo(String codigo) {
+        this.codigo = codigo;
     }
 
     /**
@@ -81,24 +88,6 @@ public class MaterialDTO {
     }
 
     /**
-     * Obtiene el peso estándar del material.
-     *
-     * @return El peso de una unidad estándar
-     */
-    public Float getPeso() {
-        return peso;
-    }
-
-    /**
-     * Establece el peso estándar del material.
-     *
-     * @param peso El nuevo peso estándar
-     */
-    public void setPeso(Float peso) {
-        this.peso = peso;
-    }
-
-    /**
      * Obtiene la marca del material.
      *
      * @return La marca del material
@@ -116,31 +105,29 @@ public class MaterialDTO {
         this.marca = marca;
     }
 
-    /**
-     * Obtiene la unidad de medida del peso.
-     *
-     * @return La unidad en que se expresa el peso
-     */
-    public String getUnidadPeso() {
-        return unidadPeso;
+    public TipoMaterialNegocio getTipo() {
+        return tipo;
     }
 
-    /**
-     * Establece la unidad de medida del peso.
-     *
-     * @param unidadPeso La nueva unidad de medida
-     */
-    public void setUnidadPeso(String unidadPeso) {
-        this.unidadPeso = unidadPeso;
+    public void setTipo(TipoMaterialNegocio tipo) {
+        this.tipo = tipo;
     }
 
+    public UnidadContenidoNegocioDTO getUnidadPresentacion() {
+        return unidadPresentacion;
+    }
+
+    public void setUnidadPresentacion(UnidadContenidoNegocioDTO unidadPresentacion) {
+        this.unidadPresentacion = unidadPresentacion;
+    }
+    
     /**
-     * Genera una representación en cadena de texto del objeto MaterialDTO. 
+     * Genera una representación en cadena de texto del objeto MaterialDTO.
      *
      * @return Una cadena representando los atributos del objeto
      */
     @Override
     public String toString() {
-        return "MaterialDTO{" + "nombre=" + nombre + ", peso=" + peso + ", marca=" + marca + ", unidadPeso=" + unidadPeso + '}';
+        return "MaterialDTO{" + "codigo=" + codigo + ", nombre=" + nombre + ", marca=" + marca + ", tipo=" + tipo + ", unidadPresentacion=" + unidadPresentacion + '}';
     }
 }

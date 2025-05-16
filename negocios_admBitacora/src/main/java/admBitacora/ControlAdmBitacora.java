@@ -100,7 +100,7 @@ public class ControlAdmBitacora {
      * @throws AdmBitacoraException Si ocurre un error durante el proceso de
      * registro
      */
-    public boolean registrarBitacora(DetallesBitacoraDTO detallesBitacoraDTO) throws AdmBitacoraException, Exception {
+    public boolean registrarBitacora(DetallesBitacoraDTO detallesBitacoraDTO) throws AdmBitacoraException {
         try {
             Long idObra = null;
             
@@ -183,7 +183,7 @@ public class ControlAdmBitacora {
      * @throws AdmBitacoraException Si ocurre un error durante la obtención de
      * los datos
      */
-    public List<RecursoDTO> obtenerRecursosObra() throws AdmBitacoraException, Exception {
+    public List<RecursoDTO> obtenerRecursosObra() throws AdmBitacoraException {
         try {
             // Obtiene el id mediante el subsistema
             Long idObra = admObraSeleccionada.obtenerSesion();
@@ -230,7 +230,7 @@ public class ControlAdmBitacora {
      * cantidades
      * @throws AdmBitacoraException Si ocurre un error durante la actualización
      */
-    private void restarRecursos(List<MaterialIngresadoDTO> materialIngresado) throws AdmBitacoraException, Exception {
+    private void restarRecursos(List<MaterialIngresadoDTO> materialIngresado) throws AdmBitacoraException {
         try {
             // Obtener lista de los recursos de la obra
             List<RecursoDTO> recursosObra = obtenerRecursosObra();
@@ -248,7 +248,7 @@ public class ControlAdmBitacora {
                         // Si la cantidad que hay en los recursos es mayor o igual a la cantidad ingresada, se le resta y actualiza la cantidad de recursos
                         if (recurso.getCantidad() >= material.getCantidad()) {
                             Integer nuevoStock = recurso.getCantidad() - material.getCantidad();
-                            boolean actualizado = boRecurso.actualizarCantidadRecurso(idObra, recurso.getMaterial().getNombre(), recurso.getMaterial().getUnidadPeso(), nuevoStock);
+                            boolean actualizado = boRecurso.actualizarCantidadRecurso(idObra, recurso.getMaterial().getCodigo(), nuevoStock);
                             if (actualizado) {
                                 return;
                             }

@@ -186,7 +186,7 @@ public class CoordinadorNegocio {
     public List<RecursoDTO> obtenerMateriales() throws PresentacionException {
         try {
             return admBitacora.obtenerRecursosObra();
-        } catch (Exception e) {
+        } catch (AdmBitacoraException e) {
             throw new PresentacionException("Error al obtener los recursos de la obra.", e);
         }   
     }
@@ -398,7 +398,7 @@ public class CoordinadorNegocio {
      * @return true si la sesión se inició correctamente, false en caso
      * contrario
      */
-    public boolean iniciarSesion(Long idObra) throws Exception {
+    public boolean iniciarSesion(Long idObra) {
         try {
             admObraSeleccionada.activarSesionObra(idObra);
         } catch (AdmObraSeleccionadaException ex) {

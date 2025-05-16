@@ -21,12 +21,6 @@ import java.util.List;
 public class ObraDAO {
     
     /**
-     * Instancia única de la clase (patrón Singleton). Garantiza que solo exista
-     * una instancia en toda la aplicación.
-     */
-    public static ObraDAO instance;
-    
-    /**
      * Lista mock de obras existentes.
      */
     private final List<Obra> obras;
@@ -35,22 +29,9 @@ public class ObraDAO {
      * Constructor privado (patrón Singleton). Previene la creación de múltiples
      * instancias desde fuera de la clase.
      */
-    private ObraDAO() {
+    public ObraDAO() {
         this.obras = new ArrayList<>();
         inicializarObrasMock();
-    }
-
-    /**
-     * Método para obtener la instancia única de ObraDAO (patrón Singleton). Si
-     * no existe una instancia, la crea; de lo contrario, devuelve la existente.
-     *
-     * @return La instancia única de ObraDAO
-     */
-    public static ObraDAO getInstance() {
-        if (instance == null) {
-            instance = new ObraDAO();
-        }
-        return instance;
     }
     
     /**
@@ -79,13 +60,17 @@ public class ObraDAO {
      * @throws DAOException Si ocurre un error durante la verificación
      */
     public boolean obraExiste(Long numero) throws DAOException {
-        // Verificar si existe una obra con el número especificado
-        for (Obra obra : obras) {
-            if (obra.getNumero().equals(numero)) {
-                return true;
+        try {
+            // Verificar si existe una obra con el número especificado
+            for (Obra obra : obras) {
+                if (obra.getNumero().equals(numero)) {
+                    return true;
+                }
             }
+            return false;
+        } catch (Exception e) {
+            throw new DAOException("Error al validar si la obra existe.", e);
         }
-        return false;
     }
     
     /**
@@ -121,6 +106,20 @@ public class ObraDAO {
             }
         }
         return null;
+    }
+    
+    public Obra obtenerObra(Long id) throws DAOException {
+        try {
+            for (Obra obra : obras) {
+                if (obra.getIdObra().equals(id)) {
+                    return obra;
+                }
+            }
+            
+            return null;
+        } catch (Exception e) {
+            throw new DAOException("Error al obtener la obra.", e);
+        }
     }
     
 }

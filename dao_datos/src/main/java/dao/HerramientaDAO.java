@@ -20,12 +20,6 @@ import java.util.List;
 public class HerramientaDAO {
     
     /**
-     * Instancia única de la clase (patrón Singleton). Garantiza que solo exista
-     * una instancia en toda la aplicación.
-     */
-    public static HerramientaDAO instance;
-    
-    /**
      * Lista mock de herramientas disponibles.
      */
     private final List<Herramienta> herramientas;
@@ -34,23 +28,9 @@ public class HerramientaDAO {
      * Constructor privado (patrón Singleton). Previene la creación de múltiples
      * instancias desde fuera de la clase.
      */
-    private HerramientaDAO() {
+    public HerramientaDAO() {
         this.herramientas = new ArrayList<>();
         inicializarHerramientasMock();
-    }
-
-    /**
-     * Método para obtener la instancia única de HerramientaDAO (patrón
-     * Singleton). Si no existe una instancia, la crea; de lo contrario,
-     * devuelve la existente.
-     *
-     * @return La instancia única de HerramientaDAO
-     */
-    public static HerramientaDAO getInstance() {
-        if (instance == null) {
-            instance = new HerramientaDAO();
-        }
-        return instance;
     }
     
     /**
