@@ -8,6 +8,7 @@ import java.awt.Component;
 import java.awt.Font;
 import java.util.List;
 import javax.swing.DefaultListModel;
+import javax.swing.JComponent;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -163,15 +164,22 @@ public class Utilities {
     }
 
     /**
-     * Cambia las fuentes de cada panel. Hace que el aspecto sea uniforme con
-     * respecto al resto de la presentación.
+     * Cambia las fuentes de todos los componentes dentro del panel especificado.
+     * Se aplica de forma recursiva a subcomponentes anidados para garantizar
+     * uniformidad visual.
      *
-     * @param panel Panel a editar el aspecto.
-     * @param fuente Fuente para editar el panel.
+     * @param componente Componente raíz (por ejemplo, un JPanel) al que se le
+     *                   desea cambiar la fuente.
+     * @param fuente     Fuente a aplicar.
      */
-    public static void cambiarFuente(JPanel panel, Font fuente) {
-        for (Component componente : panel.getComponents()) {
-            componente.setFont(fuente);
+    public static void cambiarFuente(JComponent componente, Font fuente) {
+        componente.setFont(fuente);
+        for (Component hijo : componente.getComponents()) {
+            if (hijo instanceof JComponent jComponent) {
+                cambiarFuente(jComponent, fuente);
+            } else {
+                hijo.setFont(fuente);
+            }
         }
     }
 }
